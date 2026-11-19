@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { connectToHost, sendResult, type HostContext } from "./bridge";
+import { INIT_TIMEOUT_MS, SITE_URL, connectToHost, isEmbedded, sendResult, type HostContext } from "./bridge";
 import { SCENES, decideResult, type Choice, type Trait } from "./game/script";
 
 type Phase =
   | { kind: "connecting" }
+  | { kind: "blocked" }
   | { kind: "title" }
   | { kind: "scene"; index: number }
   | { kind: "verdict"; resultId: string; sent: boolean };
@@ -16,14 +17,25 @@ export function App() {
   const [scores, setScores] = useState(emptyScores);
 
   useEffect(() => {
+    const connection = connectToHost();
+    if (!connection) {
+      setPhase({ kind: "blocked" });
+      return;
+    }
     let alive = true;
-    connectToHost().then((ctx) => {
+    // 사이트가 늦게 뜨는 경우를 위해, 막힌 화면을 띄운 뒤에도 init이 오면 이어서 시작한다.
+    const timer = window.setTimeout(() => {
+      setPhase((p) => (p.kind === "connecting" ? { kind: "blocked" } : p));
+    }, INIT_TIMEOUT_MS);
+    connection.then((ctx) => {
       if (!alive) return;
+      window.clearTimeout(timer);
       setHost(ctx);
       setPhase({ kind: "title" });
     });
     return () => {
       alive = false;
+      window.clearTimeout(timer);
     };
   }, []);
 
@@ -52,6 +64,23 @@ export function App() {
   return (
     <main className="stage">
       {phase.kind === "connecting" && <p className="hint">사이트와 연결하는 중…</p>}
+
+      {phase.kind === "blocked" && (
+        <section className="title">
+          <p className="eyebrow">WIBBLE COURT</p>
+          <h1>위블에서 만나요</h1>
+          <p className="hint">이 게임은 위블 사이트에서 플레이할 수 있어요.</p>
+          <a
+            className="primary"
+            href={SITE_URL}
+            // 낯선 페이지의 iframe 안이라면 새 탭으로 연다
+            target={isEmbedded() ? "_blank" : undefined}
+            rel="noopener"
+          >
+            위블에서 플레이하기
+          </a>
+        </section>
+      )}
 
       {phase.kind === "title" && (
         <section className="title">

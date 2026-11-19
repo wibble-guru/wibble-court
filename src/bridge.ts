@@ -6,8 +6,9 @@
  *   host -> game  { source: "psytest-host", type: "init", slug, theme }
  *   game -> host  { source: "psytest-game", type: "result", resultId } (init에서 받은 origin으로만)
  *
- * iframe 밖에서 단독으로 열면(로컬 개발) 호스트 없이 바로 시작한다.
- * 이때 `?slug=&theme=horror` 쿼리로 값을 흉내 낼 수 있다.
+ * 운영 빌드는 위블 사이트 안에서만 실행된다. 단독으로 열거나, 사이트가 아닌 페이지가 iframe으로
+ * 띄우면(init이 안 옴) 게임 대신 "위블에서 플레이" 안내를 보여 준다.
+ * 개발 서버(`pnpm dev`)에서만 단독 실행을 허용하고, `?slug=&theme=horror` 쿼리로 값을 흉내 낼 수 있다.
  */
 
 export type Theme = "default" | "horror";
@@ -26,6 +27,17 @@ export const ID_PATTERN = /^[a-z0-9][a-z0-9_-]{0,63}$/i;
 
 const DEFAULT_SLUG = "court";
 const READY_INTERVAL_MS = 300;
+
+/** iframe 안에서 이 시간이 지나도 init이 없으면 막힌 화면을 보여 준다. 늦게라도 init이 오면 이어서 시작. */
+export const INIT_TIMEOUT_MS = 8000;
+
+/** 단독 실행 허용 여부. 개발 서버에서만 true */
+export const STANDALONE_ALLOWED = import.meta.env.DEV;
+
+/** 막힌 화면에서 안내할 위블 사이트 주소 */
+export const SITE_URL = import.meta.env.VITE_SITE_URL || "https://wibble.guru";
+
+export const isEmbedded = () => window.parent !== window;
 
 /**
  * init을 받아도 되는 사이트 주소 목록 (쉼표 구분). 비워 두면 어떤 부모 페이지든 받는다.
@@ -58,9 +70,12 @@ function standaloneContext(): HostContext {
   };
 }
 
-/** 호스트와 연결한다. iframe 안이면 init을 받을 때까지 기다리고, 아니면 바로 단독 모드로 시작. */
-export function connectToHost(): Promise<HostContext> {
-  if (window.parent === window) return Promise.resolve(standaloneContext());
+/**
+ * 호스트와 연결한다. iframe 안이면 init을 받을 때까지 기다린다 (타임아웃은 호출하는 쪽에서 처리).
+ * 단독 실행이면 개발 서버에서만 바로 시작하고, 운영 빌드에서는 null.
+ */
+export function connectToHost(): Promise<HostContext> | null {
+  if (!isEmbedded()) return STANDALONE_ALLOWED ? Promise.resolve(standaloneContext()) : null;
 
   return new Promise((resolve) => {
     const sendReady = () => window.parent.postMessage({ source: "psytest-game", type: "ready" }, "*");
