@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { INIT_TIMEOUT_MS, SITE_URL, connectToHost, isEmbedded, sendResult, type HostContext } from "./bridge";
+import { Gate } from "./Gate";
+import { INIT_TIMEOUT_MS, connectToHost, sendResult, type HostContext } from "./bridge";
 import { SCENES, decideResult, type Choice, type Trait } from "./game/script";
 
 type Phase =
@@ -61,26 +62,11 @@ export function App() {
     setPhase({ kind: "title" });
   }
 
+  if (phase.kind === "blocked") return <Gate />;
+
   return (
     <main className="stage">
       {phase.kind === "connecting" && <p className="hint">사이트와 연결하는 중…</p>}
-
-      {phase.kind === "blocked" && (
-        <section className="title">
-          <p className="eyebrow">WIBBLE COURT</p>
-          <h1>위블에서 만나요</h1>
-          <p className="hint">이 게임은 위블 사이트에서 플레이할 수 있어요.</p>
-          <a
-            className="primary"
-            href={SITE_URL}
-            // 낯선 페이지의 iframe 안이라면 새 탭으로 연다
-            target={isEmbedded() ? "_blank" : undefined}
-            rel="noopener"
-          >
-            위블에서 플레이하기
-          </a>
-        </section>
-      )}
 
       {phase.kind === "title" && (
         <section className="title">

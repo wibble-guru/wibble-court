@@ -37,6 +37,9 @@ export const STANDALONE_ALLOWED = import.meta.env.DEV;
 /** 막힌 화면에서 안내할 위블 사이트 주소 */
 export const SITE_URL = import.meta.env.VITE_SITE_URL || "https://wibble.guru";
 
+/** 막힌 화면의 "위블에서 플레이하기"가 보낼 사이트의 이 게임 테스트 페이지 */
+export const SITE_TEST_URL = `${SITE_URL}/t/${DEFAULT_SLUG}`;
+
 export const isEmbedded = () => window.parent !== window;
 
 /**
