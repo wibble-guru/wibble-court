@@ -1,6 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Gate } from '@/shared/gate/Gate';
-import { INIT_TIMEOUT_MS, connectToHost, sendResult, type HostContext } from '@/shared/bridge';
+import {
+  INIT_TIMEOUT_MS,
+  STANDALONE_ALLOWED,
+  connectToHost,
+  isEmbedded,
+  sendResult,
+  type HostContext,
+} from '@/shared/bridge';
 import { SCENES, decideResult, type Choice, type Trait } from '@/game/script';
 
 type Phase =
@@ -14,15 +21,15 @@ const emptyScores = (): Record<Trait, number> => ({ judge: 0, prosecutor: 0, def
 
 export function App() {
   const [host, setHost] = useState<HostContext | null>(null);
-  const [phase, setPhase] = useState<Phase>({ kind: 'connecting' });
+  // 운영 빌드를 단독으로 열면 연결할 사이트가 없으니 처음부터 막힌 화면 (connectToHost 가 null 인 조건과 같음)
+  const [phase, setPhase] = useState<Phase>(() =>
+    isEmbedded() || STANDALONE_ALLOWED ? { kind: 'connecting' } : { kind: 'blocked' },
+  );
   const [scores, setScores] = useState(emptyScores);
 
   useEffect(() => {
     const connection = connectToHost();
-    if (!connection) {
-      setPhase({ kind: 'blocked' });
-      return;
-    }
+    if (!connection) return;
     let alive = true;
     // 사이트가 늦게 뜨는 경우를 위해, 막힌 화면을 띄운 뒤에도 init이 오면 이어서 시작한다.
     const timer = window.setTimeout(() => {
