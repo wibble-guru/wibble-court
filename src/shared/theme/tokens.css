@@ -10,7 +10,7 @@
   color-scheme: light;
 }
 
-:root[data-theme="horror"] {
+:root[data-theme='horror'] {
   --bg: #0f0d12;
   --surface: #1c1820;
   --ink: #ece6f2;

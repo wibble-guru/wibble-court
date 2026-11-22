@@ -3,10 +3,10 @@
  * 위블 공통 테마 토큰·폰트는 src/shared/theme 에 있다.
  */
 @layer theme, base, components, utilities;
-@import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities);
-@import "../shared/theme/tokens.css";
-@import "../shared/theme/fonts.css";
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import '../shared/theme/tokens.css';
+@import '../shared/theme/fonts.css';
 
 /* 테마 토큰을 Tailwind 클래스로도 쓸 수 있게 연결 (bg-surface, text-primary …) */
 @theme inline {
@@ -39,12 +39,12 @@ body {
   background: var(--bg);
   color: var(--ink);
   font-family:
-    "SUIT",
-    "Pretendard",
+    'SUIT',
+    'Pretendard',
     -apple-system,
     BlinkMacSystemFont,
-    "Apple SD Gothic Neo",
-    "Noto Sans KR",
+    'Apple SD Gothic Neo',
+    'Noto Sans KR',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   overflow: hidden;

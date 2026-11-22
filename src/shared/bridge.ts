@@ -11,7 +11,7 @@
  * 개발 서버(`pnpm dev`)에서만 단독 실행을 허용하고, `?slug=&theme=horror` 쿼리로 값을 흉내 낼 수 있다.
  */
 
-export type Theme = "default" | "horror";
+export type Theme = 'default' | 'horror';
 
 export type HostContext = {
   /** 위블 사이트 iframe 안에서 실행 중인지. false면 결과를 화면에 직접 보여 준다. */
@@ -20,12 +20,12 @@ export type HostContext = {
   theme: Theme;
 };
 
-type InitMessage = { source: "psytest-host"; type: "init"; slug: string; theme: Theme };
+type InitMessage = { source: 'psytest-host'; type: 'init'; slug: string; theme: Theme };
 
 /** 사이트와 같은 규칙. 결과 id는 URL에 그대로 들어간다. */
 export const ID_PATTERN = /^[a-z0-9][a-z0-9_-]{0,63}$/i;
 
-const DEFAULT_SLUG = "court";
+const DEFAULT_SLUG = 'court';
 const READY_INTERVAL_MS = 300;
 
 /** iframe 안에서 이 시간이 지나도 init이 없으면 막힌 화면을 보여 준다. 늦게라도 init이 오면 이어서 시작. */
@@ -35,7 +35,7 @@ export const INIT_TIMEOUT_MS = 8000;
 export const STANDALONE_ALLOWED = import.meta.env.DEV;
 
 /** 막힌 화면에서 안내할 위블 사이트 주소 */
-export const SITE_URL = import.meta.env.VITE_SITE_URL || "https://wibble.guru";
+export const SITE_URL = import.meta.env.VITE_SITE_URL || 'https://wibble.guru';
 
 /** 막힌 화면의 "위블에서 플레이하기"가 보낼 사이트의 이 게임 테스트 페이지 */
 export const SITE_TEST_URL = `${SITE_URL}/t/${DEFAULT_SLUG}`;
@@ -46,21 +46,21 @@ export const isEmbedded = () => window.parent !== window;
  * init을 받아도 되는 사이트 주소 목록 (쉼표 구분). 비워 두면 어떤 부모 페이지든 받는다.
  * 운영 빌드에서는 `VITE_ALLOWED_HOST_ORIGINS=https://wibble.guru` 처럼 채워 두자.
  */
-const allowedHostOrigins = (import.meta.env.VITE_ALLOWED_HOST_ORIGINS ?? "")
-  .split(",")
+const allowedHostOrigins = (import.meta.env.VITE_ALLOWED_HOST_ORIGINS ?? '')
+  .split(',')
   .map((s: string) => s.trim())
   .filter(Boolean);
 
 let hostOrigin: string | null = null;
 
 function isInitMessage(data: unknown): data is InitMessage {
-  if (typeof data !== "object" || data === null) return false;
+  if (typeof data !== 'object' || data === null) return false;
   const msg = data as Record<string, unknown>;
   return (
-    msg.source === "psytest-host" &&
-    msg.type === "init" &&
-    typeof msg.slug === "string" &&
-    (msg.theme === "default" || msg.theme === "horror")
+    msg.source === 'psytest-host' &&
+    msg.type === 'init' &&
+    typeof msg.slug === 'string' &&
+    (msg.theme === 'default' || msg.theme === 'horror')
   );
 }
 
@@ -68,8 +68,8 @@ function standaloneContext(): HostContext {
   const params = new URLSearchParams(window.location.search);
   return {
     embedded: false,
-    slug: params.get("slug") || DEFAULT_SLUG,
-    theme: params.get("theme") === "horror" ? "horror" : "default",
+    slug: params.get('slug') || DEFAULT_SLUG,
+    theme: params.get('theme') === 'horror' ? 'horror' : 'default',
   };
 }
 
@@ -82,18 +82,18 @@ export function connectToHost(): Promise<HostContext> | null {
 
   return new Promise((resolve) => {
     const sendReady = () =>
-      window.parent.postMessage({ source: "psytest-game", type: "ready" }, "*");
+      window.parent.postMessage({ source: 'psytest-game', type: 'ready' }, '*');
 
     function onMessage(event: MessageEvent) {
       if (event.source !== window.parent || !isInitMessage(event.data)) return;
       if (allowedHostOrigins.length > 0 && !allowedHostOrigins.includes(event.origin)) return;
       hostOrigin = event.origin;
       window.clearInterval(timer);
-      window.removeEventListener("message", onMessage);
+      window.removeEventListener('message', onMessage);
       resolve({ embedded: true, slug: event.data.slug, theme: event.data.theme });
     }
 
-    window.addEventListener("message", onMessage);
+    window.addEventListener('message', onMessage);
     const timer = window.setInterval(sendReady, READY_INTERVAL_MS);
     sendReady();
   });
@@ -106,6 +106,6 @@ export function connectToHost(): Promise<HostContext> | null {
 export function sendResult(resultId: string): boolean {
   if (!ID_PATTERN.test(resultId)) throw new Error(`잘못된 결과 id: ${resultId}`);
   if (!hostOrigin) return false;
-  window.parent.postMessage({ source: "psytest-game", type: "result", resultId }, hostOrigin);
+  window.parent.postMessage({ source: 'psytest-game', type: 'result', resultId }, hostOrigin);
   return true;
 }

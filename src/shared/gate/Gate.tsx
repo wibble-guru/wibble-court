@@ -1,8 +1,8 @@
-import { SITE_TEST_URL, isEmbedded } from "@/shared/bridge";
-import logo from "@/shared/assets/gate/wibble-logo.png";
-import mascotMobile from "@/shared/assets/gate/wibble-gate-mobile.svg";
-import mascotPc from "@/shared/assets/gate/wibble-gate-pc.svg";
-import "./gate.css";
+import { SITE_TEST_URL, isEmbedded } from '@/shared/bridge';
+import logo from '@/shared/assets/gate/wibble-logo.png';
+import mascotMobile from '@/shared/assets/gate/wibble-gate-mobile.svg';
+import mascotPc from '@/shared/assets/gate/wibble-gate-pc.svg';
+import './gate.css';
 
 /**
  * 부정 사용 안내 (Figma "06 게임 직접 접속 안내 (공통)", 394:991 · PC 394:1005 / 모바일 402:86).
@@ -10,7 +10,7 @@ import "./gate.css";
  */
 export function Gate() {
   // 낯선 페이지의 iframe 안이라면 새 탭으로 연다
-  const newTab = isEmbedded() ? { target: "_blank", rel: "noopener" } : {};
+  const newTab = isEmbedded() ? { target: '_blank', rel: 'noopener' } : {};
   return (
     <div className="gate">
       <header>

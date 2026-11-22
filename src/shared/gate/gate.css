@@ -13,7 +13,7 @@
   padding: max(48px, env(safe-area-inset-top)) 24px max(32px, env(safe-area-inset-bottom));
   background: #f3f8ff;
   color: #1d2b45;
-  font-family: "SUIT Variable", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  font-family: 'SUIT Variable', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
   text-align: center;
   word-break: keep-all;
   overflow-y: auto;
