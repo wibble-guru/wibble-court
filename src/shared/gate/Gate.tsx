@@ -1,7 +1,8 @@
-import { SITE_TEST_URL, isEmbedded } from "./bridge";
-import logo from "./assets/gate/wibble-logo.png";
-import mascotMobile from "./assets/gate/wibble-gate-mobile.svg";
-import mascotPc from "./assets/gate/wibble-gate-pc.svg";
+import { SITE_TEST_URL, isEmbedded } from "@/shared/bridge";
+import logo from "@/shared/assets/gate/wibble-logo.png";
+import mascotMobile from "@/shared/assets/gate/wibble-gate-mobile.svg";
+import mascotPc from "@/shared/assets/gate/wibble-gate-pc.svg";
+import "./gate.css";
 
 /**
  * 부정 사용 안내 (Figma "06 게임 직접 접속 안내 (공통)", 394:991 · PC 394:1005 / 모바일 402:86).

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Gate } from "./Gate";
-import { INIT_TIMEOUT_MS, connectToHost, sendResult, type HostContext } from "./bridge";
-import { SCENES, decideResult, type Choice, type Trait } from "./game/script";
+import { Gate } from "@/shared/gate/Gate";
+import { INIT_TIMEOUT_MS, connectToHost, sendResult, type HostContext } from "@/shared/bridge";
+import { SCENES, decideResult, type Choice, type Trait } from "@/game/script";
 
 type Phase =
   | { kind: "connecting" }

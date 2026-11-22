@@ -81,7 +81,8 @@ export function connectToHost(): Promise<HostContext> | null {
   if (!isEmbedded()) return STANDALONE_ALLOWED ? Promise.resolve(standaloneContext()) : null;
 
   return new Promise((resolve) => {
-    const sendReady = () => window.parent.postMessage({ source: "psytest-game", type: "ready" }, "*");
+    const sendReady = () =>
+      window.parent.postMessage({ source: "psytest-game", type: "ready" }, "*");
 
     function onMessage(event: MessageEvent) {
       if (event.source !== window.parent || !isInitMessage(event.data)) return;
