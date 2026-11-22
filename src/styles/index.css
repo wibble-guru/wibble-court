@@ -1,12 +1,11 @@
 /*
  * Tailwind 는 preflight(리셋) 없이 theme + utilities 만 쓴다. 기존 화면 모양을 그대로 두기 위해서.
- * 위블 공통 테마 토큰·폰트는 src/shared/theme 에 있다.
+ * 리셋·body·SUIT 폰트는 @wibble-guru/boilerplate/base.css(main.tsx), 게임 테마 토큰은 ./tokens.css.
  */
 @layer theme, base, components, utilities;
 @import 'tailwindcss/theme.css' layer(theme);
 @import 'tailwindcss/utilities.css' layer(utilities);
-@import '../shared/theme/tokens.css';
-@import '../shared/theme/fonts.css';
+@import './tokens.css';
 
 /* 테마 토큰을 Tailwind 클래스로도 쓸 수 있게 연결 (bg-surface, text-primary …) */
 @theme inline {
@@ -23,42 +22,6 @@
  * 게임은 사이트의 iframe을 꽉 채운다: 모바일 세로 화면 / PC 16:9(전체화면 포함).
  * 레이아웃은 뷰포트 비율로 나눈다 (가로가 더 넓으면 대사·선택지를 양옆으로).
  */
-
-* {
-  box-sizing: border-box;
-}
-
-html,
-body,
-#root {
-  height: 100%;
-  margin: 0;
-}
-
-body {
-  background: var(--bg);
-  color: var(--ink);
-  font-family:
-    'SUIT',
-    'Pretendard',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Apple SD Gothic Neo',
-    'Noto Sans KR',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  overflow: hidden;
-  /* 모바일에서 더블탭 확대·텍스트 선택이 게임 조작을 방해하지 않게 */
-  touch-action: manipulation;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-button {
-  font: inherit;
-  cursor: pointer;
-}
 
 .stage {
   position: relative;
@@ -170,19 +133,4 @@ button {
   .progress {
     grid-column: 1 / -1;
   }
-}
-
-.dev-badge {
-  position: fixed;
-  left: 8px;
-  bottom: 8px;
-  margin: 0;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: #0008;
-  color: #fff;
-  font:
-    11px/1.4 ui-monospace,
-    monospace;
-  pointer-events: none;
 }

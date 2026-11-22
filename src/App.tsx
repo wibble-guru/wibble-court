@@ -1,55 +1,21 @@
-import { useEffect, useState } from 'react';
-import { Gate } from '@/shared/gate/Gate';
-import {
-  INIT_TIMEOUT_MS,
-  STANDALONE_ALLOWED,
-  connectToHost,
-  isEmbedded,
-  sendResult,
-  type HostContext,
-} from '@/shared/bridge';
+import { useState } from 'preact/hooks';
 import { SCENES, decideResult, type Choice, type Trait } from '@/game/script';
+import { game } from '@/wibble';
 
 type Phase =
-  | { kind: 'connecting' }
-  | { kind: 'blocked' }
   | { kind: 'title' }
   | { kind: 'scene'; index: number }
   | { kind: 'verdict'; resultId: string; sent: boolean };
 
 const emptyScores = (): Record<Trait, number> => ({ judge: 0, prosecutor: 0, defender: 0 });
 
+/**
+ * 화면 흐름: 타이틀 → 장면 → 판결.
+ * 사이트 연결·막힌 화면·테마 반영은 main.tsx의 WibbleFrame(@wibble-guru/boilerplate)이 맡는다.
+ */
 export function App() {
-  const [host, setHost] = useState<HostContext | null>(null);
-  // 운영 빌드를 단독으로 열면 연결할 사이트가 없으니 처음부터 막힌 화면 (connectToHost 가 null 인 조건과 같음)
-  const [phase, setPhase] = useState<Phase>(() =>
-    isEmbedded() || STANDALONE_ALLOWED ? { kind: 'connecting' } : { kind: 'blocked' },
-  );
+  const [phase, setPhase] = useState<Phase>({ kind: 'title' });
   const [scores, setScores] = useState(emptyScores);
-
-  useEffect(() => {
-    const connection = connectToHost();
-    if (!connection) return;
-    let alive = true;
-    // 사이트가 늦게 뜨는 경우를 위해, 막힌 화면을 띄운 뒤에도 init이 오면 이어서 시작한다.
-    const timer = window.setTimeout(() => {
-      setPhase((p) => (p.kind === 'connecting' ? { kind: 'blocked' } : p));
-    }, INIT_TIMEOUT_MS);
-    connection.then((ctx) => {
-      if (!alive) return;
-      window.clearTimeout(timer);
-      setHost(ctx);
-      setPhase({ kind: 'title' });
-    });
-    return () => {
-      alive = false;
-      window.clearTimeout(timer);
-    };
-  }, []);
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = host?.theme ?? 'default';
-  }, [host?.theme]);
 
   function choose(index: number, choice: Choice) {
     const next = { ...scores };
@@ -60,7 +26,8 @@ export function App() {
       setPhase({ kind: 'scene', index: index + 1 });
     } else {
       const resultId = decideResult(next);
-      setPhase({ kind: 'verdict', resultId, sent: sendResult(resultId) });
+      // 사이트 안이면 사이트가 결과 페이지로 이동한다. 단독 실행이면 false — 결과를 직접 보여 준다
+      setPhase({ kind: 'verdict', resultId, sent: game.sendResult(resultId) });
     }
   }
 
@@ -69,12 +36,8 @@ export function App() {
     setPhase({ kind: 'title' });
   }
 
-  if (phase.kind === 'blocked') return <Gate />;
-
   return (
     <main className="stage">
-      {phase.kind === 'connecting' && <p className="hint">사이트와 연결하는 중…</p>}
-
       {phase.kind === 'title' && (
         <section className="title">
           <p className="eyebrow">WIBBLE COURT</p>
@@ -107,12 +70,6 @@ export function App() {
             </>
           )}
         </section>
-      )}
-
-      {host && !host.embedded && (
-        <p className="dev-badge">
-          standalone · slug={host.slug} · theme={host.theme}
-        </p>
       )}
     </main>
   );

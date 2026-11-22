@@ -1,21 +1,17 @@
 /// <reference types="node" />
+import preact from '@preact/preset-vite';
 import tailwindcss from '@tailwindcss/vite';
-import react from '@vitejs/plugin-react';
+import { wibble } from '@wibble-guru/boilerplate/vite';
 import { fileURLToPath, URL } from 'node:url';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  plugins: [react(), tailwindcss()],
-  // 게임은 서브 경로(https://games.wibble.guru/court/)에 올라갈 수 있으니 상대 경로로 빌드
-  base: './',
+  // wibble(): 상대 경로 빌드(base './'), 휴대폰 접속용 server.host, 호스트 시뮬레이터 /host.html
+  plugins: [preact(), tailwindcss(), wibble({ slug: 'court', port: 5180 })],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
-  },
-  server: {
-    port: 5180,
-    host: true, // 같은 와이파이의 휴대폰에서 http://<맥 IP>:5180 으로 테스트
   },
   build: {
     target: 'es2022',
