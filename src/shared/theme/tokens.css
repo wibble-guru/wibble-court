@@ -1,0 +1,22 @@
+/* 위블 공통 테마 토큰. 사이트가 init 으로 보낸 theme 값이 <html data-theme> 에 들어간다. */
+:root {
+  --bg: #eef3ff;
+  --surface: #ffffff;
+  --ink: #1d2433;
+  --ink-2: #5b6478;
+  --primary: #4f6bff;
+  --primary-ink: #ffffff;
+  --line: #dbe2f3;
+  color-scheme: light;
+}
+
+:root[data-theme='horror'] {
+  --bg: #0f0d12;
+  --surface: #1c1820;
+  --ink: #ece6f2;
+  --ink-2: #9a90a6;
+  --primary: #c23b4a;
+  --primary-ink: #ffffff;
+  --line: #2f2934;
+  color-scheme: dark;
+}
