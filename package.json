@@ -12,6 +12,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "verify": "pnpm typecheck && pnpm lint && pnpm format:check",
     "images": "node scripts/convert-images.mjs"
   },
   "packageManager": "pnpm@11.24.0",
