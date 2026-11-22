@@ -23,4 +23,4 @@ assignees: ''
 
 ## 참고 자료
 
-<!-- 관련 문서(docs/specs, docs/plans), 링크, 이미지를 첨부합니다. -->
+<!-- 관련 문서(.claude/docs/specs, .claude/docs/plans), 링크, 이미지를 첨부합니다. -->

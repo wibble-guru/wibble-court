@@ -47,5 +47,3 @@ src/
     assets/            위블 로고·마스코트, 폰트 파일
 host.html              개발용 사이트 흉내
 ```
-
-세팅, 명령어, Git 규칙: [docs/SETUP.md](docs/SETUP.md)
