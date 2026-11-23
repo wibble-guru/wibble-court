@@ -1,3 +1,4 @@
+import type { ResultContent } from '@wibble-guru/boilerplate';
 import { useState } from 'preact/hooks';
 import { SCENES, decideResult, type Choice, type Trait } from '@/game/script';
 import { game } from '@/wibble';
@@ -5,7 +6,7 @@ import { game } from '@/wibble';
 type Phase =
   | { kind: 'title' }
   | { kind: 'scene'; index: number }
-  | { kind: 'verdict'; resultId: string; sent: boolean };
+  | { kind: 'verdict'; result: ResultContent; sent: boolean };
 
 const emptyScores = (): Record<Trait, number> => ({ judge: 0, prosecutor: 0, defender: 0 });
 
@@ -25,9 +26,9 @@ export function App() {
     if (index + 1 < SCENES.length) {
       setPhase({ kind: 'scene', index: index + 1 });
     } else {
-      const resultId = decideResult(next);
+      const { id, content } = decideResult(next);
       // 사이트 안이면 사이트가 결과 페이지로 이동한다. 단독 실행이면 false — 결과를 직접 보여 준다
-      setPhase({ kind: 'verdict', resultId, sent: game.sendResult(resultId) });
+      setPhase({ kind: 'verdict', result: content, sent: game.sendResult(id, content) });
     }
   }
 
@@ -60,9 +61,11 @@ export function App() {
             <p className="hint">결과 페이지로 이동하는 중…</p>
           ) : (
             <>
-              <h1>{phase.resultId}</h1>
+              <h1>
+                {phase.result.emoji} {phase.result.title}
+              </h1>
               <p className="hint">
-                단독 실행 모드 — 사이트 안에서는 이 결과 id가 사이트로 전달됩니다.
+                단독 실행 모드 — 사이트 안에서는 이 결과가 결과 페이지로 전달됩니다.
               </p>
               <button className="primary" onClick={restart}>
                 다시 하기
