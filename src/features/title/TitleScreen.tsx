@@ -68,7 +68,11 @@ export function TitleScreen({ onStart, leaving }: Props) {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, [entered, confirming, activate, skipIntro]);
 
-  const [titleFirst, ...titleRest] = TITLE_COPY.title.split(' ');
+  // 세로 화면에서는 제목을 두 줄로 끊는다 (어절 수로 반씩: "12분 먼저 / 도착한 자백")
+  const titleWords = TITLE_COPY.title.split(' ');
+  const half = Math.ceil(titleWords.length / 2);
+  const titleFirst = titleWords.slice(0, half).join(' ');
+  const titleRest = titleWords.slice(half);
 
   return (
     <main
