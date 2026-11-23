@@ -79,19 +79,20 @@
   font-size: max(15px, calc(30 * var(--u)));
 }
 
+/* 월계수 이미지는 그림 테두리에 딱 맞게 잘라 두었다 (투명 여백이 있으면 왼쪽 축과 양쪽 겹침이 어긋난다) */
 .title-plate .laurel {
   position: relative;
   z-index: 1;
-  height: 2.3em;
+  height: 1.85em;
   width: auto;
 }
 
 .title-plate .laurel:first-child {
-  margin-right: -0.55em;
+  margin-right: -0.32em;
 }
 
 .title-plate .laurel:last-child {
-  margin-left: -0.55em;
+  margin-left: -0.32em;
 }
 
 .plate-frame,
