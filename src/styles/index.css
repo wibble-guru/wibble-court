@@ -23,6 +23,34 @@
  * 레이아웃은 뷰포트 비율로 나눈다 (가로가 더 넓으면 대사·선택지를 양옆으로).
  */
 
+/* 장면 배경 겹 (components/SceneBackground): 그림이 오기 전엔 숯색, 오면 페이드인 */
+.scene-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: var(--night);
+}
+
+.scene-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.6s ease-out;
+}
+
+.scene-bg.is-loaded {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-bg {
+    transition: none;
+  }
+}
+
 .stage {
   position: relative;
   height: 100%;
