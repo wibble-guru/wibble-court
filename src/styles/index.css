@@ -45,8 +45,31 @@
   opacity: 1;
 }
 
+/* 화면 전환 암전 (App): 시작하면 검게 덮었다가 다음 화면에서 걷힌다. App 의 CURTAIN_MS 와 같은 0.6s */
+.curtain {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: var(--curtain);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.curtain.is-on {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* 플레이 화면 (P00~): 배경 겹 위에 장면 UI */
+.play-screen {
+  position: absolute;
+  inset: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .scene-bg {
+  .scene-bg,
+  .curtain {
     transition: none;
   }
 }
