@@ -1,0 +1,392 @@
+/*
+ * 타이틀 화면 (T-00). 색·간격은 src/styles/tokens.css 토큰만 쓴다.
+ * 글자 크기는 1920×1080 무대 기준 숫자에 --u(무대 1px)를 곱하고, 작은 화면에서 읽히도록 최소값을 둔다.
+ * 세로 화면(모바일)은 아래 @media 에서 따로 맞춘다. 배경은 SceneBackground 가 cover 로 채운다.
+ */
+
+.title-screen {
+  --u: min(calc(100vw / 1920), calc(100vh / 1080));
+  --edge-x: max(var(--space-5), 7vw);
+  --edge-y: max(var(--space-5), 6vh);
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  color: var(--paper);
+  cursor: pointer;
+}
+
+/* 글자가 읽히도록 아래·왼쪽(과 로그라인이 있는 위쪽 조금)을 어둡게 */
+.title-scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to top,
+      color-mix(in srgb, var(--night) 92%, transparent) 0%,
+      color-mix(in srgb, var(--night) 55%, transparent) 32%,
+      transparent 62%
+    ),
+    linear-gradient(
+      to right,
+      color-mix(in srgb, var(--night) 78%, transparent) 0%,
+      transparent 55%
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--night) 55%, transparent) 0%,
+      transparent 22%
+    );
+}
+
+.title-ui {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--edge-y) var(--edge-x);
+}
+
+.title-logline {
+  margin: 0;
+  font-size: max(13px, calc(22 * var(--u)));
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--mist);
+}
+
+.title-bottom {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4);
+}
+
+.title-name {
+  margin: 0;
+  font-size: max(30px, calc(92 * var(--u)));
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--paper);
+}
+
+/* 부제: 키트의 월계수(이미지) + 깎은 육각 플레이트(CSS) */
+.title-plate {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+  font-size: max(15px, calc(30 * var(--u)));
+}
+
+.title-plate .laurel {
+  position: relative;
+  z-index: 1;
+  height: 2.3em;
+  width: auto;
+}
+
+.title-plate .laurel:first-child {
+  margin-right: -0.55em;
+}
+
+.title-plate .laurel:last-child {
+  margin-left: -0.55em;
+}
+
+.plate-frame,
+.btn-frame {
+  --cut: 0.8em;
+  display: grid;
+  padding: 1px;
+  background: var(--gold);
+  clip-path: polygon(
+    var(--cut) 0,
+    calc(100% - var(--cut)) 0,
+    100% 50%,
+    calc(100% - var(--cut)) 100%,
+    var(--cut) 100%,
+    0 50%
+  );
+}
+
+.plate-face,
+.btn-face {
+  display: block;
+  clip-path: inherit;
+}
+
+.plate-face {
+  padding: 0.32em 1.6em;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--plate), var(--paper) 14%),
+    var(--plate) 60%
+  );
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--paper);
+}
+
+.title-info {
+  margin: 0;
+  font-size: max(13px, calc(22 * var(--u)));
+  color: var(--mist);
+}
+
+.title-controls {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.title-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+}
+
+/* 버튼: preflight 가 없으니 기본 스타일(테두리·배경·여백)을 직접 지운다. 글꼴·색 상속은 boilerplate base.css */
+.title-btn {
+  appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  color: var(--paper);
+  cursor: pointer;
+  transition: transform 0.18s ease-out;
+}
+
+.title-btn .btn-face {
+  min-width: max(150px, calc(280 * var(--u)));
+  padding: 0.55em 2em;
+  background: color-mix(in srgb, var(--night) 86%, transparent);
+  font-size: max(15px, calc(26 * var(--u)));
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.title-btn.is-secondary .btn-frame {
+  background: color-mix(in srgb, var(--gold) 55%, transparent);
+}
+
+.title-btn.is-secondary .btn-face {
+  background: color-mix(in srgb, var(--night) 70%, transparent);
+  color: var(--mist);
+}
+
+.title-btn.is-small .btn-face {
+  min-width: 0;
+  padding: 0.45em 1.6em;
+  font-size: max(14px, calc(22 * var(--u)));
+}
+
+.title-btn:hover,
+.title-btn:focus-visible {
+  transform: scale(1.02);
+}
+
+.title-btn:hover .btn-frame,
+.title-btn:focus-visible .btn-frame {
+  background: var(--gold-bright);
+}
+
+.title-btn:hover .btn-face,
+.title-btn:focus-visible .btn-face {
+  color: var(--paper);
+}
+
+.title-btn:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: var(--space-1);
+}
+
+/* 진행률: 버튼 아래 얇은 금색 바, 다 받으면 사라짐 */
+.preload-bar {
+  width: max(160px, calc(360 * var(--u)));
+  height: 2px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--gold) 22%, transparent);
+  transition: opacity 0.4s ease-out;
+}
+
+.preload-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--gold);
+  transform-origin: left center;
+  transition: transform 0.3s ease-out;
+}
+
+.preload-bar[data-done='true'] {
+  opacity: 0;
+}
+
+/* [처음부터] 확인 창 */
+.title-confirm {
+  display: grid;
+  gap: var(--space-4);
+  max-width: max(280px, calc(620 * var(--u)));
+  padding: var(--space-4) var(--space-5);
+  border: 1px solid var(--gold);
+  background: color-mix(in srgb, var(--night) 94%, transparent);
+  cursor: default;
+}
+
+.title-confirm p {
+  margin: 0;
+  font-size: max(14px, calc(22 * var(--u)));
+  line-height: 1.5;
+  color: var(--paper);
+}
+
+.title-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.title-hint {
+  position: absolute;
+  right: var(--edge-x);
+  bottom: var(--edge-y);
+  margin: 0;
+  font-size: max(12px, calc(18 * var(--u)));
+  color: var(--mist);
+}
+
+/* 등장 연출 이전에는 보이지 않는 버튼이 눌리지 않게 (클릭은 배경으로 가서 건너뛰기) */
+.title-screen:not(.is-entered) .title-controls {
+  pointer-events: none;
+}
+
+/* 등장: 로그라인 0.4s → 제목 0.8s → 부제 1.2s → 버튼 1.6s, 각 0.4s (전체 2초). opacity·transform 만 */
+@keyframes title-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.title-screen [data-step] {
+  animation: title-rise 0.4s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(var(--step) * 0.4s);
+}
+
+/*
+ * 건너뛰기, 또는 등장 시간(2초)이 지나 is-entered 가 붙으면 최종 상태로 고정한다.
+ * 백그라운드 탭처럼 CSS 애니메이션이 멈춘 채 타이머만 돈 경우에도 글자·버튼이 안 보이는 채로 클릭되는 일이 없게.
+ */
+.title-screen.is-skipped [data-step],
+.title-screen.is-entered [data-step] {
+  animation: none;
+}
+
+.title-screen.is-skipped .scene-bg {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title-screen [data-step] {
+    animation: none;
+  }
+  .title-btn,
+  .preload-bar,
+  .preload-bar > span {
+    transition: none;
+  }
+  .title-btn:hover,
+  .title-btn:focus-visible {
+    transform: none;
+  }
+}
+
+/* 세로 화면(모바일): 배경은 cover 로 확대, 글자는 아래쪽에 쌓는다. 제목은 두 줄 */
+@media (max-aspect-ratio: 4/5) {
+  .title-screen {
+    --edge-x: var(--space-5);
+    --edge-y: max(var(--space-5), env(safe-area-inset-top));
+  }
+
+  .title-scrim {
+    background:
+      linear-gradient(
+        to top,
+        color-mix(in srgb, var(--night) 94%, transparent) 0%,
+        color-mix(in srgb, var(--night) 70%, transparent) 40%,
+        transparent 70%
+      ),
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--night) 60%, transparent) 0%,
+        transparent 25%
+      );
+  }
+
+  .title-ui {
+    padding-bottom: max(var(--space-5), env(safe-area-inset-bottom));
+  }
+
+  .title-logline {
+    font-size: clamp(14px, 4vw, 18px);
+  }
+
+  .title-name {
+    font-size: clamp(34px, 11vw, 60px);
+  }
+
+  .title-name span {
+    display: block;
+  }
+
+  .title-plate {
+    font-size: clamp(15px, 4.4vw, 20px);
+  }
+
+  .title-info {
+    font-size: clamp(13px, 3.5vw, 16px);
+  }
+
+  .title-controls,
+  .title-actions {
+    justify-items: stretch;
+    width: 100%;
+  }
+
+  .title-actions {
+    flex-direction: column;
+  }
+
+  .title-btn .btn-face {
+    min-width: 0;
+    font-size: clamp(16px, 4.6vw, 20px);
+  }
+
+  .preload-bar {
+    width: 100%;
+  }
+
+  .title-confirm {
+    max-width: none;
+  }
+
+  .title-confirm p,
+  .title-btn.is-small .btn-face {
+    font-size: clamp(14px, 4vw, 17px);
+  }
+
+  .title-hint {
+    position: static;
+    margin-top: var(--space-2);
+    font-size: clamp(12px, 3.2vw, 14px);
+  }
+}
