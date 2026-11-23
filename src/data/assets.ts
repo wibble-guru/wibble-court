@@ -67,13 +67,29 @@ export function bgSrcSet(id: BgId): string {
   return `${BASE}assets/bg/${id}@1280.webp 1280w, ${BASE}assets/bg/${id}.webp ${LARGE_WIDTH}w`;
 }
 
-/** 세로 화면에서 잘릴 때 남길 중심. 그림마다 인물·물건 위치가 달라 필요한 것만 적는다 */
+/** 잘릴 때 남길 중심. 그림마다 인물·물건 위치가 달라 필요한 것만 적는다 */
 const FOCUS: Partial<Record<BgId, string>> = {
   'T-00_title': '30% 50%', // 왼쪽의 인물 뒷모습
 };
 
 export function bgFocus(id: BgId): string {
   return FOCUS[id] ?? '50% 50%';
+}
+
+/**
+ * 모바일 세로 화면 전용 그림 (`<id>-portrait.webp`, 9:16). 있는 배경만 적는다.
+ * 가로 그림을 세로로 자르면 인물이 빠지는 장면을 위해 따로 그린 것. 값은 세로 그림에서 남길 중심.
+ */
+const PORTRAIT: Partial<Record<BgId, string>> = {
+  'T-00_title': '45% 50%', // 주인공(왼쪽)과 경찰관(오른쪽)이 둘 다 보이게
+};
+
+/** 세로 그림으로 바꾸는 화면 조건. title.css 의 세로 레이아웃과 같은 기준 */
+export const PORTRAIT_MEDIA = '(max-aspect-ratio: 4/5)';
+
+export function bgPortrait(id: BgId): { src: string; focus: string } | null {
+  const focus = PORTRAIT[id];
+  return focus ? { src: `${BASE}assets/bg/${id}-portrait.webp`, focus } : null;
 }
 
 export const UI_IMAGES = [UI.laurelLeft, UI.laurelRight];
