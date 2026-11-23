@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'preact/hooks';
+import { cx } from '@/lib/cx';
 import { BG_SIZES, bgFocus, bgSrcSet, type BgId } from '@/data/assets';
 
 /**
@@ -22,7 +23,7 @@ export function SceneBackground({ id, onReady }: { id: BgId; onReady?: () => voi
   return (
     <img
       ref={ref}
-      className={`scene-bg${loaded ? 'is-loaded' : ''}`}
+      className={cx('scene-bg', loaded && 'is-loaded')}
       srcSet={bgSrcSet(id)}
       sizes={BG_SIZES}
       style={{ objectPosition: bgFocus(id) }}
