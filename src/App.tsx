@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'preact/hooks';
 import { FIRST_SCENE_BG } from '@/data/assets';
 import { PlayScreen } from '@/features/play/PlayScreen';
-import { resumePlay, startPlay, type Play } from '@/features/play/runner';
+import { backdropOf, resumePlay, startPlay, type Play } from '@/features/play/runner';
 import type { StartMode } from '@/features/title/TitleActions';
 import { TitleScreen } from '@/features/title/TitleScreen';
 import { cx } from '@/lib/cx';
@@ -11,7 +11,7 @@ import { useStory } from '@/store/story';
 
 /** 암전 시간 (index.css 의 .curtain transition 과 같게) */
 const CURTAIN_MS = 600;
-/** 첫 장면 배경을 이보다 오래 기다리지는 않는다 (네트워크가 멈춰도 암전에 갇히지 않게) */
+/** 시작 장면 배경을 이보다 오래 기다리지는 않는다 (네트워크가 멈춰도 암전에 갇히지 않게) */
 const FIRST_SCENE_WAIT_MS = 8000;
 
 type Screen = { kind: 'title' } | { kind: 'play'; start: Play };
@@ -41,12 +41,11 @@ export function App() {
     const { save, clearStory } = useStory.getState();
     const resumed = mode === 'continue' && save ? resumePlay(save) : null;
     if (!resumed) clearStory();
-    // 첫 장면 배경을 기다린다 (미리 받기가 끝났으면 바로). 장면별 배경은 4a
-    const background = Promise.race([
-      preloadBackground(FIRST_SCENE_BG),
-      delay(FIRST_SCENE_WAIT_MS),
-    ]);
-    void transition({ kind: 'play', start: resumed ?? startPlay() }, background);
+    const play = resumed ?? startPlay();
+    // 시작(또는 이어 할) 장면의 배경을 기다린다 (미리 받기가 끝났으면 바로)
+    const bg = backdropOf(play)?.bg ?? FIRST_SCENE_BG;
+    const background = Promise.race([preloadBackground(bg), delay(FIRST_SCENE_WAIT_MS)]);
+    void transition({ kind: 'play', start: play }, background);
   }
 
   const end = useCallback(() => void transition({ kind: 'title' }), [transition]);
