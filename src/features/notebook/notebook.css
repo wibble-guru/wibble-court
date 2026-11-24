@@ -104,11 +104,15 @@
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   grid-template-columns: minmax(0, 1fr);
+  --nb-ink: var(--paper);
+  --nb-ground: #1d1c26;
   width: min(100%, 760px);
   height: min(100%, 640px);
-  border-radius: 2px;
-  background: var(--paper);
-  color: var(--night);
+  padding: var(--space-3);
+  /* UI 키트 패널 (생각 기록 시트와 같은 조각) */
+  border: 0 solid transparent;
+  border-image: var(--kit-panel) 34 fill / 24px;
+  color: var(--nb-ink);
   box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.6);
 }
 
@@ -117,7 +121,7 @@
   align-items: end;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-3) 0;
-  border-bottom: 1.5px solid var(--night);
+  border-bottom: 1.5px solid color-mix(in srgb, var(--gold) 70%, transparent);
 }
 
 .notebook-tabs {
@@ -136,7 +140,7 @@
   border-bottom: 0;
   border-radius: 3px 3px 0 0;
   background: transparent;
-  color: color-mix(in srgb, var(--night) 72%, var(--paper));
+  color: color-mix(in srgb, var(--nb-ink) 72%, var(--nb-ground));
   font: inherit;
   font-size: 14px;
   font-weight: 700;
@@ -145,16 +149,16 @@
 }
 
 .notebook-tabs [role='tab'][aria-selected='true'] {
-  border-color: var(--night);
-  background: var(--paper);
-  color: var(--night);
+  border-color: color-mix(in srgb, var(--gold) 70%, transparent);
+  background: var(--nb-ground);
+  color: var(--gold-bright);
   margin-bottom: -1.5px; /* 선택한 탭이 아래 선을 덮어 종이와 이어지게 */
 }
 
 .notebook-count {
   margin-left: 2px;
   font-variant-numeric: tabular-nums;
-  color: color-mix(in srgb, var(--night) 65%, var(--paper));
+  color: color-mix(in srgb, var(--nb-ink) 65%, var(--nb-ground));
 }
 
 .notebook-close {
@@ -162,10 +166,10 @@
   min-height: 36px;
   margin-bottom: var(--space-2);
   padding: 0 var(--space-3);
-  border: 1.5px solid var(--night);
+  border: 1.5px solid color-mix(in srgb, var(--gold) 70%, transparent);
   border-radius: 2px;
   background: transparent;
-  color: var(--night);
+  color: var(--gold-bright);
   font: inherit;
   font-size: 14px;
   font-weight: 700;
@@ -190,7 +194,7 @@
   display: grid;
   gap: var(--space-2);
   padding-bottom: var(--space-4);
-  border-bottom: 1px solid color-mix(in srgb, var(--plate) 18%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--gold) 22%, transparent);
 }
 
 .notebook-item p {
@@ -204,12 +208,12 @@
   display: block;
   font-size: 13px;
   font-weight: 700;
-  color: color-mix(in srgb, var(--night) 65%, var(--paper));
+  color: color-mix(in srgb, var(--nb-ink) 65%, var(--nb-ground));
 }
 
 .notebook-source {
   font-size: 12px;
-  color: color-mix(in srgb, var(--night) 65%, var(--paper)); /* 종이 위 대비 4.9:1 */
+  color: color-mix(in srgb, var(--nb-ink) 65%, var(--nb-ground));
 }
 
 .notebook-button:focus-visible,
