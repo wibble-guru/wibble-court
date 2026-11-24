@@ -64,45 +64,44 @@
 }
 
 /*
- * 말하는 인물 (data/characters). 대화창 뒤 왼쪽/오른쪽 끝에 서고, 다리는 대화창 뒤로 들어간다.
+ * 말하는 인물 (data/characters, 노션 캐릭터 시트의 상반신 일러스트).
+ * 대화창 뒤 왼쪽/오른쪽 끝에 서고 아랫부분은 대화창 뒤로 들어간다 (그림 아래가 잘린 상반신이라).
+ * 오른쪽 인물은 좌우를 뒤집어 잘린 세로 가장자리가 화면 바깥쪽에 오게 한다.
  * 사람이 바뀔 때만 옆에서 들어온다 (key = 인물). 녹음 속 목소리는 반투명
  */
 .portrait {
-  --h: min(44vh, 340px);
+  --h: min(66vh, 560px);
+  --flip: 1;
+  --from: -28px;
   position: absolute;
-  bottom: calc(100% - var(--h) * 0.16);
+  bottom: calc(100% - var(--h) * 0.24);
   z-index: -1;
   height: var(--h);
   width: auto;
   pointer-events: none;
-  filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.55));
-  animation: portrait-in-left 0.25s ease-out;
+  filter: drop-shadow(0 8px 14px rgb(0 0 0 / 0.5));
+  transform: scaleX(var(--flip));
+  animation: portrait-in 0.28s ease-out;
 }
 
 .portrait[data-side='left'] {
-  left: 3%;
+  left: 0;
 }
 
 .portrait[data-side='right'] {
-  right: 3%;
-  animation-name: portrait-in-right;
+  --flip: -1;
+  --from: 28px;
+  right: 0;
 }
 
 .portrait[data-faint] {
   opacity: 0.55;
 }
 
-@keyframes portrait-in-left {
+@keyframes portrait-in {
   from {
     opacity: 0;
-    transform: translateX(-24px);
-  }
-}
-
-@keyframes portrait-in-right {
-  from {
-    opacity: 0;
-    transform: translateX(24px);
+    transform: translateX(var(--from)) scaleX(var(--flip));
   }
 }
 
@@ -502,7 +501,7 @@ button.dialogue-frame {
 /* 세로 화면: 키트 조각을 더 작게 (테두리가 두꺼워 보이지 않게). 기본 규칙보다 뒤에 둔다 */
 @media (max-aspect-ratio: 4/5) {
   .portrait {
-    --h: min(28vh, 240px);
+    --h: min(40vh, 340px);
   }
   .dialogue-frame {
     --k: 0.34;

@@ -45,7 +45,7 @@ export function DialogueBox({ speaker, showNext, onPress, pressLabel, panelRef, 
       {portrait && (
         <img
           key={portrait.id}
-          className="portrait pixelated"
+          className="portrait"
           data-side={portrait.side}
           data-faint={portrait.faint || undefined}
           src={portraitSrc(portrait.id)}
