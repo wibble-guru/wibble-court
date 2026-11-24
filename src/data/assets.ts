@@ -15,20 +15,19 @@ export type BgId =
   | 'E-05_sealed-statement'
   | 'E-06_printed-capture'
   | 'E-14_investigation-docs'
-  | 'L-07_edit-room'
   | 'L-08_judge-notebook'
   | 'E-09_found-2220'
-  | 'L-09_verdict'
-  | 'L-12_dark-court'
-  | 'E-11_cctv'
-  | 'E-12_edit-copy';
+  | 'L-09_verdict';
 
 /** 타이틀 화면 배경 (index.html 에서 preload) */
 export const TITLE_BG: BgId = 'T-00_title';
 /** 시작 후 첫 장면 P00 배경 — 시작할 때 이것만은 꼭 받은 뒤 전환한다 */
 export const FIRST_SCENE_BG: BgId = 'L-01_court';
 
-/** 타이틀을 보는 동안 뒤에서 미리 받을 배경 (첫 장면이 맨 앞) */
+/**
+ * 타이틀을 보는 동안 뒤에서 미리 받을 배경 (첫 장면이 맨 앞). 본편 배경만 — scene-bg.test 가 장면 표와 같은지 확인.
+ * 결과 이후 진실 공개에만 쓰는 배경은 여기·BgId 에 두지 않는다 (본편 번들에 이름도 남기지 않게, 6단계에서 별도 청크)
+ */
 export const PRELOAD_BGS: BgId[] = [
   FIRST_SCENE_BG,
   'R-01_recorder',
@@ -40,13 +39,9 @@ export const PRELOAD_BGS: BgId[] = [
   'E-05_sealed-statement',
   'E-06_printed-capture',
   'E-14_investigation-docs',
-  'L-07_edit-room',
   'L-08_judge-notebook',
   'E-09_found-2220',
   'L-09_verdict',
-  'L-12_dark-court',
-  'E-11_cctv',
-  'E-12_edit-copy',
 ];
 
 const BASE = import.meta.env.BASE_URL;
