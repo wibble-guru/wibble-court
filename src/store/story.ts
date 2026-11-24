@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
-import type { SceneId, StoryState } from '@/engine/types';
+import type { Play } from '@/features/play/runner';
 import { safeStorage } from '@/lib/safe-storage';
 
-/** 이어하기용 저장: 보고 있던 장면·대사 위치와 그때까지의 진행 상태 */
-export type StorySave = { sceneId: SceneId; lineIndex: number; state: StoryState };
+/** 이어하기용 저장: 보고 있던 장면의 대사·질문 위치와 그때까지의 진행 상태 */
+export type StorySave = Play;
 
 type StoryStore = {
   save: StorySave | null;
@@ -26,7 +26,9 @@ export const useStory = create<StoryStore>()(
     }),
     {
       name: 'wibble-court:story',
-      version: 1,
+      // 2: 저장 위치를 대사 번호에서 커서(대사/질문)로 바꿈. 이전 형식은 버리고 처음부터
+      version: 2,
+      migrate: () => ({ save: null }),
       storage: createJSONStorage(() => safeStorage),
       partialize: (s) => ({ save: s.save }),
     },

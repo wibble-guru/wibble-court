@@ -403,7 +403,10 @@ describe('저장소', () => {
     });
     const { useStory } = await import('@/store/story');
     expect(useStory.getState().save).toBeNull();
-    const save = { sceneId: 'A10' as const, lineIndex: 1, state: initialState() };
+    const save = {
+      cursor: { sceneId: 'A10' as const, at: 'line' as const, index: 1 },
+      story: initialState(),
+    };
     expect(() => useStory.getState().saveStory(save)).not.toThrow();
     expect(useStory.getState().save).toEqual(save);
     useStory.getState().clearStory();
@@ -420,7 +423,10 @@ describe('저장소', () => {
       },
     });
     const first = await import('@/store/story');
-    const save = { sceneId: 'D40' as const, lineIndex: 2, state: initialState() };
+    const save = {
+      cursor: { sceneId: 'D40' as const, at: 'prompt' as const, index: 0 },
+      story: initialState(),
+    };
     first.useStory.getState().saveStory(save);
     expect(data.has('wibble-court:story')).toBe(true);
 
