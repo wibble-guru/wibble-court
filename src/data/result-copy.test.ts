@@ -2,7 +2,14 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { AXES, type Analysis } from '@/engine/score';
-import { AXIS_COPY, BLEND_COPY, RESULT_COPY, resultContent } from './result-copy';
+import {
+  AXIS_COPY,
+  AXIS_LABEL,
+  BLEND_COPY,
+  DETAILS_COPY,
+  RESULT_COPY,
+  resultContent,
+} from './result-copy';
 
 const SPEC = resolve(process.cwd(), '.claude/docs/specs/script-v4.md');
 
@@ -38,6 +45,8 @@ describe.skipIf(!existsSync(SPEC))('결과 문구 대본 대조 (로컬 전용)'
       ...Object.values(RESULT_COPY).flatMap((v) =>
         typeof v === 'string' ? [v] : Object.values(v),
       ),
+      ...Object.values(AXIS_LABEL),
+      ...Object.values(DETAILS_COPY).flatMap((v) => (typeof v === 'string' ? [v] : [...v])),
     ];
     // introShort 는 소개 문단의 앞부분이라 그대로 들어 있다
     expect(strings.filter((s) => !part5.includes(s))).toEqual([]);

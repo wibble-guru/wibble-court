@@ -6,6 +6,7 @@ import { upcomingBackgrounds } from '@/data/scene-bg';
 import { SCENES } from '@/data/scenes';
 import { EvidenceBar } from '@/features/evidence/EvidenceBar';
 import { EvidenceInsert } from '@/features/evidence/EvidenceInsert';
+import { Epilogue } from '@/features/epilogue/Epilogue';
 import { Notebook } from '@/features/notebook/Notebook';
 import { loadResultCopy } from '@/features/result/ResultScreen';
 import { isThoughtPrompt } from '@/features/thought/thought';
@@ -54,11 +55,13 @@ export function PlayScreen({ start, onEnd }: Props) {
     if (cursor.at === 'end') onEnd(play);
   }, [play, cursor.at, saveStory, onEnd]);
 
+  /** 에필로그는 타자 효과 없이 기록 카드라 한 번 누르면 다음 (features/epilogue) */
+  const epilogue = cursor.at === 'line' && cursor.sceneId === 'EPILOGUE';
   const press = useCallback(() => {
     if (!lineKey) return;
-    if (revealed === lineKey) setPlay(advance);
+    if (epilogue || revealed === lineKey) setPlay(advance);
     else setRevealed(lineKey);
-  }, [lineKey, revealed]);
+  }, [lineKey, revealed, epilogue]);
 
   const reveal = useCallback(() => setRevealed(lineKey), [lineKey]);
 
@@ -124,7 +127,7 @@ export function PlayScreen({ start, onEnd }: Props) {
       </div>
 
       <div className="play-stage" data-mode={line ? 'line' : thought ? 'thought' : 'prompt'}>
-        {line && (
+        {line && !epilogue && (
           <DialogueBox
             speaker={line.speaker}
             showNext={done}
@@ -169,11 +172,23 @@ export function PlayScreen({ start, onEnd }: Props) {
           </>
         )}
       </div>
-      <EvidenceBar ids={evidence} />
-      {insert && (
-        <EvidenceInsert key={cursor.at === 'line' ? cursor.sceneId : ''} insert={insert} />
+      {epilogue && cursor.at === 'line' ? (
+        <Epilogue
+          lines={visibleLines('EPILOGUE', play.story)}
+          index={cursor.index}
+          onPress={press}
+          pressLabel={UI_COPY.nextLine}
+          buttonRef={panelRef}
+        />
+      ) : (
+        <>
+          <EvidenceBar ids={evidence} />
+          {insert && (
+            <EvidenceInsert key={cursor.at === 'line' ? cursor.sceneId : ''} insert={insert} />
+          )}
+          <Notebook story={play.story} open={notebookOpen} onOpenChange={setNotebookOpen} />
+        </>
       )}
-      <Notebook story={play.story} open={notebookOpen} onOpenChange={setNotebookOpen} />
     </main>
   );
 }

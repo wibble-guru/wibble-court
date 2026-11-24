@@ -98,6 +98,7 @@ export function App() {
       {screen.kind === 'result' && (
         <ResultScreen
           analysis={analyze(screen.story.answers)}
+          answers={screen.story.answers}
           judgment={screen.story.judgment}
           nextLabel={COPY.next}
           onNext={() => toEpilogue(screen.story)}
