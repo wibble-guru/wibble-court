@@ -42,9 +42,7 @@ for (const folder of ['bg', 'ui', 'icons', 'modal']) {
       if (folder === 'modal') {
         image.resize({ width: 540, withoutEnlargement: true, kernel: 'nearest' });
       }
-      await image
-        .webp(webp)
-        .toFile(join(OUT, folder, `${name}.webp`));
+      await image.webp(webp).toFile(join(OUT, folder, `${name}.webp`));
     }
     console.log(`✓ ${folder}/${name}`);
   }
