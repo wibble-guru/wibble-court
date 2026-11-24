@@ -259,12 +259,14 @@ describe('대본 본편 P00 ~ 엔딩', () => {
       'anon-messages',
       'message-forensics',
       'text-2154',
+      'timeline', // G70 에서 (Q3-C 면 C31-C 에서 먼저)
     ]);
     for (const picks of combos(6)) {
       const acquired = play([...picks, 'A', 'A', 'A']).state.acquired;
       expect(acquired.includes('email-draft')).toBe(picks[2] === 'B');
       expect(acquired.includes('voice-analysis')).toBe(picks[2] === 'A');
-      expect(acquired.includes('timeline')).toBe(picks[2] === 'C');
+      // 시간표는 Q3-C 면 C31-C 에서, 아니면 G70 에서 — 순서로 구분
+      expect(acquired.indexOf('timeline') < acquired.indexOf('x-statement')).toBe(picks[2] === 'C');
       expect(acquired.includes('message-forensics')).toBe(picks[4] === 'A');
     }
   });

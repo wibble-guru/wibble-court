@@ -1,0 +1,256 @@
+/*
+ * 증거 아이콘 바와 증거 화면 (features/evidence). 움직임은 opacity·transform 만.
+ */
+
+/* 픽셀 그림은 키울 때 뭉개지지 않게 (AGENTS 성능 규칙 6) */
+.pixelated {
+  image-rendering: pixelated;
+}
+
+/* ───────── 아이콘 바: 왼쪽 위, UI 키트의 아이템 칸 막대 ───────── */
+
+.evidence-bar {
+  position: absolute;
+  top: max(10px, env(safe-area-inset-top));
+  left: 16px;
+  right: 120px; /* 기록장 버튼 자리 */
+  z-index: 2;
+  display: flex;
+  gap: 4px;
+  width: fit-content;
+  max-width: calc(100% - 136px);
+  margin: 0;
+  padding: 4px;
+  overflow-x: auto;
+  list-style: none;
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--night) 88%, transparent);
+}
+
+.evidence-slot {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid color-mix(in srgb, var(--gold) 55%, transparent);
+  border-radius: 2px;
+  background: var(--plate);
+  animation: slot-in 0.3s ease-out;
+}
+
+.evidence-slot img {
+  width: 34px;
+  height: 34px;
+}
+
+@keyframes slot-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+/* ───────── 증거 화면: 화면 위쪽 가운데에 겹침 ───────── */
+
+.evidence-insert {
+  position: absolute;
+  top: max(64px, calc(env(safe-area-inset-top) + 52px));
+  left: 50%;
+  z-index: 1;
+  transform: translateX(-50%);
+  pointer-events: none;
+  animation: insert-in 0.4s ease-out;
+}
+
+@keyframes insert-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* 녹음 재생 */
+.rec {
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  grid-template-areas: 'dot play label' 'wave wave wave';
+  align-items: center;
+  gap: 8px 10px;
+  width: min(300px, 80vw);
+  padding: 12px 16px;
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--night) 92%, transparent);
+  color: var(--paper);
+}
+
+.rec-dot {
+  grid-area: dot;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e0453b;
+  animation: rec-blink 1s steps(1) infinite;
+}
+
+@keyframes rec-blink {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+.rec-play {
+  grid-area: play;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 10px solid var(--gold-bright);
+}
+
+.rec-label {
+  grid-area: label;
+  font-size: 14px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.rec-wave {
+  grid-area: wave;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 28px;
+}
+
+.rec-wave i {
+  flex: 1;
+  height: var(--h);
+  border-radius: 1px;
+  background: #5aa2ff;
+}
+
+/* 메시지: M-01 이미지(540×720) 위의 말풍선 자리에 대본 문장, 또는 CSS 로 그린 폰 */
+.phone {
+  position: relative;
+  width: min(300px, 52vw);
+  aspect-ratio: 3 / 4;
+  container-type: inline-size;
+}
+
+.phone.is-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
+.phone .bubble {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0 3cqw;
+  font-size: 4.4cqw;
+  line-height: 1.3;
+  text-align: center;
+  word-break: keep-all;
+}
+
+/* M-01 말풍선 위치 (원본 540×720 기준 비율) */
+.phone.is-image .bubble.is-in {
+  left: 25%;
+  top: 26.4%;
+  width: 43%;
+  height: 14.2%;
+  color: #1c1b24;
+}
+
+.phone.is-image .bubble.is-out {
+  left: 34.8%;
+  top: 44.9%;
+  width: 40.6%;
+  height: 13.5%;
+  color: #ffffff;
+}
+
+/* M-02 대신: 같은 모양의 폰을 CSS 로 (사용자 결정) */
+.phone.is-css {
+  width: min(190px, 44vw);
+  aspect-ratio: 9 / 16;
+  border: 3px solid #3a4a66;
+  border-radius: 18px;
+  background: #e8ecf2;
+  box-shadow: 0 0 0 6px #0e1628;
+}
+
+.phone.is-css .bubble.is-out {
+  right: 7%;
+  top: 22%;
+  width: 78%;
+  padding: 4cqw 5cqw;
+  font-size: 7cqw;
+  border-radius: 6px;
+  background: #4294ff;
+  color: #ffffff;
+}
+
+/* 시간표: 종이 한 줄, 앞 표현에 취소선 */
+.timeline-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+  padding: 12px 20px;
+  border-radius: 2px;
+  background: var(--paper);
+  color: var(--night);
+  font-size: clamp(15px, 2.4vmin, 19px);
+  white-space: nowrap;
+  box-shadow: 0 12px 30px -12px rgb(0 0 0 / 0.6);
+}
+
+.timeline-line s {
+  color: #b23a30;
+  text-decoration-thickness: 2px;
+}
+
+.timeline-line strong {
+  font-weight: 800;
+}
+
+.timeline-arrow {
+  width: 18px;
+  height: 2px;
+  background: var(--night);
+}
+
+/* 모바일 세로: 아이콘 작게, 증거 화면 조금 작게 */
+@media (max-aspect-ratio: 4/5) {
+  .evidence-slot {
+    width: 32px;
+    height: 32px;
+  }
+  .evidence-slot img {
+    width: 27px;
+    height: 27px;
+  }
+  .phone {
+    width: min(250px, 64vw);
+  }
+}
+
+@media (max-height: 480px) {
+  .phone {
+    width: 170px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .evidence-slot,
+  .evidence-insert,
+  .rec-dot {
+    animation: none;
+  }
+}

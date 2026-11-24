@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { Backdrop } from '@/components/Backdrop';
 import { SceneBackground } from '@/components/SceneBackground';
+import { INSERTS } from '@/data/evidence';
 import { upcomingBackgrounds } from '@/data/scene-bg';
+import { SCENES } from '@/data/scenes';
+import { EvidenceBar } from '@/features/evidence/EvidenceBar';
+import { EvidenceInsert } from '@/features/evidence/EvidenceInsert';
 import { Notebook } from '@/features/notebook/Notebook';
 import { isThoughtPrompt } from '@/features/thought/thought';
 import { ThoughtRecord } from '@/features/thought/ThoughtRecord';
@@ -94,6 +98,20 @@ export function PlayScreen({ start, onEnd }: Props) {
   }
 
   const line = cursor.at === 'line' ? visibleLines(cursor.sceneId, play.story)[cursor.index] : null;
+
+  // 증거: 이미 얻은 것 + 지금 장면에서 얻는 것 (장면에 들어가는 순간 나타남)
+  const sceneGain = sceneId ? (SCENES[sceneId]?.gain ?? []) : [];
+  const evidence = [...new Set([...play.story.acquired, ...sceneGain])];
+  // 증거 화면: 정해진 대사부터 그 장면의 대사가 끝날 때까지 (질문 단계에서는 숨김)
+  const cue = cursor.at === 'line' ? INSERTS[cursor.sceneId as keyof typeof INSERTS] : undefined;
+  const cueAt =
+    cue && cursor.at === 'line'
+      ? visibleLines(cursor.sceneId, play.story).findIndex(
+          (l) => l.speaker === cue.speaker && l.text.startsWith(cue.starts ?? ''),
+        )
+      : -1;
+  const insert =
+    cue && cursor.at === 'line' && cueAt >= 0 && cursor.index >= cueAt ? cue.insert : null;
   const thought = prompt !== null && isThoughtPrompt(prompt);
   const promptKey = prompt && cursor.at === 'prompt' ? `${cursor.sceneId}:${prompt.id}` : '';
   const onSubmit = (input: AnswerInput) => setPlay((p) => submit(p, input).play);
@@ -152,6 +170,10 @@ export function PlayScreen({ start, onEnd }: Props) {
           </>
         )}
       </div>
+      <EvidenceBar ids={evidence} />
+      {insert && (
+        <EvidenceInsert key={cursor.at === 'line' ? cursor.sceneId : ''} insert={insert} />
+      )}
       <Notebook story={play.story} open={notebookOpen} onOpenChange={setNotebookOpen} />
     </main>
   );

@@ -207,6 +207,7 @@ export const M65_G71: Scene[] = [
         ],
       },
     ],
+    gain: ['timeline'],
     next: 'H80',
   },
   {
