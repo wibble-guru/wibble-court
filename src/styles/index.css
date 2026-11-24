@@ -69,12 +69,6 @@
   pointer-events: auto;
 }
 
-/* 플레이 화면 (P00~): 배경 겹 위에 장면 UI */
-.play-screen {
-  position: absolute;
-  inset: 0;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .scene-bg,
   .curtain {
@@ -82,163 +76,16 @@
   }
 }
 
+/* 사이트 연결 대기 화면 (main.tsx) */
 .stage {
   position: relative;
   height: 100%;
   display: grid;
-  justify-items: center;
-  align-items: end; /* 대사·질문은 화면 아래쪽 */
+  place-items: center;
   padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
 }
 
-/* 사이트 연결 대기 문구 (main.tsx) */
 .hint {
   margin: 0;
   color: var(--ink-2);
-}
-
-/*
- * 플레이 화면 대사·질문 (features/play/PlayScreen). 임시 모양 — UI 키트 대화창은 3a-2.
- * 배경 그림 위라 테마와 상관없이 법정 토큰(--night, --gold, --paper, --mist)을 쓴다.
- */
-.play-line,
-.play-prompt {
-  width: min(100%, 880px);
-  max-height: 100%;
-  overflow-y: auto;
-  padding: var(--space-5);
-  border: 1px solid var(--gold);
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--night) 92%, transparent);
-  color: var(--paper);
-}
-
-.play-line {
-  display: grid;
-  gap: var(--space-2);
-  min-height: 160px;
-  align-content: start;
-  text-align: left;
-  font: inherit;
-  cursor: pointer;
-}
-
-.play-speaker {
-  justify-self: start;
-  padding: 2px var(--space-3);
-  border-radius: 4px;
-  background: var(--plate);
-  color: var(--gold-bright);
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.play-text {
-  font-size: clamp(17px, 2.4vmin, 21px);
-  line-height: 1.65;
-  word-break: keep-all;
-}
-
-.play-prompt {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.play-prompt h2 {
-  margin: 0;
-  font-size: clamp(18px, 2.6vmin, 22px);
-  color: var(--gold-bright);
-  outline: none;
-}
-
-.play-memo {
-  margin: 0;
-  color: var(--mist);
-  line-height: 1.6;
-  word-break: keep-all;
-}
-
-.play-field {
-  display: grid;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.play-field legend,
-.play-slider > span:first-child {
-  margin-bottom: var(--space-2);
-  padding: 0;
-  font-weight: 700;
-  color: var(--paper);
-}
-
-.play-options {
-  display: grid;
-  gap: var(--space-2);
-}
-
-.play-options button,
-.play-confirm {
-  min-height: 48px;
-  padding: var(--space-3) var(--space-4);
-  border: 1px solid color-mix(in srgb, var(--gold) 60%, transparent);
-  border-radius: 4px;
-  background: var(--plate);
-  color: var(--paper);
-  font: inherit;
-  text-align: left;
-  line-height: 1.5;
-  word-break: keep-all;
-  cursor: pointer;
-}
-
-.play-options button:hover,
-.play-options button[aria-pressed='true'] {
-  border-color: var(--gold-bright);
-  background: color-mix(in srgb, var(--gold) 25%, var(--plate));
-}
-
-.play-slider-row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.play-slider input {
-  flex: 1;
-  accent-color: var(--gold);
-}
-
-.play-slider output {
-  min-width: 3ch;
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  font-weight: 700;
-}
-
-.play-slider small {
-  color: var(--mist);
-  line-height: 1.5;
-}
-
-.play-confirm {
-  justify-self: end;
-  text-align: center;
-  font-weight: 700;
-  border-color: var(--gold);
-}
-
-.play-confirm:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.play-line:focus-visible,
-.play-options button:focus-visible,
-.play-confirm:focus-visible,
-.play-slider input:focus-visible {
-  outline: 2px solid var(--gold-bright);
-  outline-offset: 2px;
 }

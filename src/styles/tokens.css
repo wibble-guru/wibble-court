@@ -34,6 +34,15 @@
   --mist: #a7abb8; /* 형광등 회색: 로그라인, 안내, 힌트 */
   --curtain: #000000; /* 장면 전환 암전 */
 
+  /* 발언자 역할 색 (data/speakers.ts). 이름표 글자·대화창 테두리 강조에만 쓴다. 이름표 플레이트(--plate) 위 대비 4.5:1 이상 */
+  --role-prosecutor: #e89a8e; /* 검사: 벽돌 붉은색 */
+  --role-defense: #8fb0e0; /* 변호인: 법복 청색 */
+  --role-judge: var(--gold-bright); /* 재판장·법원 직원 */
+  --role-defendant: #cdbde3; /* 피고인: 옅은 보라 */
+  --role-witness: #a3c9ab; /* 증인·감정인·제보자: 세이지 */
+  --role-police: #96c0ca; /* 경찰관: 회청색 */
+  --role-narration: var(--mist); /* 내레이션·화면·정체가 쟁점인 음성 */
+
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
