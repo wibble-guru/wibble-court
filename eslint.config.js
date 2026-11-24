@@ -24,4 +24,23 @@ export default defineConfig([
       '@typescript-eslint/consistent-type-imports': 'error',
     },
   },
+  {
+    // 진실 공개(대본 10부)는 결과 이후에만 import() 로 불러오는 별도 청크 — 본편이 정적으로 가져오면 초기 번들에 들어간다
+    files: ['src/**/*.{ts,tsx}'],
+    ignores: ['src/data/truth/**'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/data/truth', '@/data/truth/*', '**/data/truth', '**/data/truth/*'],
+              allowTypeImports: true,
+              message: '진실 공개 데이터는 import() 로만 불러오세요 (별도 청크, 대본 11.1).',
+            },
+          ],
+        },
+      ],
+    },
+  },
 ]);
