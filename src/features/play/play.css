@@ -470,3 +470,20 @@ button.dialogue-frame {
     animation: none;
   }
 }
+
+/* 생각 기록 동안 기록장 배경 겹 (PlayScreen). 이미지 겹 자체의 로드 페이드와 별개로 겹 전체를 페이드 */
+.notebook-layer {
+  background: transparent;
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+}
+
+.notebook-layer.is-on {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notebook-layer {
+    transition: none;
+  }
+}
