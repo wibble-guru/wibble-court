@@ -7,6 +7,7 @@ import { SCENES } from '@/data/scenes';
 import { EvidenceBar } from '@/features/evidence/EvidenceBar';
 import { EvidenceInsert } from '@/features/evidence/EvidenceInsert';
 import { Notebook } from '@/features/notebook/Notebook';
+import { loadResultCopy } from '@/features/result/ResultScreen';
 import { isThoughtPrompt } from '@/features/thought/thought';
 import { ThoughtRecord } from '@/features/thought/ThoughtRecord';
 import { cx } from '@/lib/cx';
@@ -22,8 +23,8 @@ import './play.css';
 type Props = {
   /** 처음부터면 startPlay(), 이어서면 저장된 진행 */
   start: Play;
-  /** 엔딩 대사가 끝났을 때 (RESULT 는 5단계 — 지금은 타이틀로) */
-  onEnd: () => void;
+  /** 장면이 더 없을 때 (엔딩 뒤 → RESULT, 에필로그 뒤 → 결과 전송) */
+  onEnd: (play: Play) => void;
 };
 
 /** 대본에 없는 화면 문구. 한곳에 모은다 (보조기기용 대화창 이름, 확정 버튼) */
@@ -39,7 +40,6 @@ const UI_COPY = { nextLine: '다음 대사', confirm: '기록하기' };
  */
 export function PlayScreen({ start, onEnd }: Props) {
   const saveStory = useStory((s) => s.saveStory);
-  const clearStory = useStory((s) => s.clearStory);
   const [play, setPlay] = useState(start);
   const { cursor } = play;
   const lineKey = cursor.at === 'line' ? `${cursor.sceneId}:${cursor.index}` : '';
@@ -48,14 +48,11 @@ export function PlayScreen({ start, onEnd }: Props) {
   const done = lineKey !== '' && revealed === lineKey;
   const [notebookOpen, setNotebookOpen] = useState(false);
 
+  // 진행할 때마다 저장. 끝(엔딩 뒤 RESULT, 에필로그 뒤)도 저장해 두고 App 이 다음 화면을 정한다
   useEffect(() => {
-    if (cursor.at === 'end') {
-      clearStory();
-      onEnd();
-    } else {
-      saveStory(play);
-    }
-  }, [play, cursor.at, saveStory, clearStory, onEnd]);
+    saveStory(play);
+    if (cursor.at === 'end') onEnd(play);
+  }, [play, cursor.at, saveStory, onEnd]);
 
   const press = useCallback(() => {
     if (!lineKey) return;
@@ -90,6 +87,8 @@ export function PlayScreen({ start, onEnd }: Props) {
   const sceneId = cursor.at === 'end' ? null : cursor.sceneId;
   useEffect(() => {
     if (sceneId) upcomingBackgrounds(sceneId).forEach((id) => void preloadBackground(id));
+    // 결과 문구는 별도 청크 — 최후 변론(J100)부터 미리 받아 둔다
+    if (sceneId === 'J100' || sceneId === 'J110') void loadResultCopy();
   }, [sceneId]);
   const [backdrop, setBackdrop] = useState(() => backdropOf(start));
   const current = backdropOf(play);
