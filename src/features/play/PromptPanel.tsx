@@ -1,8 +1,7 @@
-import { useState } from 'preact/hooks';
 import type { AnswerInput } from '@/engine/engine';
-import type { Field, Prompt } from '@/engine/types';
-import { isSingleChoice } from './runner';
+import type { Prompt } from '@/engine/types';
 import { Emphasis } from './Typewriter';
+import { usePromptInput } from './usePromptInput';
 
 type Props = {
   prompt: Prompt;
@@ -17,18 +16,7 @@ type Props = {
  * 질문 제목·메모는 대화창 쪽에 있다 (PlayScreen).
  */
 export function PromptPanel({ prompt, confirmLabel, onSubmit }: Props) {
-  const single = isSingleChoice(prompt);
-  const [input, setInput] = useState<AnswerInput>(() =>
-    Object.fromEntries(
-      prompt.fields.filter((f) => f.kind === 'slider').map((f) => [f.target, f.initial]),
-    ),
-  );
-  const ready = prompt.fields.every((f) => input[f.target] !== undefined);
-
-  function set(field: Field, value: string | number) {
-    if (single) return onSubmit({ [field.target]: value });
-    setInput((prev) => ({ ...prev, [field.target]: value }));
-  }
+  const { input, set, ready, immediate: single, submit } = usePromptInput(prompt, onSubmit);
 
   return (
     <div className="choices" role="group" aria-labelledby="prompt-title">
@@ -78,12 +66,7 @@ export function PromptPanel({ prompt, confirmLabel, onSubmit }: Props) {
       )}
 
       {!single && (
-        <button
-          type="button"
-          className="choice is-confirm"
-          disabled={!ready}
-          onClick={() => onSubmit(input)}
-        >
+        <button type="button" className="choice is-confirm" disabled={!ready} onClick={submit}>
           <span className="choice-face">{confirmLabel}</span>
         </button>
       )}
