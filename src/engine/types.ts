@@ -157,8 +157,12 @@ export type Cond =
 
 /* ───────── 장면 ───────── */
 
-/** 대사 한 줄. speaker 는 대본 표기 그대로 ('검사 차윤호', '녹음 속 오지안' …) — 발언자 분류는 화면 단계에서 */
-export type Line = { speaker: string; text: string; when?: Cond };
+/**
+ * 대사 한 줄. speaker 는 대본 표기 그대로 ('검사 차윤호', '녹음 속 오지안' …) — 발언자 분류는 화면 단계에서.
+ * 대본의 `**연출:**` 문단은 순서를 지키려고 같은 목록에 kind: 'direction' 으로 둔다.
+ * text 안의 `**…**` 는 대본의 강조 표시 그대로다.
+ */
+export type Line = { speaker: string; text: string; kind?: 'direction'; when?: Cond };
 
 export type Option = {
   key: AtoG;
