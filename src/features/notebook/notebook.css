@@ -1,0 +1,182 @@
+/*
+ * 기록장 (Notebook). 생각 기록과 같은 종이(--paper)·먹(--night) — 재판장이 손에 든 기록.
+ * 탭은 종이 위쪽의 색인 탭. 움직임은 opacity 만.
+ */
+
+/* 열기 버튼: 화면 오른쪽 위, 키트의 작은 사각 패널 */
+.notebook-button {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  right: 16px;
+  z-index: 2;
+  min-height: 40px;
+  padding: 0 var(--space-4);
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--night) 88%, transparent);
+  color: var(--gold-bright);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.notebook-button:hover {
+  background: color-mix(in srgb, var(--gold) 22%, var(--night));
+}
+
+.notebook-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  background: rgb(0 0 0 / 0.55);
+  animation: notebook-in 0.2s ease-out;
+}
+
+@keyframes notebook-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.notebook {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+  width: min(100%, 760px);
+  height: min(100%, 640px);
+  border-radius: 2px;
+  background: var(--paper);
+  color: var(--night);
+  box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.6);
+}
+
+.notebook-head {
+  display: flex;
+  align-items: end;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-3) 0;
+  border-bottom: 1.5px solid var(--night);
+}
+
+.notebook-tabs {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  gap: 2px;
+  overflow-x: auto;
+}
+
+.notebook-tabs [role='tab'] {
+  flex: none;
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3);
+  border: 1.5px solid transparent;
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+  background: transparent;
+  color: color-mix(in srgb, var(--night) 72%, var(--paper));
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.notebook-tabs [role='tab'][aria-selected='true'] {
+  border-color: var(--night);
+  background: var(--paper);
+  color: var(--night);
+  margin-bottom: -1.5px; /* 선택한 탭이 아래 선을 덮어 종이와 이어지게 */
+}
+
+.notebook-count {
+  margin-left: 2px;
+  font-variant-numeric: tabular-nums;
+  color: color-mix(in srgb, var(--night) 65%, var(--paper));
+}
+
+.notebook-close {
+  flex: none;
+  min-height: 36px;
+  margin-bottom: var(--space-2);
+  padding: 0 var(--space-3);
+  border: 1.5px solid var(--night);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--night);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.notebook-list {
+  padding: var(--space-5) var(--space-6);
+  overflow-y: auto;
+  outline: none;
+}
+
+.notebook-list ol {
+  display: grid;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.notebook-item {
+  display: grid;
+  gap: var(--space-2);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid color-mix(in srgb, var(--plate) 18%, transparent);
+}
+
+.notebook-item p {
+  margin: 0;
+  line-height: 1.7;
+  word-break: keep-all;
+}
+
+.notebook-who,
+.notebook-q {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: color-mix(in srgb, var(--night) 65%, var(--paper));
+}
+
+.notebook-source {
+  font-size: 12px;
+  color: color-mix(in srgb, var(--night) 65%, var(--paper)); /* 종이 위 대비 4.9:1 */
+}
+
+.notebook-button:focus-visible,
+.notebook-tabs [role='tab']:focus-visible,
+.notebook-close:focus-visible,
+.notebook-list:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+@media (max-aspect-ratio: 4/5) {
+  .notebook-backdrop {
+    padding: 0;
+  }
+  .notebook {
+    width: 100%;
+    height: 100%;
+  }
+  .notebook-list {
+    padding: var(--space-4);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .notebook-backdrop {
+    animation: none;
+  }
+}
