@@ -153,6 +153,25 @@ export const RESULT_COPY = {
   confidenceDown: '여러 가능성을 확인하며 확신이 낮아졌습니다',
 };
 
+/** 5.1 "사용자에게 표시할 성향 명칭" — 접이식 근거에서만 */
+export const AXIS_LABEL: Record<Axis, string> = {
+  O: '객관적 지표를 중시하는 성향',
+  L: '논리적 납득을 중시하는 성향',
+  C: '상황과 의도를 이해하려는 성향',
+  P: '원칙과 공정한 기준을 중시하는 성향',
+};
+
+export const DETAILS_COPY = {
+  /** RESULT "추가 보기(선택)" */
+  toggle: '내 선택이 어떻게 반영됐나요?',
+  /** 5.3 하단 접이식 */
+  title: '이렇게 분석했어요',
+  /** 5.7 템플릿 끝 문장 */
+  note: '이 결과는 게임 속 선택을 바탕으로 한 재미용 해석이에요.',
+  /** 5.7 조립 5번 "특히 마지막에는 [다른 기준]도 고려했습니다" — 빈칸은 Q10-3 선택지 문장 (사용자 결정) */
+  finalReason: ['특히 마지막에는 ', '도 고려했습니다'] as const,
+};
+
 /** 사이트로 보낼 결과 내용 (사용자 승인 형식). 판결·확신도·점수 숫자는 넣지 않는다 (5.2 규칙 5, 5.3) */
 export function resultContent(a: Analysis): ResultContent {
   const intro = RESULT_COPY.question;

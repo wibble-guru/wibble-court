@@ -93,3 +93,47 @@ export function computedMax(): Record<Axis, number> {
   }
   return max;
 }
+
+/** Q10-3 자기보고가 가리키는 축 (5.2: A→L, B→C, C→O, D→O, E→P, F→L) */
+export const FINAL_REASON_AXIS: Record<string, Axis> = {
+  A: 'L',
+  B: 'C',
+  C: 'O',
+  D: 'O',
+  E: 'P',
+  F: 'L',
+};
+
+/** 장면 순서 (근거를 같은 점수끼리 정렬할 때) */
+const SCENE_ORDER: ScoredKey[] = [
+  'q1_audio',
+  'q2_memory',
+  'q3_call',
+  'q4_witness',
+  'q5_sms',
+  'q6_motive',
+  'qm_basis',
+  'qg_reconsider',
+  'q8_inference',
+  'q9_last_question',
+  'qj_persuasion',
+];
+
+/**
+ * 분석 근거 (5.7 하단): 주어진 축에 점수를 준 실제 선택. 점수 큰 순, 같으면 장면 순, 최대 max 개.
+ * 답한 질문만 보므로 미방문 분기는 들어오지 않는다 (5.7 조립 6). Q10-3 은 보조 문장에서 따로 쓴다.
+ */
+export function supportingChoices(
+  answers: Partial<Answers>,
+  axes: Axis[],
+  max = 4,
+): { key: ScoredKey; value: string; points: number }[] {
+  return SCENE_ORDER.flatMap((key) => {
+    const value = answers[key];
+    if (!value) return [];
+    const points = axes.reduce((sum, axis) => sum + (SCORE[key][value]?.[axis] ?? 0), 0);
+    return points > 0 ? [{ key, value, points }] : [];
+  })
+    .sort((a, b) => b.points - a.points || SCENE_ORDER.indexOf(a.key) - SCENE_ORDER.indexOf(b.key))
+    .slice(0, max);
+}

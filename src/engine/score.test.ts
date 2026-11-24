@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { analyze, computedMax, MAX, resultId } from './score';
+import { analyze, computedMax, MAX, resultId, supportingChoices } from './score';
 import type { Answers } from './types';
 
 /** 6부 예시의 `Q1=A, …, Q10-3=C` 표기를 answers 로 */
@@ -61,5 +61,24 @@ describe('성향 채점 (5.2, 5.8)', () => {
     const tie = analyze({ q5_sms: 'A', qg_reconsider: 'C' });
     expect(tie.relative.O).toBe(tie.relative.C);
     expect([tie.primary, tie.secondary]).toEqual(['C', 'O']);
+  });
+});
+
+describe('분석 근거', () => {
+  it('주 성향에 점수를 준 실제 선택만, 점수 큰 순으로 최대 4개', () => {
+    const picks = supportingChoices(A, ['O']);
+    expect(picks.length).toBeLessThanOrEqual(4);
+    expect(picks.every((p) => p.points > 0)).toBe(true);
+    expect(picks.map((p) => p.points)).toEqual(
+      [...picks.map((p) => p.points)].sort((x, y) => y - x),
+    );
+    expect(picks[0]).toEqual({ key: 'q2_memory', value: 'C', points: 2 });
+  });
+
+  it('답하지 않은 질문은 근거가 되지 않는다', () => {
+    expect(supportingChoices({ q1_audio: 'B' }, ['O'])).toEqual([]);
+    expect(supportingChoices({ q1_audio: 'B' }, ['P'])).toEqual([
+      { key: 'q1_audio', value: 'B', points: 2 },
+    ]);
   });
 });
