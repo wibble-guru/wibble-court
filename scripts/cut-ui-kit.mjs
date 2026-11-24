@@ -49,16 +49,43 @@ await save('tray', await crop(region(746, 20, 1740, 195)), [
 ]);
 await save('slot', await crop(region(796, 47, 909, 164)));
 
-// 대화창: 위 테두리의 월계수·이름표 자리, 아래 가운데 보석, 오른쪽 아래 갈매기를 지운다
-// (이름표·보석은 따로 자르고, 갈매기는 대사가 다 나왔을 때만 CSS 로 띄운다)
+// 대화창: 위 테두리의 월계수·이름표 자리, 아래 가운데 보석, 오른쪽 아래 갈매기, 오른쪽 정의의 여신 무늬를 지운다
+// (이름표·보석·무늬는 따로 자르고, 갈매기는 대사가 다 나왔을 때만 CSS 로 띄운다)
+// 무늬가 테두리 조각에 있으면 대화창이 높아질 때(세로 화면) 세로로 늘어나서 따로 붙인다
 {
   const box = region(36, 240, 1729, 495);
   const at = (x, y) => [x - box.left, y - box.top];
   await save('dialog', await crop(box), [
     await patch(region(700, 240, 1072, 292), ...at(172, 240)),
     await patch(region(950, 452, 1014, 495), ...at(848, 452)),
-    await patch(region(1540, 428, 1600, 472), ...at(1606, 428)),
+    // 무늬 자리 (오른쪽 모서리 장식은 남긴다). 덮을 바탕은 월계수·보석이 없는 가운데에서
+    await patch(region(560, 262, 840, 474), ...at(1316, 262)),
+    await patch(region(600, 262, 656, 474), ...at(1596, 262)),
+    await patch(region(700, 428, 760, 472), ...at(1606, 428)),
   ]);
+}
+
+// 정의의 여신 무늬: 왼쪽·위 가장자리를 흐리게 해서 대화창 바탕에 녹아들게
+{
+  const w = 362;
+  const h = 218;
+  const fade = Buffer.from(
+    `<svg width="${w}" height="${h}"><defs>` +
+      `<linearGradient id="x"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".3" stop-color="#fff"/></linearGradient>` +
+      `<linearGradient id="y" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".15" stop-color="#fff"/><stop offset=".9" stop-color="#fff"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>` +
+      `<mask id="m"><rect width="${w}" height="${h}" fill="url(#y)"/></mask></defs>` +
+      `<rect width="${w}" height="${h}" fill="url(#x)" mask="url(#m)"/></svg>`,
+  );
+  // 무늬 오른쪽 아래의 갈매기는 위쪽 옷자락으로 덮어 지운다
+  const base = await sharp(await crop(region(1316, 258, 1316 + w, 258 + h)))
+    .composite((await patch(region(1600, 384, 1664, 428), 1600 - 1316, 428 - 258)).flat())
+    .png()
+    .toBuffer();
+  const justice = await sharp(base)
+    .composite([{ input: fade, blend: 'dest-in' }])
+    .png()
+    .toBuffer();
+  await save('justice', justice);
 }
 
 // 이름표 (깎은 육각 판). 뒤로 지나가는 대화창 테두리·월계수 줄기는 육각 밖이라 가린다

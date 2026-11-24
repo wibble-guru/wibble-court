@@ -133,16 +133,17 @@
 }
 
 /*
- * 대화창: 키트 대화창(1693x255) 9조각. 오른쪽 조각을 넓게(410) 잡아 정의의 여신 무늬가 늘어나지 않게.
+ * 대화창: 키트 대화창(1693x255) 9조각. 네 모서리 장식(80px)은 그대로, 가운데를 늘린다.
+ * 정의의 여신 무늬는 테두리 조각에서 떼어(::after) 비율을 고정한다 — 세로 화면에서 대화창이 높아져도 늘어나지 않게.
  * --k = 화면에 그릴 배율
  */
 .dialogue-frame {
   --k: 0.6;
+  position: relative;
   display: grid;
   padding: 0;
   border: 0 solid transparent;
-  border-image: var(--kit-dialog) 20 410 20 46 fill / calc(20px * var(--k)) calc(410px * var(--k))
-    calc(20px * var(--k)) calc(46px * var(--k));
+  border-image: var(--kit-dialog) 20 80 20 80 fill / calc(20px * var(--k)) calc(80px * var(--k));
   background: none;
   color: var(--paper);
   font: inherit;
@@ -153,12 +154,25 @@ button.dialogue-frame {
   cursor: pointer;
 }
 
+.dialogue-frame::after {
+  content: '';
+  position: absolute;
+  right: calc(30px * var(--k));
+  bottom: calc(18px * var(--k));
+  width: clamp(110px, calc(362px * var(--k) * 1.05), 46%);
+  max-height: calc(100% - 36px * var(--k));
+  aspect-ratio: 362 / 218;
+  background: var(--kit-justice) right bottom / contain no-repeat;
+  pointer-events: none;
+}
+
 .dialogue-face {
   position: relative;
   display: block;
   min-height: calc(3 * 1.7em + 2 * var(--space-6));
   max-height: 46vh;
   overflow-y: auto;
+  z-index: 1; /* 여신 무늬(::after) 위 */
   /* 오른쪽은 여신 무늬 앞에서 줄을 바꾼다 */
   padding: var(--space-7) max(calc(var(--space-7) + 12px), 14%) var(--space-6)
     calc(var(--space-7) + 8px);
@@ -425,7 +439,12 @@ button.dialogue-frame {
 
 /* ───────── 포커스·화면 크기·동작 줄이기 ───────── */
 
-.dialogue-frame:focus-visible,
+/* 대화창은 대사마다 코드로 포커스를 받아 휴대폰에서도 :focus-visible 이 켜진다. 네모 테두리 대신 밝기만 */
+.dialogue-frame:focus-visible {
+  outline: none;
+  filter: brightness(1.12);
+}
+
 .choice:focus-visible {
   outline: 2px solid var(--gold-bright);
   outline-offset: 3px;
@@ -440,6 +459,9 @@ button.dialogue-frame {
 @media (max-aspect-ratio: 4/5) {
   .dialogue-frame {
     --k: 0.34;
+  }
+  .dialogue-frame::after {
+    width: 46%;
   }
   .choice {
     --k: 0.42;
