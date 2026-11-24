@@ -20,3 +20,26 @@
   --line: #2f2934;
   color-scheme: dark;
 }
+
+/*
+ * 법정 스릴러 화면(타이틀·장면) 토큰. 배경 그림 위에 얹는 색이라 default / horror 테마와 상관없이 같다.
+ * 색은 UI 키트(남보라 패널, 동판 금 테두리)와 타이틀 그림(형광등 회색)에서 뽑았다.
+ */
+:root {
+  --night: #1c1b24; /* 키트 패널 숯색: 덮개 그라데이션, 버튼 바탕 */
+  --gold: #c8945a; /* 키트 테두리 동판 금 */
+  --gold-bright: #ecc283; /* 테두리 하이라이트: hover, focus */
+  --plate: #3a3445; /* 이름표 플레이트 안쪽 */
+  --paper: #efe9df; /* 진술서 종이 흰색: 제목, 버튼 글자 */
+  --mist: #a7abb8; /* 형광등 회색: 로그라인, 안내, 힌트 */
+  --curtain: #000000; /* 장면 전환 암전 */
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+}
