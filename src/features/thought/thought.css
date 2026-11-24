@@ -8,6 +8,8 @@
 .sheet {
   --ink: var(--paper);
   --ground: #1d1c26;
+  /* 선택 줄의 좌우 여백. 줄 배경은 이만큼 바깥으로 나가고, 동그라미는 제목과 같은 왼쪽 선에 선다 */
+  --row-x: 0.6em;
   grid-column: 1 / -1;
   grid-row: 1 / -1;
   align-self: center;
@@ -22,6 +24,7 @@
   border-image: var(--kit-panel) 34 fill / 24px;
   box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.6);
   color: var(--ink);
+  letter-spacing: -0.01em;
   animation: sheet-in 0.3s ease-out;
 }
 
@@ -54,8 +57,9 @@
   gap: var(--space-4);
   min-height: 0;
   overflow-y: auto;
-  margin-top: var(--space-4);
-  padding: 2px; /* 포커스 테두리가 잘리지 않게 */
+  margin: var(--space-4) calc(-1 * var(--row-x)) 0;
+  /* 선택 줄 배경이 잘리지 않게 좌우로 넓히고, 안쪽 글자는 제목 선에 다시 맞춘다 */
+  padding: 2px var(--row-x);
 }
 
 .sheet-field {
@@ -69,24 +73,28 @@
 
 .sheet-field legend,
 .sheet-label {
-  margin-bottom: var(--space-1);
+  margin-bottom: var(--space-2);
   padding: 0;
   font-weight: 700;
 }
 
-/* 한 줄 선택: 빈 동그라미 → 고르면 먹으로 채움. 막대·테두리 없이 괘선 위에 적힌 줄 */
+/*
+ * 한 줄 선택: 동그라미(1.1em) + 글자. 동그라미는 제목·슬라이더 이름과 같은 왼쪽 선,
+ * 두 줄이 되면 글자 첫머리에 맞춰 감긴다. 줄 배경은 좌우 --row-x 만큼 바깥까지
+ */
 .mark {
+  --py: 0.5em;
   position: relative;
   display: block;
-  width: 100%;
-  min-height: 44px;
-  padding: var(--space-2) var(--space-2) var(--space-2) 2.2em;
+  width: calc(100% + 2 * var(--row-x));
+  margin-inline: calc(-1 * var(--row-x));
+  padding: var(--py) var(--row-x) var(--py) calc(var(--row-x) + 1.1em + 0.7em);
   border: 0;
-  border-radius: 2px;
+  border-radius: 4px;
   background: transparent;
   color: var(--ink);
   font: inherit;
-  line-height: 1.6;
+  line-height: 1.55;
   text-align: left;
   word-break: keep-all;
   cursor: pointer;
@@ -96,10 +104,10 @@
 .mark::before {
   content: '';
   position: absolute;
-  left: 0.4em;
-  top: calc(var(--space-2) + 0.8em);
-  width: 1.15em;
-  height: 1.15em;
+  left: var(--row-x);
+  top: calc(var(--py) + 0.775em); /* 첫 줄 가운데 (line-height 1.55 의 절반) */
+  width: 1.1em;
+  height: 1.1em;
   background: var(--kit-radio) center / contain no-repeat;
   transform: translateY(-50%);
 }
@@ -114,8 +122,7 @@
 
 .mark[aria-pressed='true'] {
   background: color-mix(in srgb, var(--gold) 18%, transparent);
-  color: var(--gold-bright);
-  font-weight: 700;
+  color: var(--gold-bright); /* 굵기는 그대로 — 굵어지면 줄이 다시 감긴다 */
 }
 
 /* 판결: 두 칸을 같은 크기·같은 모양으로 나란히. 어느 쪽에도 색·위치 우위 없음 */
@@ -125,6 +132,8 @@
 }
 
 .sheet-field.is-verdict .mark {
+  width: auto;
+  margin: 0;
   min-height: 72px;
   padding: var(--space-4);
   border: 1.5px solid color-mix(in srgb, var(--gold) 70%, transparent);
@@ -262,12 +271,7 @@
     padding: var(--space-4) var(--space-5) var(--space-3);
   }
   .mark {
-    min-height: 36px;
-    padding-top: var(--space-1);
-    padding-bottom: var(--space-1);
-  }
-  .mark::before {
-    top: calc(var(--space-1) + 0.8em);
+    --py: 0.3em;
   }
   .sheet-field.is-verdict .mark {
     min-height: 52px;
