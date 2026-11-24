@@ -1,7 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { SceneBackground } from '@/components/SceneBackground';
 import { FIRST_SCENE_BG } from '@/data/assets';
+import { isThoughtPrompt } from '@/features/thought/thought';
+import { ThoughtRecord } from '@/features/thought/ThoughtRecord';
+import { cx } from '@/lib/cx';
 import { useStory } from '@/store/story';
+import type { AnswerInput } from '@/engine/engine';
 import { DialogueBox } from './DialogueBox';
 import { PromptPanel } from './PromptPanel';
 import { advance, currentPrompt, submit, visibleLines, type Play } from './runner';
@@ -21,7 +25,8 @@ const UI_COPY = { nextLine: '다음 대사', confirm: '기록하기' };
 /**
  * 플레이 화면 (P00 ~ 엔딩). 진행은 runner 가, 이 화면은 배치와 입력만.
  * - 대사 단계: 대화창(이름표 + 타자 효과). 누르면 다 안 나왔으면 전부 표시, 다 나왔으면 다음 대사
- * - 질문 단계: 대화창에 질문 제목·메모, 선택지는 PC 오른쪽 열·모바일 세로 대화창 위
+ * - 법정 질문: 대화창에 질문 제목·메모, 선택지는 PC 오른쪽 열·모바일 세로 대화창 위
+ * - 생각 기록 질문(Q0, M65 …): 기록장 배경 위 종이 한 장 (features/thought)
  * 바뀔 때마다 이어하기용으로 저장하고, 끝나면 저장을 지운다.
  */
 export function PlayScreen({ start, onEnd }: Props) {
@@ -73,14 +78,21 @@ export function PlayScreen({ start, onEnd }: Props) {
   }, [lineKey, prompt]);
 
   const line = cursor.at === 'line' ? visibleLines(cursor.sceneId, play.story)[cursor.index] : null;
+  const thought = prompt !== null && isThoughtPrompt(prompt);
+  const promptKey = prompt && cursor.at === 'prompt' ? `${cursor.sceneId}:${prompt.id}` : '';
+  const onSubmit = (input: AnswerInput) => setPlay((p) => submit(p, input).play);
 
   return (
     <main className="play-screen">
       <div className="scene-layer">
         <SceneBackground id={FIRST_SCENE_BG} />
       </div>
+      {/* 생각 기록 질문 동안 재판장 기록장(L-08)이 법정 위로 페이드. 이어지는 생각 기록 사이에는 깜빡이지 않는다 */}
+      <div className={cx('scene-layer notebook-layer', thought && 'is-on')} aria-hidden="true">
+        <SceneBackground id="L-08_judge-notebook" />
+      </div>
 
-      <div className="play-stage" data-mode={line ? 'line' : 'prompt'}>
+      <div className="play-stage" data-mode={line ? 'line' : thought ? 'thought' : 'prompt'}>
         {line && (
           <DialogueBox
             speaker={line.speaker}
@@ -95,9 +107,19 @@ export function PlayScreen({ start, onEnd }: Props) {
           </DialogueBox>
         )}
 
-        {prompt && cursor.at === 'prompt' && (
+        {promptKey && prompt && thought && (
+          <ThoughtRecord
+            key={promptKey}
+            prompt={prompt}
+            confirmLabel={UI_COPY.confirm}
+            onSubmit={onSubmit}
+            titleRef={titleRef}
+          />
+        )}
+
+        {promptKey && prompt && !thought && (
           <>
-            <DialogueBox key={`${cursor.sceneId}:${prompt.id}`}>
+            <DialogueBox key={`${promptKey}:box`}>
               <h2 id="prompt-title" ref={titleRef} tabIndex={-1} className="prompt-title">
                 <Emphasis text={prompt.title} />
               </h2>
@@ -108,10 +130,10 @@ export function PlayScreen({ start, onEnd }: Props) {
               )}
             </DialogueBox>
             <PromptPanel
-              key={`${cursor.sceneId}:${prompt.id}`}
+              key={`${promptKey}:panel`}
               prompt={prompt}
               confirmLabel={UI_COPY.confirm}
-              onSubmit={(input) => setPlay((p) => submit(p, input).play)}
+              onSubmit={onSubmit}
             />
           </>
         )}
