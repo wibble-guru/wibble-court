@@ -197,6 +197,13 @@
   outline-offset: 2px;
 }
 
+.result-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
 .result-next {
   min-width: 10em;
   min-height: 48px;
