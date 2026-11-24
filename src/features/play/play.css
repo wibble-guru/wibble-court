@@ -59,7 +59,51 @@
 .dialogue {
   --role: var(--role-narration);
   position: relative;
+  isolation: isolate; /* 인물 그림(z-index -1)이 대화창 뒤, 배경 앞에 서게 */
   display: grid;
+}
+
+/*
+ * 말하는 인물 (data/characters). 대화창 뒤 왼쪽/오른쪽 끝에 서고, 다리는 대화창 뒤로 들어간다.
+ * 사람이 바뀔 때만 옆에서 들어온다 (key = 인물). 녹음 속 목소리는 반투명
+ */
+.portrait {
+  --h: min(44vh, 340px);
+  position: absolute;
+  bottom: calc(100% - var(--h) * 0.16);
+  z-index: -1;
+  height: var(--h);
+  width: auto;
+  pointer-events: none;
+  filter: drop-shadow(0 6px 10px rgb(0 0 0 / 0.55));
+  animation: portrait-in-left 0.25s ease-out;
+}
+
+.portrait[data-side='left'] {
+  left: 3%;
+}
+
+.portrait[data-side='right'] {
+  right: 3%;
+  animation-name: portrait-in-right;
+}
+
+.portrait[data-faint] {
+  opacity: 0.55;
+}
+
+@keyframes portrait-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}
+
+@keyframes portrait-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
 }
 
 /* 이름표: 월계수 + 키트 이름표 판. 대화창 윗변에 반쯤 걸친다. 위치는 역할(data-side) */
@@ -457,6 +501,9 @@ button.dialogue-frame {
 
 /* 세로 화면: 키트 조각을 더 작게 (테두리가 두꺼워 보이지 않게). 기본 규칙보다 뒤에 둔다 */
 @media (max-aspect-ratio: 4/5) {
+  .portrait {
+    --h: min(28vh, 240px);
+  }
   .dialogue-frame {
     --k: 0.34;
   }
@@ -492,6 +539,7 @@ button.dialogue-frame {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .portrait,
   .nameplate,
   .dialogue-next.is-on {
     animation: none;

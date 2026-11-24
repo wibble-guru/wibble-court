@@ -1,5 +1,6 @@
 import type { ComponentChildren, Ref } from 'preact';
 import { UI } from '@/data/assets';
+import { portraitOf, portraitSrc } from '@/data/characters';
 import { roleOf, sideOf } from '@/data/speakers';
 
 type Props = {
@@ -16,13 +17,14 @@ type Props = {
 };
 
 /**
- * 대화창 (UI 키트 대화창·이름표 조각을 border-image 로, 월계수 이름표).
+ * 대화창 (UI 키트 대화창·이름표 조각을 border-image 로, 월계수 이름표) + 말하는 인물 픽셀 그림.
  * 이름표는 발언자 역할에 따라 왼쪽(검사·그 외)·오른쪽(변호인)·가운데(재판장)에 서고, 이름 글자는 역할 색.
  * 같은 사람이 이어 말하면 이름표는 그대로 있고(key = 발언자), 사람이 바뀔 때만 들어오는 움직임이 있다.
  */
 export function DialogueBox({ speaker, showNext, onPress, pressLabel, panelRef, children }: Props) {
   const role = speaker ? roleOf(speaker) : 'narration';
   const side = sideOf(role);
+  const portrait = portraitOf(speaker);
   const face = (
     <span className="dialogue-face">
       {children}
@@ -39,6 +41,18 @@ export function DialogueBox({ speaker, showNext, onPress, pressLabel, panelRef, 
 
   return (
     <div className="dialogue" data-side={side} style={{ '--role': `var(--role-${role})` }}>
+      {/* 말하는 인물 (그림이 있는 발언자만). 사람이 바뀔 때만 들어오는 움직임 (key = 인물) */}
+      {portrait && (
+        <img
+          key={portrait.id}
+          className="portrait pixelated"
+          data-side={portrait.side}
+          data-faint={portrait.faint || undefined}
+          src={portraitSrc(portrait.id)}
+          alt=""
+          draggable={false}
+        />
+      )}
       {speaker && (
         <div key={speaker} className="nameplate">
           <img className="laurel" src={UI.laurelLeft} alt="" />

@@ -1,3 +1,5 @@
+import { CHARACTER_IDS, portraitSrc } from './characters';
+
 /**
  * 에셋 목록. 원본은 raw-assets/ → `pnpm images` → public/assets/ (WebP).
  * 배경은 큰 버전(원본 1672px) + `@1280` 두 벌이 있다.
@@ -150,6 +152,7 @@ export const UI_IMAGES = [
   UI.laurelLeft,
   UI.laurelRight,
   ...KIT_PARTS.map(kitSrc),
+  ...CHARACTER_IDS.map(portraitSrc),
   ...ICON_IDS.map(iconSrc),
   MODAL.twoBubbles,
 ];
