@@ -5,7 +5,7 @@ import { TITLE_COPY } from '@/data/title';
 import { cx } from '@/lib/cx';
 import { prefersReducedMotion } from '@/lib/motion';
 import { preloadAll } from '@/lib/preload';
-import { useGame } from '@/store/game';
+import { useStory } from '@/store/story';
 import { PreloadBar } from './PreloadBar';
 import { TitleActions, type StartMode } from './TitleActions';
 import './title.css';
@@ -25,7 +25,7 @@ type Props = {
  * - 등장이 끝난 뒤 배경 클릭 / Enter: 저장이 있으면 이어서, 없으면 새로 시작.
  */
 export function TitleScreen({ onStart, leaving }: Props) {
-  const hasSave = useGame((s) => s.progress !== null);
+  const hasSave = useStory((s) => s.save !== null);
   const [entered, setEntered] = useState(prefersReducedMotion);
   const [skipped, setSkipped] = useState(false);
   const [confirming, setConfirming] = useState(false);
