@@ -1,6 +1,7 @@
 /*
  * 생각 기록 화면 (ThoughtRecord): 재판장 기록장 위에 UI 키트 패널 한 장.
  * 패널(--ground) 위 밝은 글자(--ink), 라디오·슬라이더 손잡이·확정 버튼도 키트 조각 (main 의 --kit-* 변수).
+ * 뒤의 기록장·법정 그림이 보이게 패널은 한쪽으로 비켜 둔다: PC 는 오른쪽, 세로 화면은 대화창처럼 아래.
  * 움직임은 opacity 만.
  */
 
@@ -10,10 +11,10 @@
   grid-column: 1 / -1;
   grid-row: 1 / -1;
   align-self: center;
-  justify-self: center;
+  justify-self: end;
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr) auto;
-  width: min(100%, 720px);
+  width: min(100%, 560px);
   max-height: 100%;
   padding: var(--space-7) var(--space-7) var(--space-6);
   /* 키트 패널(451x175): 모서리 장식 34px 은 그대로, 가운데를 늘린다 */
@@ -249,6 +250,9 @@
 
 @media (max-aspect-ratio: 4/5) {
   .sheet {
+    align-self: end;
+    width: 100%;
+    max-height: 72%;
     padding: var(--space-5) var(--space-5) var(--space-4);
   }
 }
