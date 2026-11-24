@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { KIT } from '@/data/assets';
 import { TAB_LABELS, TAB_ORDER, type NotebookTab } from '@/data/notebook';
 import { buildNotebook } from '@/engine/notebook';
 import type { StoryState } from '@/engine/types';
@@ -12,13 +13,15 @@ type Props = {
   story: StoryState;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  /** 지금 장면 제목 (data/scene-title). 엠블럼 옆 막대에 */
+  title?: string | null;
 };
 
 /**
- * 기록장 (대본 7.1 규칙 6, 7.2). 오른쪽 위 버튼으로 열고, 다섯 탭에 지나온 경로의 대사만 보인다.
+ * 기록장 (대본 7.1 규칙 6, 7.2). 왼쪽 위 저울 엠블럼으로 열고, 다섯 탭에 지나온 경로의 대사만 보인다.
  * 내용은 buildNotebook(진행 상태) — 열 때만 계산. 키보드: 탭 ←→, Esc 닫기, 닫으면 버튼으로 포커스 복귀.
  */
-export function Notebook({ story, open, onOpenChange }: Props) {
+export function Notebook({ story, open, onOpenChange, title }: Props) {
   const [tab, setTab] = useState<NotebookTab>('facts');
   const buttonRef = useRef<HTMLButtonElement>(null);
   const tabRefs = useRef<Partial<Record<NotebookTab, HTMLButtonElement | null>>>({});
@@ -53,16 +56,22 @@ export function Notebook({ story, open, onOpenChange }: Props) {
 
   return (
     <>
-      <button
-        ref={buttonRef}
-        type="button"
-        className="notebook-button"
-        aria-haspopup="dialog"
-        aria-expanded={open}
-        onClick={() => onOpenChange(true)}
-      >
-        {COPY.open}
-      </button>
+      {/* 왼쪽 위: 저울 엠블럼 = 기록장 버튼, 옆 막대 = 장면 제목 (UI 키트) */}
+      <div className="hud">
+        {title && <p className="hud-bar">{title}</p>}
+        <button
+          ref={buttonRef}
+          type="button"
+          className="notebook-button"
+          aria-haspopup="dialog"
+          aria-expanded={open}
+          aria-label={COPY.open}
+          title={COPY.open}
+          onClick={() => onOpenChange(true)}
+        >
+          <img src={KIT.emblem} alt="" draggable={false} />
+        </button>
+      </div>
 
       {open && book && (
         <div className="notebook-backdrop" onClick={() => onOpenChange(false)}>

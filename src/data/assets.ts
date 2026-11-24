@@ -52,6 +52,29 @@ export const UI = {
   laurelRight: `${BASE}assets/ui/laurel-right.webp`,
 };
 
+/** UI 키트 조각 (scripts/cut-ui-kit.mjs). CSS 는 border-image 로 늘려 쓴다 */
+const KIT_PARTS = [
+  'emblem',
+  'bar',
+  'tray',
+  'slot',
+  'dialog',
+  'plate',
+  'gem',
+  'choice',
+  'diamond',
+] as const;
+const kitSrc = (part: (typeof KIT_PARTS)[number]) => `${BASE}assets/ui/kit-${part}.webp`;
+export const KIT = { emblem: kitSrc('emblem'), gem: kitSrc('gem') };
+
+/**
+ * 키트 조각을 CSS 변수(--kit-dialog 등)로. 플레이·진실 공개 화면의 main 에 건다.
+ * CSS 안에 경로를 쓰면 상대 경로 빌드(base './')에서 어긋나서 여기서 넣는다
+ */
+export const KIT_VARS = Object.fromEntries(
+  KIT_PARTS.map((part) => [`--kit-${part}`, `url("${kitSrc(part)}")`]),
+);
+
 /** 배경 큰 버전의 실제 폭 (원본이 1672px 라 1920 으로 키우지 않음) */
 const LARGE_WIDTH = 1672;
 
@@ -121,6 +144,7 @@ const ICON_IDS: IconId[] = [
 export const UI_IMAGES = [
   UI.laurelLeft,
   UI.laurelRight,
+  ...KIT_PARTS.map(kitSrc),
   ...ICON_IDS.map(iconSrc),
   MODAL.twoBubbles,
 ];

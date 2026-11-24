@@ -16,7 +16,8 @@
     "check:truth": "node scripts/check-truth-chunk.mjs",
     "check:script": "PRINT_ROUTES=1 vitest run src/data/scenes/script-sync.test.ts --silent=false",
     "verify": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test",
-    "images": "node scripts/convert-images.mjs"
+    "images": "node scripts/convert-images.mjs",
+    "images:kit": "node scripts/cut-ui-kit.mjs"
   },
   "packageManager": "pnpm@11.24.0",
   "dependencies": {

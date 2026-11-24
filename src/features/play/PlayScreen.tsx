@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { Backdrop } from '@/components/Backdrop';
 import { SceneBackground } from '@/components/SceneBackground';
+import { KIT_VARS } from '@/data/assets';
 import { INSERTS } from '@/data/evidence';
+import { sceneTitle } from '@/data/scene-title';
 import { upcomingBackgrounds } from '@/data/scene-bg';
 import { SCENES } from '@/data/scenes';
 import { EvidenceBar } from '@/features/evidence/EvidenceBar';
@@ -36,7 +38,8 @@ const UI_COPY = { nextLine: '다음 대사', confirm: '기록하기' };
  * - 대사 단계: 대화창(이름표 + 타자 효과). 누르면 다 안 나왔으면 전부 표시, 다 나왔으면 다음 대사
  * - 법정 질문: 대화창에 질문 제목·메모, 선택지는 PC 오른쪽 열·모바일 세로 대화창 위
  * - 생각 기록 질문(Q0, M65 …): 기록장 배경 위 종이 한 장 (features/thought)
- * - 오른쪽 위 기록장 버튼: 지나온 경로의 기록 (features/notebook). 열려 있는 동안 대사 넘김을 막는다
+ * - 왼쪽 위 저울 엠블럼(기록장, features/notebook) + 장면 제목 막대. 기록장이 열려 있는 동안 대사 넘김을 막는다
+ * - 오른쪽 위 증거 상자 (features/evidence)
  * 바뀔 때마다 이어하기용으로 저장하고, 끝나면 저장을 지운다.
  */
 export function PlayScreen({ start, onEnd }: Props) {
@@ -119,7 +122,7 @@ export function PlayScreen({ start, onEnd }: Props) {
   const onSubmit = (input: AnswerInput) => setPlay((p) => submit(p, input).play);
 
   return (
-    <main className="play-screen">
+    <main className="play-screen" style={KIT_VARS}>
       {backdrop && <Backdrop bg={backdrop.bg} effect={backdrop.effect} />}
       {/* 생각 기록 질문 동안 재판장 기록장(L-08)이 법정 위로 페이드. 이어지는 생각 기록 사이에는 깜빡이지 않는다 */}
       <div className={cx('scene-layer notebook-layer', thought && 'is-on')} aria-hidden="true">
@@ -186,7 +189,12 @@ export function PlayScreen({ start, onEnd }: Props) {
           {insert && (
             <EvidenceInsert key={cursor.at === 'line' ? cursor.sceneId : ''} insert={insert} />
           )}
-          <Notebook story={play.story} open={notebookOpen} onOpenChange={setNotebookOpen} />
+          <Notebook
+            story={play.story}
+            open={notebookOpen}
+            onOpenChange={setNotebookOpen}
+            title={sceneId ? sceneTitle(sceneId) : null}
+          />
         </>
       )}
     </main>

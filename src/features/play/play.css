@@ -1,13 +1,20 @@
 /*
- * 플레이 화면 (features/play). UI 키트(public/assets/ui/ui-kit.webp) 모양:
- * 숯색 패널, 동판 금 테두리, 깎은 모서리, 월계수 이름표, 마름모 장식, 아래 갈매기.
+ * 플레이 화면 (features/play). 대화창·이름표·선택지는 UI 키트 조각(scripts/cut-ui-kit.mjs)을
+ * border-image 로 늘려 그린다. 조각 경로는 main 의 CSS 변수(--kit-*, data/assets KIT_VARS).
  * 배경 그림 위라 테마와 상관없이 법정 토큰(tokens.css)만 쓴다. 움직임은 opacity·transform 만.
- * 이름표의 깎은 육각 플레이트(.plate-frame / .plate-face)는 title.css 것을 같이 쓴다.
  */
 
 .play-screen {
+  --hud-h: 96px;
   position: absolute;
   inset: 0;
+}
+
+/* 세로 화면은 위 막대 아래 줄에 증거 상자가 와서 더 내린다 */
+@media (max-width: 760px) {
+  .play-screen {
+    --hud-h: 132px;
+  }
 }
 
 /* 배치: PC 는 [선택지 열] 위·오른쪽, 대화창 아래 전체. 세로 화면은 한 열 */
@@ -16,14 +23,14 @@
   position: relative;
   height: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, min(440px, 40%));
+  grid-template-columns: minmax(0, 1fr) minmax(0, min(460px, 36%));
   grid-template-rows: minmax(0, 1fr) auto;
   gap: var(--gap);
-  width: min(100%, 1132px);
+  width: min(100%, 1280px);
   margin: 0 auto;
-  /* 위쪽은 기록장 버튼 자리 (features/notebook) */
-  padding: max(64px, calc(env(safe-area-inset-top) + 52px)) 16px
-    max(20px, env(safe-area-inset-bottom));
+  /* 위쪽은 왼쪽 위 기록장·장면 제목, 오른쪽 위 증거 상자 자리 (--hud-h). 시안처럼 대화창이 화면 폭 91% */
+  padding: calc(var(--hud-h) + env(safe-area-inset-top)) max(16px, 4.5%)
+    max(28px, env(safe-area-inset-bottom));
   font-size: clamp(16px, 2.5vmin, 20px);
 }
 
@@ -51,19 +58,18 @@
 
 .dialogue {
   --role: var(--role-narration);
-  --cut: 14px;
   position: relative;
   display: grid;
 }
 
-/* 이름표: 월계수 + 깎은 플레이트. 패널 윗변에 반쯤 걸친다. 위치는 역할(data-side) */
+/* 이름표: 월계수 + 키트 이름표 판. 대화창 윗변에 반쯤 걸친다. 위치는 역할(data-side) */
 .nameplate {
   z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-self: start;
-  margin: 0 var(--space-6) -0.95em;
-  font-size: 0.82em;
+  margin: 0 var(--space-6) -1.15em;
+  font-size: 0.9em;
   animation: plate-in-left 0.2s ease-out;
 }
 
@@ -80,26 +86,26 @@
 .nameplate .laurel {
   position: relative;
   z-index: 1;
-  height: 1.9em;
+  height: 2.3em;
   width: auto;
 }
 
 .nameplate .laurel:first-child {
-  margin-right: -0.32em;
+  margin-right: -0.55em;
 }
 
 .nameplate .laurel:last-child {
-  margin-left: -0.32em;
+  margin-left: -0.55em;
 }
 
-.nameplate .plate-face {
-  padding: 0.3em 1.4em;
-  /* 타이틀 플레이트보다 윗면 광을 줄여 역할 색 글자 대비 4.5:1 이상 유지 */
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--plate), var(--paper) 4%),
-    var(--plate) 55%
-  );
+/* 키트 이름표 판(292x77): 양 끝 뾰족한 곳만 두고 가운데를 늘린다 */
+.plate {
+  min-width: 8em;
+  padding: 0 2em;
+  border: 0 solid transparent;
+  border-image: var(--kit-plate) 0 34 fill / 0 1.15em;
+  line-height: 2.3em;
+  text-align: center;
   color: var(--role);
   font-weight: 700;
   white-space: nowrap;
@@ -126,22 +132,18 @@
   }
 }
 
-/* 패널: 금 테두리(바깥 1px) + 숯색 면, 네 모서리를 깎는다 */
+/*
+ * 대화창: 키트 대화창(1693x255) 9조각. 오른쪽 조각을 넓게(410) 잡아 정의의 여신 무늬가 늘어나지 않게.
+ * --k = 화면에 그릴 배율
+ */
 .dialogue-frame {
+  --k: 0.6;
   display: grid;
-  padding: 1px;
-  border: 0;
-  background: color-mix(in srgb, var(--gold) 70%, var(--role));
-  clip-path: polygon(
-    var(--cut) 0,
-    calc(100% - var(--cut)) 0,
-    100% var(--cut),
-    100% calc(100% - var(--cut)),
-    calc(100% - var(--cut)) 100%,
-    var(--cut) 100%,
-    0 calc(100% - var(--cut)),
-    0 var(--cut)
-  );
+  padding: 0;
+  border: 0 solid transparent;
+  border-image: var(--kit-dialog) 20 410 20 46 fill / calc(20px * var(--k)) calc(410px * var(--k))
+    calc(20px * var(--k)) calc(46px * var(--k));
+  background: none;
   color: var(--paper);
   font: inherit;
   text-align: left;
@@ -154,12 +156,12 @@ button.dialogue-frame {
 .dialogue-face {
   position: relative;
   display: block;
-  min-height: calc(3 * 1.7em + 2 * var(--space-5));
+  min-height: calc(3 * 1.7em + 2 * var(--space-6));
   max-height: 46vh;
   overflow-y: auto;
-  padding: var(--space-6) var(--space-7) var(--space-5) var(--space-6);
-  clip-path: inherit;
-  background: color-mix(in srgb, var(--night) 94%, transparent);
+  /* 오른쪽은 여신 무늬 앞에서 줄을 바꾼다 */
+  padding: var(--space-7) max(calc(var(--space-7) + 12px), 14%) var(--space-6)
+    calc(var(--space-7) + 8px);
 }
 
 .dialogue-text {
@@ -167,32 +169,33 @@ button.dialogue-frame {
   line-height: 1.7;
   word-break: keep-all;
   overflow-wrap: anywhere;
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.6);
 }
 
-/* 아래 가운데 마름모 (패널 밖에 두어 깎인 테두리에 잘리지 않게) */
+/* 아래 가운데 보석 (키트 조각, 대화창 아래 테두리에 걸친다) */
 .dialogue-gem {
   position: absolute;
   left: 50%;
-  bottom: -5px;
-  width: 10px;
-  height: 10px;
-  background: var(--gold);
-  transform: translateX(-50%) rotate(45deg);
-  box-shadow: 0 0 0 2px var(--night);
+  bottom: -0.7em;
+  width: 1.5em;
+  aspect-ratio: 62 / 66;
+  background: var(--kit-gem) center / contain no-repeat;
+  transform: translateX(-50%);
 }
 
 /* 다 나왔으면 오른쪽 아래 갈매기가 살짝 오르내린다 */
 .dialogue-next {
   position: absolute;
-  right: var(--space-5);
-  bottom: var(--space-4);
-  width: 18px;
-  height: 11px;
+  right: calc(var(--space-6) + 8px);
+  bottom: var(--space-5);
+  width: 22px;
+  height: 13px;
   fill: none;
   stroke: var(--gold-bright);
-  stroke-width: 2.5;
+  stroke-width: 3;
   stroke-linecap: round;
   stroke-linejoin: round;
+  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.7));
   opacity: 0;
 }
 
@@ -277,79 +280,68 @@ button.dialogue-frame {
   text-shadow: 0 1px 2px var(--night);
 }
 
-/* 키트의 긴 막대: 왼쪽 마름모, 오른쪽 끝을 깎은 금 테두리 */
+/* 키트 선택지 판(746x96): 왼쪽 마름모·오른쪽 빗금 조각은 그대로, 가운데만 늘린다. --k = 배율 */
 .choice {
-  --cut: 16px;
+  --k: 0.55;
   display: grid;
-  padding: 1px;
-  border: 0;
-  background: color-mix(in srgb, var(--gold) 75%, transparent);
-  clip-path: polygon(
-    0 0,
-    calc(100% - var(--cut)) 0,
-    100% 50%,
-    calc(100% - var(--cut)) 100%,
-    0 100%
-  );
+  padding: 0;
+  border: 0 solid transparent;
+  border-image: var(--kit-choice) 14 70 14 96 fill / calc(14px * var(--k)) calc(70px * var(--k))
+    calc(14px * var(--k)) calc(96px * var(--k));
+  background: none;
   color: var(--paper);
   font: inherit;
   text-align: left;
   cursor: pointer;
 }
 
+/* block 그대로 (flex·grid 면 강조 글자와 앞뒤 글자가 따로 칸이 되어 줄이 끊긴다) */
 .choice-face {
   position: relative;
   display: block;
-  padding: var(--space-3) calc(var(--cut) + var(--space-4)) var(--space-3) 2.6em;
-  clip-path: inherit;
-  background: color-mix(in srgb, var(--night) 94%, transparent);
+  padding: calc(var(--space-3) + 2px) calc(70px * var(--k) + var(--space-2))
+    calc(var(--space-3) + 2px) calc(96px * var(--k) + var(--space-2));
   line-height: 1.55;
   word-break: keep-all;
 }
 
+/* 왼쪽 마름모 (키트 조각, 판 높이와 상관없이 세로 가운데) */
 .choice-face::before {
   content: '';
   position: absolute;
-  left: 1.1em;
+  left: calc(72px * var(--k));
   top: 50%;
-  width: 0.5em;
-  height: 0.5em;
-  background: var(--gold);
-  transform: translate(-50%, -50%) rotate(45deg);
+  width: calc(37px * var(--k));
+  aspect-ratio: 37 / 38;
+  background: var(--kit-diamond) center / contain no-repeat;
+  transform: translate(-50%, -50%);
 }
 
-.choice:hover .choice-face,
-.choice[aria-pressed='true'] .choice-face {
-  background: color-mix(in srgb, var(--gold) 22%, var(--night));
-}
-
-.choice:hover .choice-face::before,
-.choice[aria-pressed='true'] .choice-face::before {
-  background: var(--gold-bright);
-}
-
+/* 고르거나 올려 두면 판이 밝아지고 글자가 금색 */
+.choice:hover,
 .choice[aria-pressed='true'] {
-  background: var(--gold-bright);
+  filter: brightness(1.3);
+}
+
+.choice[aria-pressed='true'] .choice-face {
+  color: var(--gold-bright);
+  font-weight: 700;
 }
 
 .choice.is-confirm {
   justify-self: end;
-  min-width: 10em;
+  min-width: 11em;
 }
 
 .choice.is-confirm .choice-face {
-  padding-left: 2.6em;
   font-weight: 700;
   color: var(--gold-bright);
 }
 
 .choice:disabled {
   opacity: 0.45;
+  filter: none;
   cursor: not-allowed;
-}
-
-.choice:disabled .choice-face {
-  background: color-mix(in srgb, var(--night) 94%, transparent);
 }
 
 /* 키트의 금색 슬라이더: 금 트랙 + 동그란 손잡이 */
@@ -435,8 +427,8 @@ button.dialogue-frame {
 
 .dialogue-frame:focus-visible,
 .choice:focus-visible {
-  outline: none;
-  background: var(--gold-bright);
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 3px;
 }
 
 .slider input:focus-visible {
@@ -444,17 +436,32 @@ button.dialogue-frame {
   outline-offset: 2px;
 }
 
+/* 세로 화면: 키트 조각을 더 작게 (테두리가 두꺼워 보이지 않게). 기본 규칙보다 뒤에 둔다 */
+@media (max-aspect-ratio: 4/5) {
+  .dialogue-frame {
+    --k: 0.34;
+  }
+  .choice {
+    --k: 0.42;
+  }
+  .dialogue-face {
+    padding: var(--space-6) var(--space-6) var(--space-5);
+  }
+}
+
 /* 낮은 가로 화면 (모바일 가로 812×375): 대화창 높이·글자 줄이기 */
 @media (max-height: 480px) {
+  .play-screen {
+    --hud-h: 64px;
+  }
   .play-stage {
     --gap: var(--space-2);
     font-size: 15px;
-    padding-top: 56px;
     padding-bottom: max(12px, env(safe-area-inset-bottom));
   }
   .dialogue-face {
     min-height: calc(2 * 1.7em + 2 * var(--space-4));
-    padding: var(--space-5) var(--space-7) var(--space-4) var(--space-5);
+    padding: var(--space-5) var(--space-7) var(--space-4) var(--space-6);
   }
   .choice-face {
     padding-top: var(--space-2);
