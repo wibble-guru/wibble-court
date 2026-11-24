@@ -21,7 +21,9 @@
   gap: var(--gap);
   width: min(100%, 1132px);
   margin: 0 auto;
-  padding: max(16px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom));
+  /* 위쪽은 기록장 버튼 자리 (features/notebook) */
+  padding: max(64px, calc(env(safe-area-inset-top) + 52px)) 16px
+    max(20px, env(safe-area-inset-bottom));
   font-size: clamp(16px, 2.5vmin, 20px);
 }
 
@@ -447,7 +449,7 @@ button.dialogue-frame {
   .play-stage {
     --gap: var(--space-2);
     font-size: 15px;
-    padding-top: 8px;
+    padding-top: 56px;
     padding-bottom: max(12px, env(safe-area-inset-bottom));
   }
   .dialogue-face {

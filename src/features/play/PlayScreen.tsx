@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { Backdrop } from '@/components/Backdrop';
 import { SceneBackground } from '@/components/SceneBackground';
 import { upcomingBackgrounds } from '@/data/scene-bg';
+import { Notebook } from '@/features/notebook/Notebook';
 import { isThoughtPrompt } from '@/features/thought/thought';
 import { ThoughtRecord } from '@/features/thought/ThoughtRecord';
 import { cx } from '@/lib/cx';
@@ -29,6 +30,7 @@ const UI_COPY = { nextLine: '다음 대사', confirm: '기록하기' };
  * - 대사 단계: 대화창(이름표 + 타자 효과). 누르면 다 안 나왔으면 전부 표시, 다 나왔으면 다음 대사
  * - 법정 질문: 대화창에 질문 제목·메모, 선택지는 PC 오른쪽 열·모바일 세로 대화창 위
  * - 생각 기록 질문(Q0, M65 …): 기록장 배경 위 종이 한 장 (features/thought)
+ * - 오른쪽 위 기록장 버튼: 지나온 경로의 기록 (features/notebook). 열려 있는 동안 대사 넘김을 막는다
  * 바뀔 때마다 이어하기용으로 저장하고, 끝나면 저장을 지운다.
  */
 export function PlayScreen({ start, onEnd }: Props) {
@@ -40,6 +42,7 @@ export function PlayScreen({ start, onEnd }: Props) {
   /** 끝까지 나타난 대사의 key (타자 효과가 끝났거나 눌러서 건너뜀) */
   const [revealed, setRevealed] = useState('');
   const done = lineKey !== '' && revealed === lineKey;
+  const [notebookOpen, setNotebookOpen] = useState(false);
 
   useEffect(() => {
     if (cursor.at === 'end') {
@@ -60,7 +63,7 @@ export function PlayScreen({ start, onEnd }: Props) {
 
   // Enter·Space = 대화창 누름 (버튼·입력에 포커스가 있으면 그쪽이 처리)
   useEffect(() => {
-    if (!lineKey) return;
+    if (!lineKey || notebookOpen) return;
     function onKeyDown(e: KeyboardEvent) {
       if (e.key !== 'Enter' && e.key !== ' ') return;
       if (e.target instanceof HTMLElement && e.target.closest('button, input')) return;
@@ -69,7 +72,7 @@ export function PlayScreen({ start, onEnd }: Props) {
     }
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  }, [lineKey, press]);
+  }, [lineKey, press, notebookOpen]);
 
   // 대사 단계에선 대화창에, 질문 단계에선 질문 제목에 포커스 (키보드·스크린리더가 길을 잃지 않게)
   const panelRef = useRef<HTMLButtonElement>(null);
@@ -149,6 +152,7 @@ export function PlayScreen({ start, onEnd }: Props) {
           </>
         )}
       </div>
+      <Notebook story={play.story} open={notebookOpen} onOpenChange={setNotebookOpen} />
     </main>
   );
 }
