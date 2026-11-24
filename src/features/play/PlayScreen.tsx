@@ -1,3 +1,4 @@
+import type { ResultContent } from '@wibble-guru/boilerplate';
 import { useEffect, useState } from 'preact/hooks';
 import { SceneBackground } from '@/components/SceneBackground';
 import { FIRST_SCENE_BG } from '@/data/assets';
@@ -11,7 +12,8 @@ type Props = {
   onRestart: () => void;
 };
 
-type Step = { kind: 'scene'; index: number } | { kind: 'verdict'; resultId: string; sent: boolean };
+type Step =
+  { kind: 'scene'; index: number } | { kind: 'verdict'; result: ResultContent; sent: boolean };
 
 /**
  * 플레이 화면 (P00 부터). 지금은 법정 배경(L-01_court) 위에 샘플 장면 흐름을 얹은 임시 화면이다.
@@ -39,9 +41,9 @@ export function PlayScreen({ start, onRestart }: Props) {
       setStep({ kind: 'scene', index: index + 1 });
     } else {
       clearProgress();
-      const resultId = decideResult(next);
+      const { id, content } = decideResult(next);
       // 사이트 안이면 사이트가 결과 페이지로 이동한다. 단독 실행이면 false — 결과를 직접 보여 준다
-      setStep({ kind: 'verdict', resultId, sent: game.sendResult(resultId) });
+      setStep({ kind: 'verdict', result: content, sent: game.sendResult(id, content) });
     }
   }
 
@@ -63,9 +65,11 @@ export function PlayScreen({ start, onRestart }: Props) {
               <p className="hint">결과 페이지로 이동하는 중…</p>
             ) : (
               <>
-                <h1>{step.resultId}</h1>
+                <h1>
+                  {step.result.emoji} {step.result.title}
+                </h1>
                 <p className="hint">
-                  단독 실행 모드 — 사이트 안에서는 이 결과 id가 사이트로 전달됩니다.
+                  단독 실행 모드 — 사이트 안에서는 이 결과가 결과 페이지로 전달됩니다.
                 </p>
                 <button className="primary" onClick={onRestart}>
                   다시 하기
