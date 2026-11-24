@@ -84,3 +84,21 @@ await save('choice', await crop(region(54, 526, 800, 622)), [
   await patch(region(300, 552, 336, 594), 110 - 54, 552 - 526),
 ]);
 await save('diamond', await crop(region(108, 554, 145, 592)));
+
+// 패널 (생각 기록 시트·기록장): 네 모서리 장식은 그대로, 가운데를 늘린다
+await save('panel', await crop(region(864, 536, 1315, 711)));
+
+// 라디오 (빈 동그라미 / 고른 동그라미), 슬라이더 손잡이
+await save('radio', await crop(region(1210, 762, 1260, 814)));
+await save('radio-on', await crop(region(1266, 762, 1318, 814)));
+{
+  // 손잡이 왼쪽에 붙은 트랙 끝은 동그라미 밖이라 가린다
+  const circle = Buffer.from(
+    '<svg width="44" height="44"><circle cx="22" cy="22" r="21" fill="#fff"/></svg>',
+  );
+  const thumb = await sharp(await crop(region(1493, 767, 1537, 811)))
+    .composite([{ input: circle, blend: 'dest-in' }])
+    .png()
+    .toBuffer();
+  await save('thumb', thumb);
+}
