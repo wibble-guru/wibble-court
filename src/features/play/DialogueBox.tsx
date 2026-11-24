@@ -16,7 +16,7 @@ type Props = {
 };
 
 /**
- * 대화창 (UI 키트 큰 패널 + 월계수 이름표).
+ * 대화창 (UI 키트 대화창·이름표 조각을 border-image 로, 월계수 이름표).
  * 이름표는 발언자 역할에 따라 왼쪽(검사·그 외)·오른쪽(변호인)·가운데(재판장)에 서고, 이름 글자는 역할 색.
  * 같은 사람이 이어 말하면 이름표는 그대로 있고(key = 발언자), 사람이 바뀔 때만 들어오는 움직임이 있다.
  */
@@ -42,9 +42,7 @@ export function DialogueBox({ speaker, showNext, onPress, pressLabel, panelRef, 
       {speaker && (
         <div key={speaker} className="nameplate">
           <img className="laurel" src={UI.laurelLeft} alt="" />
-          <span className="plate-frame">
-            <span className="plate-face">{speaker}</span>
-          </span>
+          <span className="plate">{speaker}</span>
           <img className="laurel" src={UI.laurelRight} alt="" />
         </div>
       )}
