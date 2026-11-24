@@ -166,6 +166,10 @@
   word-break: keep-all;
 }
 
+.result-picks p {
+  margin: 0;
+}
+
 .result-picks span,
 .result-facts dt {
   font-size: 13px;

@@ -78,7 +78,10 @@ export function ResultDetails({ analysis, answers, judgment, copy }: Props) {
                   choice && (
                     <li key={pick.key}>
                       <span>{shortTitle(choice.title)}</span>
-                      <Emphasis text={choice.label} />
+                      {/* 한 요소로 감싼다 — li 가 grid 라 글자 조각과 강조가 따로 칸이 되지 않게 */}
+                      <p>
+                        <Emphasis text={choice.label} />
+                      </p>
                     </li>
                   )
                 );
