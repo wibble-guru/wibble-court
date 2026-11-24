@@ -4,25 +4,83 @@
  */
 
 /* 열기 버튼: 화면 오른쪽 위, 키트의 작은 사각 패널 */
-.notebook-button {
+/* ───────── 왼쪽 위: 저울 엠블럼(기록장 버튼) + 장면 제목 막대 (UI 키트) ───────── */
+
+.hud {
   position: absolute;
-  top: max(12px, env(safe-area-inset-top));
-  right: 16px;
+  top: max(10px, env(safe-area-inset-top));
+  left: 16px;
   z-index: 2;
-  min-height: 40px;
-  padding: 0 var(--space-4);
-  border: 1px solid var(--gold);
-  border-radius: 3px;
-  background: color-mix(in srgb, var(--night) 88%, transparent);
-  color: var(--gold-bright);
-  font: inherit;
-  font-size: 14px;
-  font-weight: 700;
+  display: flex;
+  align-items: center;
+  max-width: calc(100% - 32px);
+}
+
+.notebook-button {
+  order: -1;
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 72px;
+  padding: 0;
+  border: 0;
+  background: none;
   cursor: pointer;
 }
 
-.notebook-button:hover {
-  background: color-mix(in srgb, var(--gold) 22%, var(--night));
+.notebook-button img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.notebook-button:hover img {
+  filter: brightness(1.2);
+}
+
+/* 키트 막대(475x110): 왼쪽은 엠블럼 밑으로 들어가고, 오른쪽 마름모 끝은 그대로 */
+.hud-bar {
+  --k: 0.42;
+  min-width: 0;
+  width: clamp(220px, 28vw, 380px);
+  margin: 0 0 0 -16px;
+  padding: 0 calc(72px * var(--k) + 8px) 0 calc(16px + 14px);
+  border: 0 solid transparent;
+  border-image: var(--kit-bar) 20 72 20 24 fill / calc(20px * var(--k)) calc(72px * var(--k))
+    calc(20px * var(--k)) calc(24px * var(--k));
+  line-height: calc(110px * var(--k));
+  color: var(--gold-bright);
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 760px) {
+  .hud {
+    right: 16px;
+  }
+  .notebook-button {
+    width: 58px;
+  }
+  .hud-bar {
+    --k: 0.36;
+    flex: 1;
+    width: auto;
+    max-width: 340px;
+    font-size: 14px;
+  }
+}
+
+@media (max-height: 480px) {
+  .notebook-button {
+    width: 50px;
+  }
+  .hud-bar {
+    --k: 0.32;
+    font-size: 13px;
+  }
 }
 
 .notebook-backdrop {
