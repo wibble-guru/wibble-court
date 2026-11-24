@@ -42,9 +42,21 @@ const ROLE_OF: Record<string, Role> = {
   '마지막 화면': 'narration',
 };
 
-/** 표에 없는 표기 (테스트가 막지만, 혹시 새 대본이 들어오면 내레이션으로) */
+/** 표에 없는 표기(결과 이후 장면의 "검사 차윤호(후속 보고를 읽으며)" 등)는 첫 낱말로 역할을 찾는다. 그래도 없으면 내레이션 */
+const PREFIX_ROLE: [string, Role][] = [
+  ['검사', 'prosecutor'],
+  ['변호인', 'defense'],
+  ['재판장', 'judge'],
+  ['오지안', 'defendant'],
+  ['강도현', 'police'],
+];
+
 export function roleOf(speaker: string): Role {
-  return ROLE_OF[speaker] ?? 'narration';
+  return (
+    ROLE_OF[speaker] ??
+    PREFIX_ROLE.find(([prefix]) => speaker.startsWith(prefix))?.[1] ??
+    'narration'
+  );
 }
 
 export function isKnownSpeaker(speaker: string): boolean {

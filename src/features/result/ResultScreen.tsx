@@ -20,16 +20,15 @@ type Props = {
   analysis: Analysis;
   answers: Partial<Answers>;
   judgment: Partial<Judgment>;
-  /** 대본에 없는 버튼 문구 (사용자 승인: "다음") */
-  nextLabel: string;
-  onNext: () => void;
+  /** 아래 버튼들: 처음엔 [다음](에필로그), 진실 공개 선택 뒤엔 [진실 보기] [처음부터 재판하기] */
+  actions: { label: string; onClick: () => void }[];
 };
 
 /**
  * RESULT (대본 5부). 법정 배경이 사라진 자리에 질문 → 내레이션 → 결과 카드(5.7 템플릿 순서).
  * 판결·사건 이름·퍼센트는 메인에 없다 (5.3). 확신 변화는 ±20 이상일 때 한 줄만 (5.6).
  */
-export function ResultScreen({ analysis, answers, judgment, nextLabel, onNext }: Props) {
+export function ResultScreen({ analysis, answers, judgment, actions }: Props) {
   const [copy, setCopy] = useState<Copy | null>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
 
@@ -139,9 +138,13 @@ export function ResultScreen({ analysis, answers, judgment, nextLabel, onNext }:
 
       <ResultDetails analysis={analysis} answers={answers} judgment={judgment} copy={copy} />
 
-      <button type="button" className="result-next" onClick={onNext}>
-        {nextLabel}
-      </button>
+      <div className="result-actions">
+        {actions.map((action) => (
+          <button key={action.label} type="button" className="result-next" onClick={action.onClick}>
+            {action.label}
+          </button>
+        ))}
+      </div>
     </main>
   );
 }

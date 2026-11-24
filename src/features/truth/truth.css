@@ -1,0 +1,53 @@
+/*
+ * 진실 공개 (TruthFlow). 대사는 본편 대화창(play.css)을 그대로 쓰고, 여기는 TRUTH-GATE·TRUTH-END 의 두 버튼만.
+ * 두 버튼은 같은 크기 — 진실을 보는 쪽을 더 권하지 않는다 (대본: 진실 공개 여부로 사람을 분류하지 않음).
+ */
+
+.truth-actions {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-4);
+  animation: truth-in 0.4s ease-out;
+}
+
+.truth-button {
+  min-width: 14em;
+  min-height: 52px;
+  padding: 0 var(--space-5);
+  border: 1px solid var(--gold);
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--night) 90%, transparent);
+  color: var(--gold-bright);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.truth-button.is-quiet {
+  color: var(--paper);
+  border-color: color-mix(in srgb, var(--gold) 55%, transparent);
+}
+
+.truth-button:hover {
+  background: color-mix(in srgb, var(--gold) 22%, var(--night));
+}
+
+.truth-button:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 3px;
+}
+
+@keyframes truth-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .truth-actions {
+    animation: none;
+  }
+}
