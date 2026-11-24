@@ -4,6 +4,7 @@
  *   장면 시작 → 대사 0..n (연출 줄은 화면에 띄우지 않음) → 질문 0..m → 장면 떠남 → 다음 장면
  *   다음 장면이 데이터에 없으면(엔딩 뒤 RESULT, 5단계) 끝.
  */
+import { backdropAt, type Backdrop } from '@/data/scene-bg';
 import { SCENES, START_SCENE } from '@/data/scenes';
 import {
   answer,
@@ -89,4 +90,12 @@ export function submit(play: Play, input: AnswerInput): { play: Play; missing: s
 /** 고르는 즉시 기록해도 되는 질문인가 (선택 항목 하나뿐). 슬라이더가 섞이면 확정 버튼으로 */
 export function isSingleChoice(prompt: Prompt): boolean {
   return prompt.fields.length === 1 && prompt.fields[0].kind === 'choice';
+}
+
+/** 지금 보일 배경 (질문 단계면 대사가 다 지나간 뒤의 배경). 끝났으면 null */
+export function backdropOf(play: Play): Backdrop | null {
+  const { cursor, story } = play;
+  if (cursor.at === 'end') return null;
+  const lines = visibleLines(cursor.sceneId, story);
+  return backdropAt(cursor.sceneId, lines, cursor.at === 'line' ? cursor.index : lines.length);
 }

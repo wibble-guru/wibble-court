@@ -1,14 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
+import { Backdrop } from '@/components/Backdrop';
 import { SceneBackground } from '@/components/SceneBackground';
-import { FIRST_SCENE_BG } from '@/data/assets';
+import { upcomingBackgrounds } from '@/data/scene-bg';
 import { isThoughtPrompt } from '@/features/thought/thought';
 import { ThoughtRecord } from '@/features/thought/ThoughtRecord';
 import { cx } from '@/lib/cx';
+import { preloadBackground } from '@/lib/preload';
 import { useStory } from '@/store/story';
 import type { AnswerInput } from '@/engine/engine';
 import { DialogueBox } from './DialogueBox';
 import { PromptPanel } from './PromptPanel';
-import { advance, currentPrompt, submit, visibleLines, type Play } from './runner';
+import { advance, backdropOf, currentPrompt, submit, visibleLines, type Play } from './runner';
 import { Emphasis, Typewriter } from './Typewriter';
 import './play.css';
 
@@ -77,6 +79,17 @@ export function PlayScreen({ start, onEnd }: Props) {
     (lineKey ? panelRef.current : titleRef.current)?.focus({ preventScroll: true });
   }, [lineKey, prompt]);
 
+  // 배경: 장면이 바뀌면 다음에 올 수 있는 장면들의 배경을 미리 받는다 (이미 받은 것은 캐시)
+  const sceneId = cursor.at === 'end' ? null : cursor.sceneId;
+  useEffect(() => {
+    if (sceneId) upcomingBackgrounds(sceneId).forEach((id) => void preloadBackground(id));
+  }, [sceneId]);
+  const [backdrop, setBackdrop] = useState(() => backdropOf(start));
+  const current = backdropOf(play);
+  if (current && (current.bg !== backdrop?.bg || current.effect !== backdrop?.effect)) {
+    setBackdrop(current); // 끝(end)에서는 마지막 배경을 그대로 둔 채 암전
+  }
+
   const line = cursor.at === 'line' ? visibleLines(cursor.sceneId, play.story)[cursor.index] : null;
   const thought = prompt !== null && isThoughtPrompt(prompt);
   const promptKey = prompt && cursor.at === 'prompt' ? `${cursor.sceneId}:${prompt.id}` : '';
@@ -84,9 +97,7 @@ export function PlayScreen({ start, onEnd }: Props) {
 
   return (
     <main className="play-screen">
-      <div className="scene-layer">
-        <SceneBackground id={FIRST_SCENE_BG} />
-      </div>
+      {backdrop && <Backdrop bg={backdrop.bg} effect={backdrop.effect} />}
       {/* 생각 기록 질문 동안 재판장 기록장(L-08)이 법정 위로 페이드. 이어지는 생각 기록 사이에는 깜빡이지 않는다 */}
       <div className={cx('scene-layer notebook-layer', thought && 'is-on')} aria-hidden="true">
         <SceneBackground id="L-08_judge-notebook" />

@@ -53,6 +53,40 @@
   }
 }
 
+/*
+ * 장면 배경 전환 (components/Backdrop): 새 그림이 이전 그림 위에서 .scene-bg 의 로드 페이드로 나타난다.
+ * 효과 겹은 opacity 만: dim = 조명 어둡게(C30 통화 재생), vignette = 가장자리 어둡게(판결·엔딩)
+ */
+.backdrop-layer,
+.backdrop-dim,
+.backdrop-vignette {
+  position: absolute;
+  inset: 0;
+}
+
+.backdrop-dim,
+.backdrop-vignette {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.8s ease-in-out;
+}
+
+.backdrop-dim {
+  background: var(--curtain);
+}
+
+.backdrop-dim.is-on {
+  opacity: 0.35;
+}
+
+.backdrop-vignette {
+  background: radial-gradient(ellipse at 50% 45%, transparent 45%, rgb(0 0 0 / 0.7) 100%);
+}
+
+.backdrop-vignette.is-on {
+  opacity: 1;
+}
+
 /* 화면 전환 암전 (App): 시작하면 검게 덮었다가 다음 화면에서 걷힌다. App 의 CURTAIN_MS 와 같은 0.6s */
 .curtain {
   position: fixed;
@@ -71,6 +105,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .scene-bg,
+  .backdrop-dim,
+  .backdrop-vignette,
   .curtain {
     transition: none;
   }
