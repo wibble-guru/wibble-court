@@ -87,4 +87,40 @@ export function bgPortrait(id: BgId): { src: string; focus: string } | null {
   return focus ? { src: `${BASE}assets/bg/${id}-portrait.webp`, focus } : null;
 }
 
-export const UI_IMAGES = [UI.laurelLeft, UI.laurelRight];
+/** 증거 아이콘 (노션 증거물 아이템 시트에서 잘라 낸 픽셀 그림, 96px) — data/evidence.ts 가 증거 id 와 잇는다 */
+export type IconId =
+  | 'I-01_recorder'
+  | 'I-02_statement'
+  | 'I-03_call-phone'
+  | 'I-04_voice-analysis'
+  | 'I-05_laptop'
+  | 'I-06_timeline'
+  | 'I-07_sealed-envelope'
+  | 'I-08_anon-phone'
+  | 'I-09_usb'
+  | 'I-10_message-phone';
+
+export const iconSrc = (id: IconId) => `${BASE}assets/icons/${id}.webp`;
+
+/** 메시지 증거 화면 (E50): 말풍선 2개짜리 폰 */
+export const MODAL = { twoBubbles: `${BASE}assets/modal/M-01_two-bubbles.webp` };
+
+const ICON_IDS: IconId[] = [
+  'I-01_recorder',
+  'I-02_statement',
+  'I-03_call-phone',
+  'I-04_voice-analysis',
+  'I-05_laptop',
+  'I-06_timeline',
+  'I-07_sealed-envelope',
+  'I-08_anon-phone',
+  'I-09_usb',
+  'I-10_message-phone',
+];
+
+export const UI_IMAGES = [
+  UI.laurelLeft,
+  UI.laurelRight,
+  ...ICON_IDS.map(iconSrc),
+  MODAL.twoBubbles,
+];
