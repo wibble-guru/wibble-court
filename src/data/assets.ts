@@ -63,6 +63,10 @@ const KIT_PARTS = [
   'gem',
   'choice',
   'diamond',
+  'panel',
+  'radio',
+  'radio-on',
+  'thumb',
 ] as const;
 const kitSrc = (part: (typeof KIT_PARTS)[number]) => `${BASE}assets/ui/kit-${part}.webp`;
 export const KIT = { emblem: kitSrc('emblem'), gem: kitSrc('gem') };
