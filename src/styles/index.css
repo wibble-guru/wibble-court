@@ -86,110 +86,159 @@
   position: relative;
   height: 100%;
   display: grid;
-  place-items: center;
+  justify-items: center;
+  align-items: end; /* 대사·질문은 화면 아래쪽 */
   padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
 }
 
-.title {
-  display: grid;
-  justify-items: center;
-  gap: 12px;
-  text-align: center;
-}
-
-.title h1 {
-  margin: 0;
-  font-size: clamp(32px, 7vmin, 64px);
-}
-
-.eyebrow {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  color: var(--primary);
-}
-
+/* 사이트 연결 대기 문구 (main.tsx) */
 .hint {
   margin: 0;
   color: var(--ink-2);
 }
 
-.primary {
-  display: inline-flex;
-  align-items: center;
-  text-decoration: none;
-  margin-top: 12px;
-  min-height: 52px;
-  padding: 0 28px;
-  border: 0;
-  border-radius: 14px;
-  background: var(--primary);
-  color: var(--primary-ink);
-  font-weight: 700;
-  font-size: 17px;
+/*
+ * 플레이 화면 대사·질문 (features/play/PlayScreen). 임시 모양 — UI 키트 대화창은 3a-2.
+ * 배경 그림 위라 테마와 상관없이 법정 토큰(--night, --gold, --paper, --mist)을 쓴다.
+ */
+.play-line,
+.play-prompt {
+  width: min(100%, 880px);
+  max-height: 100%;
+  overflow-y: auto;
+  padding: var(--space-5);
+  border: 1px solid var(--gold);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--night) 92%, transparent);
+  color: var(--paper);
 }
 
-.scene {
-  width: min(100%, 560px);
+.play-line {
   display: grid;
-  gap: 16px;
-}
-
-.progress {
-  margin: 0;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--ink-2);
-}
-
-.dialogue {
-  padding: 20px;
-  border-radius: 16px;
-  background: var(--surface);
-  border: 1px solid var(--line);
-}
-
-.speaker {
-  margin: 0 0 6px;
-  font-weight: 700;
-  color: var(--primary);
-}
-
-.line {
-  margin: 0;
-  font-size: 18px;
-  line-height: 1.55;
-}
-
-.choices {
-  display: grid;
-  gap: 10px;
-}
-
-.choices button {
-  min-height: 52px;
-  padding: 12px 16px;
-  border-radius: 12px;
-  border: 1px solid var(--line);
-  background: var(--surface);
-  color: var(--ink);
+  gap: var(--space-2);
+  min-height: 160px;
+  align-content: start;
   text-align: left;
-  font-size: 16px;
+  font: inherit;
+  cursor: pointer;
 }
 
-.choices button:hover {
-  border-color: var(--primary);
+.play-speaker {
+  justify-self: start;
+  padding: 2px var(--space-3);
+  border-radius: 4px;
+  background: var(--plate);
+  color: var(--gold-bright);
+  font-size: 14px;
+  font-weight: 700;
 }
 
-/* 가로 화면(PC 16:9, 전체화면): 대사와 선택지를 양옆으로 */
-@media (min-aspect-ratio: 5/4) {
-  .scene {
-    width: min(100%, 960px);
-    grid-template-columns: 1.2fr 1fr;
-    align-items: end;
-  }
-  .progress {
-    grid-column: 1 / -1;
-  }
+.play-text {
+  font-size: clamp(17px, 2.4vmin, 21px);
+  line-height: 1.65;
+  word-break: keep-all;
+}
+
+.play-prompt {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.play-prompt h2 {
+  margin: 0;
+  font-size: clamp(18px, 2.6vmin, 22px);
+  color: var(--gold-bright);
+  outline: none;
+}
+
+.play-memo {
+  margin: 0;
+  color: var(--mist);
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+.play-field {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.play-field legend,
+.play-slider > span:first-child {
+  margin-bottom: var(--space-2);
+  padding: 0;
+  font-weight: 700;
+  color: var(--paper);
+}
+
+.play-options {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.play-options button,
+.play-confirm {
+  min-height: 48px;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--gold) 60%, transparent);
+  border-radius: 4px;
+  background: var(--plate);
+  color: var(--paper);
+  font: inherit;
+  text-align: left;
+  line-height: 1.5;
+  word-break: keep-all;
+  cursor: pointer;
+}
+
+.play-options button:hover,
+.play-options button[aria-pressed='true'] {
+  border-color: var(--gold-bright);
+  background: color-mix(in srgb, var(--gold) 25%, var(--plate));
+}
+
+.play-slider-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.play-slider input {
+  flex: 1;
+  accent-color: var(--gold);
+}
+
+.play-slider output {
+  min-width: 3ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+}
+
+.play-slider small {
+  color: var(--mist);
+  line-height: 1.5;
+}
+
+.play-confirm {
+  justify-self: end;
+  text-align: center;
+  font-weight: 700;
+  border-color: var(--gold);
+}
+
+.play-confirm:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.play-line:focus-visible,
+.play-options button:focus-visible,
+.play-confirm:focus-visible,
+.play-slider input:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 2px;
 }
