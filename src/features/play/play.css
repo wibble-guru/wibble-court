@@ -28,7 +28,7 @@
   gap: var(--gap);
   width: min(100%, 1280px);
   margin: 0 auto;
-  /* 위쪽은 왼쪽 위 기록장·장면 제목, 오른쪽 위 증거 상자 자리 (--hud-h). 시안처럼 대화창이 화면 폭 91% */
+  /* 위쪽은 왼쪽 위 기록장·장면 제목과 그 아래 증거 상자 자리 (--hud-h). 시안처럼 대화창이 화면 폭 91% */
   padding: calc(var(--hud-h) + env(safe-area-inset-top)) max(16px, 4.5%)
     max(28px, env(safe-area-inset-bottom));
   font-size: clamp(16px, 2.5vmin, 20px);

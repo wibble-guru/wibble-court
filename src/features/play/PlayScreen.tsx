@@ -42,7 +42,7 @@ const UI_COPY = { nextLine: '다음 대사', confirm: '기록하기' };
  * - 법정 질문: 대화창에 질문 제목·메모, 선택지는 PC 오른쪽 열·모바일 세로 대화창 위
  * - 생각 기록 질문(Q0, M65 …): 기록장 배경 위 종이 한 장 (features/thought)
  * - 왼쪽 위 저울 엠블럼(기록장, features/notebook) + 장면 제목 막대. 기록장이 열려 있는 동안 대사 넘김을 막는다
- * - 오른쪽 위 증거 상자 (features/evidence). 칸·갈매기를 누르면 증거 모달, 떠 있는 동안 대사 넘김을 막는다
+ * - 왼쪽 위 장면 제목 아래 증거 상자 (features/evidence). 칸·갈매기를 누르면 증거 모달, 떠 있는 동안 대사 넘김을 막는다
  * 바뀔 때마다 이어하기용으로 저장하고, 끝나면 저장을 지운다.
  */
 export function PlayScreen({ start, onEnd }: Props) {

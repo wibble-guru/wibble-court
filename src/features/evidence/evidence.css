@@ -7,15 +7,19 @@
   image-rendering: pixelated;
 }
 
-/* ───────── 증거 상자: 오른쪽 위, 키트 아이템 막대(994x175) — 오른쪽 갈매기 = 목록 버튼 ───────── */
+/*
+ * ───────── 증거 상자: 왼쪽 위 기록장 엠블럼·장면 제목 아래, 키트 아이템 막대(994x175) — 오른쪽 갈매기 = 목록 버튼 ─────────
+ * 오른쪽 위는 사이트가 전체화면에서 "전체화면 나가기" 버튼을 띄우는 자리라 비워 둔다 (#61).
+ * top = 엠블럼 위치(notebook.css .hud) + 엠블럼 높이(폭 x 167/170) + 간격
+ */
 
 .evidence-bar {
   --k: 0.42;
   --slot: 48px;
   --icon: 38px;
   position: absolute;
-  top: max(14px, env(safe-area-inset-top));
-  right: 16px;
+  top: calc(max(10px, env(safe-area-inset-top)) + 76px);
+  left: 16px;
   z-index: 2;
   max-width: calc(100% - 32px);
   padding: calc(34px * var(--k)) calc(88px * var(--k)) calc(34px * var(--k)) calc(50px * var(--k));
@@ -92,7 +96,7 @@
   background: radial-gradient(closest-side, rgb(255 220 150 / 0.25), transparent);
 }
 
-/* 세로 화면: 위 막대 아래 줄 오른쪽 */
+/* 세로 화면: 엠블럼(58px) 아래 */
 @media (max-width: 760px) {
   .evidence-bar {
     --k: 0.34;
@@ -102,13 +106,13 @@
   }
 }
 
-/* 낮은 가로 화면 */
+/* 낮은 가로 화면: 엠블럼(50px) 아래 */
 @media (max-height: 480px) {
   .evidence-bar {
     --k: 0.32;
     --slot: 36px;
     --icon: 28px;
-    top: max(8px, env(safe-area-inset-top));
+    top: calc(max(10px, env(safe-area-inset-top)) + 54px);
   }
 }
 
