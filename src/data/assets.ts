@@ -76,10 +76,14 @@ export const KIT = { emblem: kitSrc('emblem'), gem: kitSrc('gem') };
 
 /**
  * 키트 조각을 CSS 변수(--kit-dialog 등)로. 플레이·진실 공개 화면의 main 에 건다.
- * CSS 안에 경로를 쓰면 상대 경로 빌드(base './')에서 어긋나서 여기서 넣는다
+ * CSS 안에 경로를 쓰면 상대 경로 빌드(base './')에서 어긋나서 여기서 넣는다.
+ * 변수 안의 상대 url 은 그 변수를 쓰는 스타일시트(assets/index-*.css) 기준으로 풀리므로
+ * ("./assets/ui/…" → "/assets/assets/ui/…") 문서 주소 기준의 절대 주소로 바꿔 넣는다.
  */
+const absolute = (src: string) =>
+  typeof document === 'undefined' ? src : new URL(src, document.baseURI).href;
 export const KIT_VARS = Object.fromEntries(
-  KIT_PARTS.map((part) => [`--kit-${part}`, `url("${kitSrc(part)}")`]),
+  KIT_PARTS.map((part) => [`--kit-${part}`, `url("${absolute(kitSrc(part))}")`]),
 );
 
 /** 배경 큰 버전의 실제 폭 (원본이 1672px 라 1920 으로 키우지 않음) */
