@@ -5,21 +5,22 @@ import { KIT_VARS } from '@/data/assets';
 import { INSERTS } from '@/data/evidence';
 import { sceneTitle } from '@/data/scene-title';
 import { JUDGE_AT_PROMPT } from '@/data/characters';
-import { upcomingBackgrounds } from '@/data/scene-bg';
+import { poseAt, poseSrcsIn } from '@/data/line-poses';
+import { nextScenes, upcomingBackgrounds } from '@/data/scene-bg';
 import { SCENES } from '@/data/scenes';
 import { EvidenceBar } from '@/features/evidence/EvidenceBar';
 import { EvidenceInsert } from '@/features/evidence/EvidenceInsert';
-import { EvidenceModal } from '@/features/evidence/EvidenceModal';
 import { Epilogue } from '@/features/epilogue/Epilogue';
 import { Notebook } from '@/features/notebook/Notebook';
 import { loadResultCopy } from '@/features/result/ResultScreen';
 import { isThoughtPrompt } from '@/features/thought/thought';
 import { ThoughtRecord } from '@/features/thought/ThoughtRecord';
 import { cx } from '@/lib/cx';
-import { preloadBackground } from '@/lib/preload';
+import { preloadBackground, preloadImage } from '@/lib/preload';
 import { useStory } from '@/store/story';
 import type { AnswerInput } from '@/engine/engine';
 import type { EvidenceId } from '@/engine/types';
+import type { EvidenceModal as EvidenceModalComponent } from '@/features/evidence/EvidenceModal';
 import { DialogueBox } from './DialogueBox';
 import { PromptPanel } from './PromptPanel';
 import { advance, backdropOf, currentPrompt, submit, visibleLines, type Play } from './runner';
@@ -58,6 +59,8 @@ export function PlayScreen({ start, onEnd }: Props) {
   const [evidenceView, setEvidenceView] = useState<{ id: EvidenceId | null } | null>(null);
   const closeEvidence = useCallback(() => setEvidenceView(null), []);
   const modalOpen = notebookOpen || evidenceView !== null;
+  /** 증거 모달은 별도 청크 (본편 번들 50KB 한도, 계획서 71) — 첫 증거가 생기면 미리 받아 둔다 */
+  const [EvidenceModal, setEvidenceModal] = useState<typeof EvidenceModalComponent | null>(null);
 
   // 진행할 때마다 저장. 끝(엔딩 뒤 RESULT, 에필로그 뒤)도 저장해 두고 App 이 다음 화면을 정한다
   useEffect(() => {
@@ -100,6 +103,11 @@ export function PlayScreen({ start, onEnd }: Props) {
   const sceneId = cursor.at === 'end' ? null : cursor.sceneId;
   useEffect(() => {
     if (sceneId) upcomingBackgrounds(sceneId).forEach((id) => void preloadBackground(id));
+    // 인물 포즈: 이 장면과 다음에 올 수 있는 장면에서 쓰는 포즈 그림만 (계획서 71)
+    if (sceneId)
+      [sceneId, ...nextScenes(sceneId)]
+        .flatMap(poseSrcsIn)
+        .forEach((src) => void preloadImage(src));
     // 결과 문구는 별도 청크 — 최후 변론(J100)부터 미리 받아 둔다
     if (sceneId === 'J100' || sceneId === 'J110') void loadResultCopy();
   }, [sceneId]);
@@ -110,10 +118,19 @@ export function PlayScreen({ start, onEnd }: Props) {
   }
 
   const line = cursor.at === 'line' ? visibleLines(cursor.sceneId, play.story)[cursor.index] : null;
+  /** 지금 대사의 대본 줄 번호 (조건부 대사를 빼고 보여 주므로 화면 순번과 다를 수 있다) */
+  const lineIndex = line && sceneId ? (SCENES[sceneId]?.lines.indexOf(line) ?? -1) : -1;
 
   // 증거: 이미 얻은 것 + 지금 장면에서 얻는 것 (장면에 들어가는 순간 나타남)
   const sceneGain = sceneId ? (SCENES[sceneId]?.gain ?? []) : [];
   const evidence = [...new Set([...play.story.acquired, ...sceneGain])];
+  const hasEvidence = evidence.length > 0;
+  useEffect(() => {
+    if (!hasEvidence || EvidenceModal) return;
+    void import('@/features/evidence/EvidenceModal').then((m) =>
+      setEvidenceModal(() => m.EvidenceModal),
+    );
+  }, [hasEvidence, EvidenceModal]);
   // 증거 화면: 정해진 대사부터 그 장면의 대사가 끝날 때까지 (질문 단계에서는 숨김)
   const cue = cursor.at === 'line' ? INSERTS[cursor.sceneId as keyof typeof INSERTS] : undefined;
   const cueAt =
@@ -140,6 +157,7 @@ export function PlayScreen({ start, onEnd }: Props) {
         {line && !epilogue && (
           <DialogueBox
             speaker={line.speaker}
+            pose={sceneId ? poseAt(sceneId, lineIndex) : 0}
             showNext={done}
             onPress={press}
             pressLabel={UI_COPY.nextLine}
@@ -193,7 +211,7 @@ export function PlayScreen({ start, onEnd }: Props) {
       ) : (
         <>
           <EvidenceBar ids={evidence} onOpen={(id) => setEvidenceView({ id })} />
-          {evidenceView && (
+          {evidenceView && EvidenceModal && (
             <EvidenceModal
               ids={evidence}
               view={evidenceView.id}
@@ -203,7 +221,7 @@ export function PlayScreen({ start, onEnd }: Props) {
                   ? {
                       sceneId,
                       // 대사 단계는 지금 대사까지, 질문 단계는 장면 끝까지 (대본 줄 번호)
-                      upTo: line ? (SCENES[sceneId]?.lines.indexOf(line) ?? -1) : Infinity,
+                      upTo: line ? lineIndex : Infinity,
                     }
                   : null
               }

@@ -1,11 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { Backdrop } from '@/components/Backdrop';
 import { KIT_VARS, type BgId } from '@/data/assets';
+import { portraitOf, portraitSrc } from '@/data/characters';
 import type * as TruthModule from '@/data/truth/truth';
 import type { StoryState } from '@/engine/types';
 import { EvidenceInsert } from '@/features/evidence/EvidenceInsert';
 import { DialogueBox } from '@/features/play/DialogueBox';
 import { Typewriter } from '@/features/play/Typewriter';
+import { preloadImage } from '@/lib/preload';
 import './truth.css';
 
 export type Truth = typeof TruthModule;
@@ -64,6 +66,15 @@ export function TruthFlow({
   const isGate = scene.id === 'TRUTH-GATE';
   const isEnd = sceneIndex === scenes.length - 1;
 
+  // 진실 공개에서 쓰는 포즈 그림을 처음에 한 번 미리 받는다 (11장 안팎)
+  useEffect(() => {
+    for (const s of scenes)
+      for (const l of s.lines) {
+        const p = l.pose ? portraitOf(l.speaker) : null;
+        if (p) void preloadImage(portraitSrc(p.id, l.pose));
+      }
+  }, [scenes]);
+
   const reveal = useCallback(() => setRevealed(true), []);
   const press = useCallback(() => {
     if (!line) return;
@@ -105,6 +116,7 @@ export function TruthFlow({
         {line && (
           <DialogueBox
             speaker={line.speaker || undefined}
+            pose={line.pose}
             showNext={revealed}
             onPress={press}
             pressLabel={nextLabel}

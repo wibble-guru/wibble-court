@@ -1,4 +1,5 @@
 import type { ComponentChildren, Ref } from 'preact';
+import { useState } from 'preact/hooks';
 import { UI } from '@/data/assets';
 import { type Portrait, portraitOf, portraitSrc } from '@/data/characters';
 import { roleOf, sideOf } from '@/data/speakers';
@@ -13,6 +14,8 @@ type Props = {
   /** 보조기기용 버튼 이름 꼬리 (대사 뒤에 읽힘) */
   pressLabel?: string;
   panelRef?: Ref<HTMLButtonElement>;
+  /** 발언자의 포즈 (data/line-poses, 0 기본) */
+  pose?: number;
   /** 발언자 없이 세울 인물 (질문 단계의 재판장) */
   figure?: Portrait;
   children: ComponentChildren;
@@ -22,6 +25,7 @@ type Props = {
  * 대화창 (UI 키트 대화창·이름표 조각을 border-image 로, 월계수 이름표) + 말하는 인물 그림.
  * 이름표는 발언자 역할에 따라 왼쪽(검사·그 외)·오른쪽(변호인)·가운데(재판장)에 서고, 이름 글자는 역할 색.
  * 같은 사람이 이어 말하면 이름표는 그대로 있고(key = 발언자), 사람이 바뀔 때만 들어오는 움직임이 있다.
+ * 인물 그림은 대사마다 포즈가 바뀐다 (계획서 71): 사람이 바뀌면 옆에서 들어오고, 같은 사람의 포즈만 바뀌면 짧게 겹쳐 바뀐다.
  */
 export function DialogueBox({
   speaker,
@@ -29,12 +33,22 @@ export function DialogueBox({
   onPress,
   pressLabel,
   panelRef,
+  pose = 0,
   figure,
   children,
 }: Props) {
   const role = speaker ? roleOf(speaker) : 'narration';
   const side = sideOf(role);
-  const portrait = portraitOf(speaker) ?? figure ?? null;
+  const speakerPortrait = portraitOf(speaker);
+  const portrait = speakerPortrait ? { ...speakerPortrait, pose } : (figure ?? null);
+  // 그림이 바뀐 차례: 사람이 바뀌면 0(옆에서 들어옴), 같은 사람의 포즈만 바뀌면 1, 2, … (겹쳐 바뀜)
+  const imageKey = portrait ? `${portrait.id}-${portrait.pose ?? 0}` : null;
+  const [shown, setShown] = useState({ id: portrait?.id ?? null, key: imageKey, step: 0 });
+  if (shown.key !== imageKey) {
+    const id = portrait?.id ?? null;
+    setShown({ id, key: imageKey, step: id !== null && id === shown.id ? shown.step + 1 : 0 });
+  }
+  const samePerson = shown.key === imageKey && shown.step > 0;
   const face = (
     <span className="dialogue-face">
       {children}
@@ -51,13 +65,13 @@ export function DialogueBox({
 
   return (
     <div className="dialogue" data-side={side} style={{ '--role': `var(--role-${role})` }}>
-      {/* 말하는 인물 (그림이 있는 발언자만). 사람이 바뀔 때만 들어오는 움직임 (key = 인물) */}
+      {/* 말하는 인물 (그림이 있는 발언자만). key = 인물·포즈 — 사람이 바뀌면 들어오고, 포즈만 바뀌면 겹쳐 바뀜 */}
       {portrait && (
         <img
-          key={portrait.id}
-          className="portrait"
+          key={imageKey}
+          className={samePerson ? 'portrait is-swap' : 'portrait'}
           data-side={portrait.side}
-          src={portraitSrc(portrait.id)}
+          src={portraitSrc(portrait.id, portrait.pose)}
           alt=""
           draggable={false}
         />

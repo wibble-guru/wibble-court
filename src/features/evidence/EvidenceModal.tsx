@@ -13,8 +13,7 @@ import { SCENES } from '@/data/scenes';
 import type { EvidenceId, SceneId } from '@/engine/types';
 import { Emphasis } from '@/features/play/Typewriter';
 
-/** 대본에 없는 화면 문구 (계획서 55 승인: 목록·닫기, 갈매기 버튼 이름) */
-export const EVIDENCE_COPY = { list: '증거 목록', back: '목록', close: '닫기' };
+import { EVIDENCE_COPY } from './copy';
 
 type Props = {
   /** 얻은 증거 (증거 상자와 같은 순서) */
