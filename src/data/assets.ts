@@ -156,7 +156,7 @@ export const UI_IMAGES = [
   UI.laurelLeft,
   UI.laurelRight,
   ...KIT_PARTS.map(kitSrc),
-  ...CHARACTER_IDS.map(portraitSrc),
+  ...CHARACTER_IDS.map((id) => portraitSrc(id)), // 기본 그림만. 포즈는 장면마다 (line-poses)
   ...ICON_IDS.map(iconSrc),
   MODAL.twoBubbles,
 ];

@@ -99,10 +99,10 @@ export function backdropAt(sceneId: SceneId, lines: Line[], index: number): Back
   return SCENE_BG[sceneId];
 }
 
-/** 이 장면 안과 다음에 올 수 있는 장면들의 배경 (미리 받기용, 중복 없음) */
-export function upcomingBackgrounds(sceneId: SceneId): BgId[] {
+/** 이 장면 다음에 올 수 있는 장면들 (선택지의 next, 없으면 장면의 next, 판결이면 엔딩 전부) */
+export function nextScenes(sceneId: SceneId): SceneId[] {
   const scene = SCENES[sceneId];
-  if (!scene || !isMain(sceneId)) return [];
+  if (!scene) return [];
   const next = new Set<SceneId>();
   for (const prompt of scene.prompts ?? []) {
     for (const field of prompt.fields) {
@@ -113,6 +113,13 @@ export function upcomingBackgrounds(sceneId: SceneId): BgId[] {
     if (typeof scene.next === 'string') next.add(scene.next);
     else ENDING_IDS.forEach((id) => next.add(id));
   }
+  return [...next];
+}
+
+/** 이 장면 안과 다음에 올 수 있는 장면들의 배경 (미리 받기용, 중복 없음) */
+export function upcomingBackgrounds(sceneId: SceneId): BgId[] {
+  if (!SCENES[sceneId] || !isMain(sceneId)) return [];
+  const next = nextScenes(sceneId);
   const bgs = new Set<BgId>();
   const cue = CUES[sceneId];
   if (cue) bgs.add(cue.to.bg);

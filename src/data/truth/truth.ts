@@ -14,6 +14,8 @@ export type TruthLine = {
   kind?: 'direction';
   /** TRUTH-END 의 판결별 후일담 */
   when?: 'GUILTY' | 'NOT_GUILTY';
+  /** 말하는 인물의 포즈 (계획서 71, 0 기본 · 1~6 포즈 그림). 본편은 data/line-poses */
+  pose?: number;
 };
 
 export type TruthScene = {
@@ -96,7 +98,7 @@ export const TRUTH_SCENES: TruthScene[] = [
     lines: [
       { speaker: '연출', text: '사건 당시 메시지 두 개가 다시 등장한다.', kind: 'direction' },
       { speaker: '발신자 불명', text: '네가 경찰서에 가면, 그 뒤에는 아무 일도 없을 거야.' },
-      { speaker: '오지안', text: '알았어. 약속은 지켜. 그 사람은 건드리지 마.' },
+      { speaker: '오지안', pose: 1, text: '알았어. 약속은 지켜. 그 사람은 건드리지 마.' },
       {
         speaker: '나레이션',
         text: '오지안이 경찰서에 간 것은 누군가와 살인을 공모한 약속 때문일까요?',
@@ -107,10 +109,12 @@ export const TRUTH_SCENES: TruthScene[] = [
       },
       {
         speaker: '검사 차윤호(후속 보고를 읽으며)',
+        pose: 1,
         text: '익명 메시지의 목적은 피고인에게 살인을 맡기는 것이 아니었습니다. 오지안을 방송국 밖으로 내보내는 것이었습니다.',
       },
       {
         speaker: '변호인 문하경',
+        pose: 3,
         text: '오지안은 그 메시지를 위협으로 받아들였습니다. 누가 보낸 것인지는 몰랐습니다.',
       },
       {
@@ -119,6 +123,7 @@ export const TRUTH_SCENES: TruthScene[] = [
       },
       {
         speaker: '오지안(후속 진술)',
+        pose: 4,
         text: '처음에는 그냥 위험하다고 신고했어요. 사람들이 제 말을 믿지 않는 것 같았어요. 그 사람이 살아 있는지 먼저 확인하게 만들고 싶어서 제가 죽였다고 했습니다.',
       },
       {
@@ -139,6 +144,7 @@ export const TRUTH_SCENES: TruthScene[] = [
       },
       {
         speaker: '오지안(당시 상황 회상)',
+        pose: 2,
         text: '그 방송에 나온 자료에는 익명 제보자를 알아볼 수 있는 부분이 있었어요. 그걸 그대로 내보내면 그 사람이 위험해질 수도 있다고 생각했습니다.',
       },
       {
@@ -155,10 +161,12 @@ export const TRUTH_SCENES: TruthScene[] = [
       },
       {
         speaker: '검사',
+        pose: 1,
         text: '민태성은 그 방송의 편집 과정에 조작이 있었다는 사실을 바로잡으려 했습니다.',
       },
       {
         speaker: '변호인',
+        pose: 5,
         text: '그 자료가 공개되는 것을 두려워할 이유는 오지안에게만 있었던 것이 아니군요.',
       },
     ],
@@ -189,10 +197,12 @@ export const TRUTH_SCENES: TruthScene[] = [
       },
       {
         speaker: '검사',
+        pose: 5,
         text: '처음에 한유라가 목격자로 했던 말 중에는 실제로 들은 부분도 있었습니다. 문제는 그 말의 일부를 자신에게 유리하도록 해석하고 불리한 사실을 숨겼다는 겁니다.',
       },
       {
         speaker: '변호인',
+        pose: 3,
         text: '피고인의 행동이 이상하다는 사실만으로 피고인의 범행이 입증되는 것은 아니었습니다.',
       },
       {
@@ -236,10 +246,12 @@ export const TRUTH_SCENES: TruthScene[] = [
       },
       {
         speaker: '검사 차윤호',
+        pose: 5,
         text: '당시 제출된 정황으로는 의심을 제기할 이유가 있었습니다. 다만 그 의심을 넘어서는 입증이 있었는지, 지금 다시 돌아봐야겠군요.',
       },
       {
         speaker: '변호인 문하경',
+        pose: 4,
         text: '진상이 밝혀졌다고 해도, 재판 당시 없었던 자료를 근거로 그때의 판단을 단순하게 평가할 수는 없습니다.',
       },
     ],
