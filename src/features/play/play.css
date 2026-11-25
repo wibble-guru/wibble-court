@@ -64,14 +64,12 @@
 }
 
 /*
- * 말하는 인물 (data/characters, 노션 캐릭터 시트의 상반신 일러스트).
- * 대화창 뒤 왼쪽/오른쪽 끝에 서고 아랫부분은 대화창 뒤로 들어간다 (그림 아래가 잘린 상반신이라).
- * 오른쪽 인물은 좌우를 뒤집어 잘린 세로 가장자리가 화면 바깥쪽에 오게 한다.
+ * 말하는 인물 (data/characters, 노션 캐릭터 시트의 플레이용 전신 일러스트를 머리~허벅지로 자름).
+ * 대화창 뒤 왼쪽/오른쪽 끝에 서고 아랫부분은 대화창 뒤로 들어간다 (그림 아래가 잘려 있어서).
  * 사람이 바뀔 때만 옆에서 들어온다 (key = 인물). 녹음 속 목소리는 반투명
  */
 .portrait {
   --h: min(66vh, 560px);
-  --flip: 1;
   --from: -28px;
   position: absolute;
   bottom: calc(100% - var(--h) * 0.24);
@@ -80,7 +78,6 @@
   width: auto;
   pointer-events: none;
   filter: drop-shadow(0 8px 14px rgb(0 0 0 / 0.5));
-  transform: scaleX(var(--flip));
   animation: portrait-in 0.28s ease-out;
 }
 
@@ -89,7 +86,6 @@
 }
 
 .portrait[data-side='right'] {
-  --flip: -1;
   --from: 28px;
   right: 0;
 }
@@ -101,7 +97,7 @@
 @keyframes portrait-in {
   from {
     opacity: 0;
-    transform: translateX(var(--from)) scaleX(var(--flip));
+    transform: translateX(var(--from));
   }
 }
 
