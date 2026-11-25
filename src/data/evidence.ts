@@ -67,18 +67,6 @@ export const INSERTS: Partial<Record<TrialSceneId, InsertCue>> = {
   },
 };
 
-/**
- * 증거 모달에서 다시 보는 증거 화면 (계획서 55). 그 증거를 다루는 장면의 증거 화면.
- * 화면이 없는 증거는 그림·이름·얻은 장면만 보인다.
- */
-export const REPLAY: Partial<Record<EvidenceId, TrialSceneId>> = {
-  'confession-audio': 'A10',
-  'call-2212': 'C30',
-  'anon-messages': 'E50',
-  'text-2154': 'F60',
-  timeline: 'G70',
-};
-
 /** 지나온 장면(visited, 지금 장면 포함) 가운데 이 증거를 얻은 첫 장면 */
 export function gainedAt(
   id: EvidenceId,

@@ -134,7 +134,7 @@
 .evidence-modal {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
-  width: min(100%, 520px);
+  width: min(100%, 600px);
   max-height: 100%;
   /* 키트 패널 테두리 무늬(24px) 안쪽에 내용이 오도록 */
   padding: 20px 22px;
@@ -180,54 +180,128 @@
   outline-offset: 2px;
 }
 
-/* 한 개 보기 */
-.evidence-detail {
-  display: grid;
-  justify-items: center;
-  gap: var(--space-2);
-  padding: var(--space-4) var(--space-3) var(--space-5);
-  overflow-y: auto;
-  text-align: center;
-  animation: evidence-modal-in 0.2s ease-out;
+/* 한 개 보기: 머리(작은 그림 + 종류 + 이름) / 얻은 장면 / 기록 / 안내 + 목록 */
+.evidence-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
 }
 
-.evidence-detail-icon {
+.evidence-heading-icon {
   display: grid;
+  flex: none;
   place-items: center;
-  width: 132px;
-  height: 132px;
+  width: 52px;
+  height: 52px;
   border: 0 solid transparent;
-  border-image: var(--kit-slot) 16 / 12px;
+  border-image: var(--kit-slot) 16 / 7px;
   background: #16151d;
   background-clip: padding-box;
 }
 
-.evidence-detail-icon img {
-  width: 104px;
-  height: 104px;
+.evidence-heading-icon img {
+  width: 40px;
+  height: 40px;
+}
+
+.evidence-kind {
+  margin: 0;
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .evidence-detail-name {
-  margin: var(--space-2) 0 0;
+  margin: 2px 0 0;
   color: var(--paper);
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.evidence-modal-head:has(.evidence-heading) {
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
+}
+
+.evidence-detail {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: var(--space-3);
+  min-height: 0;
+  padding: var(--space-3) var(--space-2) var(--space-1);
+  animation: evidence-modal-in 0.2s ease-out;
 }
 
 .evidence-detail-scene {
   margin: 0;
-  color: color-mix(in srgb, var(--gold-bright) 80%, transparent);
+  color: color-mix(in srgb, var(--paper) 70%, transparent);
   font-size: 14px;
 }
 
-/* 모달 안 증거 화면: 화면 위에 겹치지 않고 내용 흐름 안에 */
-.evidence-insert.is-inline {
-  position: static;
-  margin-top: var(--space-3);
-  transform: none;
-  pointer-events: auto;
-  animation: none;
+/* 기록: 진술서 종이 위 발언자 | 대사 */
+.evidence-record {
+  display: grid;
+  gap: var(--space-3);
+  min-height: 0;
+  margin: 0;
+  padding: var(--space-4) var(--space-5);
+  overflow-y: auto;
+  border: 1px solid #d8cfbf;
+  border-radius: 4px;
+  background: #f6f1e7;
+  color: #24212a;
+  list-style: none;
+}
+
+.evidence-record li {
+  display: grid;
+  grid-template-columns: 7.5em minmax(0, 1fr);
+  gap: var(--space-3);
+  align-items: baseline;
+}
+
+.evidence-record-who {
+  color: #5b4a36;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.5;
+  word-break: keep-all;
+}
+
+.evidence-record p {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+
+.evidence-record li.is-direction {
+  display: block;
+  color: #6f6658;
+  font-size: 13px;
+  font-style: italic;
+  text-align: center;
+}
+
+.evidence-record:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+.evidence-detail-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.evidence-note {
+  margin: 0;
+  color: color-mix(in srgb, var(--paper) 60%, transparent);
+  font-size: 13px;
 }
 
 /* 목록 */
@@ -264,17 +338,23 @@
   filter: brightness(1.25);
 }
 
+/* 좁은 화면: 발언자를 대사 위로 */
+@media (max-width: 520px) {
+  .evidence-record {
+    padding: var(--space-3) var(--space-4);
+  }
+  .evidence-record li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+}
+
 @media (max-height: 480px) {
+  .evidence-detail-name {
+    font-size: 18px;
+  }
   .evidence-detail {
-    padding-block: var(--space-2) var(--space-3);
-  }
-  .evidence-detail-icon {
-    width: 88px;
-    height: 88px;
-  }
-  .evidence-detail-icon img {
-    width: 68px;
-    height: 68px;
+    gap: var(--space-2);
   }
 }
 
