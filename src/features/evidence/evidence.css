@@ -8,20 +8,24 @@
 }
 
 /*
- * ───────── 증거 상자: 왼쪽 위 기록장 엠블럼·장면 제목 아래, 키트 아이템 막대(994x175) — 오른쪽 갈매기 = 목록 버튼 ─────────
+ * ───────── 증거 상자: 왼쪽 위 장면 제목 막대 오른쪽 같은 줄, 키트 아이템 막대(994x175) — 오른쪽 갈매기 = 목록 버튼 ─────────
  * 오른쪽 위는 사이트가 전체화면에서 "전체화면 나가기" 버튼을 띄우는 자리라 비워 둔다 (#61).
- * top = 엠블럼 위치(notebook.css .hud) + 엠블럼 높이(폭 x 167/170) + 간격
+ * 위치와 크기는 notebook.css 의 .hud 값에 맞춘다 (#65)
+ *  - 높이 = 기록장 엠블럼 높이(폭 x 167/170) → 칸 크기 = 높이 − 위아래 테두리
+ *  - left = .hud 왼쪽(16px) + 엠블럼 폭 + 장면 제목 막대 폭(엠블럼 밑으로 16px 겹침) + 간격
  */
 
 .evidence-bar {
   --k: 0.42;
-  --slot: 48px;
-  --icon: 38px;
+  --emblem: 72px; /* .notebook-button 폭 */
+  --hud-bar: clamp(220px, 28vw, 380px); /* .hud-bar 폭 */
+  --slot: calc(var(--emblem) * 167 / 170 - 68px * var(--k));
+  --icon: calc(var(--slot) - 10px);
   position: absolute;
-  top: calc(max(10px, env(safe-area-inset-top)) + 76px);
-  left: 16px;
+  top: max(10px, env(safe-area-inset-top));
+  left: calc(16px + var(--emblem) + var(--hud-bar) - 16px + 10px);
   z-index: 2;
-  max-width: calc(100% - 32px);
+  max-width: calc(100% - 16px - var(--emblem) - var(--hud-bar) - 10px - 16px);
   padding: calc(34px * var(--k)) calc(88px * var(--k)) calc(34px * var(--k)) calc(50px * var(--k));
   border: 0 solid transparent;
   border-image: var(--kit-tray) 34 88 34 50 fill / calc(34px * var(--k)) calc(88px * var(--k))
@@ -96,23 +100,23 @@
   background: radial-gradient(closest-side, rgb(255 220 150 / 0.25), transparent);
 }
 
-/* 세로 화면: 엠블럼(58px) 아래 */
+/* 낮은 가로 화면: 엠블럼 50px, 같은 줄 */
+@media (max-height: 480px) {
+  .evidence-bar {
+    --k: 0.32;
+    --emblem: 50px;
+  }
+}
+
+/* 세로 화면: 장면 제목 막대가 폭을 다 쓰므로 엠블럼(58px) 아래 줄 */
 @media (max-width: 760px) {
   .evidence-bar {
     --k: 0.34;
     --slot: 40px;
     --icon: 32px;
     top: calc(max(10px, env(safe-area-inset-top)) + 62px);
-  }
-}
-
-/* 낮은 가로 화면: 엠블럼(50px) 아래 */
-@media (max-height: 480px) {
-  .evidence-bar {
-    --k: 0.32;
-    --slot: 36px;
-    --icon: 28px;
-    top: calc(max(10px, env(safe-area-inset-top)) + 54px);
+    left: 16px;
+    max-width: calc(100% - 32px);
   }
 }
 
