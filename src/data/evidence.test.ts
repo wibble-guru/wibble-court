@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { EvidenceId, SceneId, TrialSceneId } from '@/engine/types';
-import { EVIDENCE, INSERTS } from './evidence';
+import { EVIDENCE, gainedAt, INSERTS, REPLAY } from './evidence';
 import { SCENES } from './scenes';
 
 const scenes = Object.values(SCENES).filter((s) => s !== undefined);
@@ -48,5 +48,18 @@ describe('증거', () => {
     expect(insert.kind === 'message' && insert.bubbles.map((b) => b.text)).toEqual(
       lines.map((l) => l.text),
     );
+  });
+
+  it('다시 보기 화면은 모두 실제 증거 화면이 있는 장면이다', () => {
+    for (const [id, scene] of Object.entries(REPLAY)) {
+      expect(INSERTS[scene!], id).toBeDefined();
+    }
+  });
+
+  it('얻은 장면은 지나온 장면 가운데 그 증거를 얻은 첫 장면', () => {
+    const gainOf = (id: SceneId) => SCENES[id]?.gain;
+    expect(gainedAt('timeline', ['P00', 'C30', 'C31-C', 'G70'], gainOf)).toBe('C31-C');
+    expect(gainedAt('timeline', ['P00', 'C30', 'G70'], gainOf)).toBe('G70');
+    expect(gainedAt('timeline', ['P00'], gainOf)).toBeUndefined();
   });
 });
