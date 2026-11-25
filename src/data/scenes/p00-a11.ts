@@ -4,7 +4,7 @@ import type { Scene } from '@/engine/types';
 export const P00_A11: Scene[] = [
   {
     id: 'P00',
-    title: '개정 — 12분 먼저 도착한 자백',
+    title: '개정 — 12분 앞선 자백',
     lines: [
       {
         speaker: '연출',
