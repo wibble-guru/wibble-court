@@ -3,11 +3,14 @@ import type { Insert } from '@/data/evidence';
 
 /**
  * 증거 화면: 대사 진행을 막지 않고 배경 위에 겹쳐 보이는 녹음·메시지·시간표.
- * 같은 문장이 대사로 이미 읽히므로 보조기기에는 숨긴다(aria-hidden). 문구는 data/evidence 의 대본 문장 그대로.
+ * 같은 문장이 대사로 이미 읽히므로 보조기기에는 숨긴다(aria-hidden). inline = 증거 모달 안에서 다시 보기 (읽힘). 문구는 data/evidence 의 대본 문장 그대로.
  */
-export function EvidenceInsert({ insert }: { insert: Insert }) {
+export function EvidenceInsert({ insert, inline }: { insert: Insert; inline?: boolean }) {
   return (
-    <div className={`evidence-insert is-${insert.kind}`} aria-hidden="true">
+    <div
+      className={`evidence-insert is-${insert.kind}${inline ? 'is-inline' : ''}`}
+      aria-hidden={inline ? undefined : 'true'}
+    >
       {insert.kind === 'recorder' && (
         <div className="rec">
           <span className="rec-dot" />

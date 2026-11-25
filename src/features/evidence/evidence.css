@@ -7,59 +7,98 @@
   image-rendering: pixelated;
 }
 
-/* ───────── 증거 상자: 오른쪽 위, 키트 아이템 막대(994x175) — 오른쪽 갈매기는 장식 ───────── */
+/* ───────── 증거 상자: 오른쪽 위, 키트 아이템 막대(994x175) — 오른쪽 갈매기 = 목록 버튼 ───────── */
 
 .evidence-bar {
   --k: 0.42;
+  --slot: 48px;
+  --icon: 38px;
   position: absolute;
   top: max(14px, env(safe-area-inset-top));
   right: 16px;
   z-index: 2;
-  display: flex;
-  gap: 6px;
   max-width: calc(100% - 32px);
-  margin: 0;
   padding: calc(34px * var(--k)) calc(88px * var(--k)) calc(34px * var(--k)) calc(50px * var(--k));
-  overflow-x: auto;
-  scrollbar-width: none;
-  list-style: none;
   border: 0 solid transparent;
   border-image: var(--kit-tray) 34 88 34 50 fill / calc(34px * var(--k)) calc(88px * var(--k))
     calc(34px * var(--k)) calc(50px * var(--k));
 }
 
-/* 칸: 키트 빈 칸 틀(113x117) 테두리 + 어두운 안쪽 */
+.evidence-slots {
+  display: flex;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  list-style: none;
+}
+
+@keyframes slot-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+}
+
+/* 칸: 키트 빈 칸 틀(113x117) 테두리 + 어두운 안쪽. 상자 칸과 목록 칸이 같이 쓴다 */
 .evidence-slot {
   flex: none;
+  animation: slot-in 0.3s ease-out;
+}
+
+.evidence-slot button,
+.evidence-slot-face {
   display: grid;
   place-items: center;
-  width: 48px;
-  height: 48px;
+  width: var(--slot);
+  height: var(--slot);
+  padding: 0;
   border: 0 solid transparent;
   border-image: var(--kit-slot) 16 / 7px;
   background: #16151d;
   background-clip: padding-box;
-  animation: slot-in 0.3s ease-out;
+  cursor: pointer;
 }
 
-.evidence-slot img {
-  width: 38px;
-  height: 38px;
+.evidence-slot img,
+.evidence-slot-face img {
+  width: var(--icon);
+  height: var(--icon);
+}
+
+/* 갈매기: 막대 오른쪽 장식 자리 전체를 누르는 곳으로 */
+.evidence-more {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: calc(88px * var(--k));
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.evidence-slot button:hover,
+.evidence-slot button:focus-visible,
+.evidence-more:hover,
+.evidence-more:focus-visible {
+  outline: none;
+  filter: brightness(1.25);
+}
+
+.evidence-more:focus-visible {
+  background: radial-gradient(closest-side, rgb(255 220 150 / 0.25), transparent);
 }
 
 /* 세로 화면: 위 막대 아래 줄 오른쪽 */
 @media (max-width: 760px) {
   .evidence-bar {
     --k: 0.34;
+    --slot: 40px;
+    --icon: 32px;
     top: calc(max(10px, env(safe-area-inset-top)) + 62px);
-  }
-  .evidence-slot {
-    width: 40px;
-    height: 40px;
-  }
-  .evidence-slot img {
-    width: 32px;
-    height: 32px;
   }
 }
 
@@ -67,22 +106,175 @@
 @media (max-height: 480px) {
   .evidence-bar {
     --k: 0.32;
+    --slot: 36px;
+    --icon: 28px;
     top: max(8px, env(safe-area-inset-top));
-  }
-  .evidence-slot {
-    width: 36px;
-    height: 36px;
-  }
-  .evidence-slot img {
-    width: 28px;
-    height: 28px;
   }
 }
 
-@keyframes slot-in {
+/* ───────── 증거 모달 (계획서 55): 한 개 보기 / 목록. 기록장과 같은 키트 패널 ───────── */
+
+.evidence-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  background: rgb(0 0 0 / 0.55);
+  animation: evidence-modal-in 0.2s ease-out;
+}
+
+@keyframes evidence-modal-in {
   from {
     opacity: 0;
-    transform: scale(0.8);
+  }
+}
+
+.evidence-modal {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(100%, 520px);
+  max-height: 100%;
+  /* 키트 패널 테두리 무늬(24px) 안쪽에 내용이 오도록 */
+  padding: 20px 22px;
+  border: 0 solid transparent;
+  border-image: var(--kit-panel) 34 fill / 24px;
+  color: var(--paper);
+  box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.6);
+  outline: none;
+}
+
+.evidence-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: 40px;
+  padding: 0 var(--space-2);
+}
+
+.evidence-modal-title {
+  margin: 0;
+  color: var(--gold-bright);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.evidence-modal-button {
+  min-height: 36px;
+  padding: 0 var(--space-3);
+  border: 1.5px solid color-mix(in srgb, var(--gold) 70%, transparent);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--gold-bright);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.evidence-modal-button:focus-visible,
+.evidence-grid-item:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* 한 개 보기 */
+.evidence-detail {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-3) var(--space-5);
+  overflow-y: auto;
+  text-align: center;
+  animation: evidence-modal-in 0.2s ease-out;
+}
+
+.evidence-detail-icon {
+  display: grid;
+  place-items: center;
+  width: 132px;
+  height: 132px;
+  border: 0 solid transparent;
+  border-image: var(--kit-slot) 16 / 12px;
+  background: #16151d;
+  background-clip: padding-box;
+}
+
+.evidence-detail-icon img {
+  width: 104px;
+  height: 104px;
+}
+
+.evidence-detail-name {
+  margin: var(--space-2) 0 0;
+  color: var(--paper);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.evidence-detail-scene {
+  margin: 0;
+  color: color-mix(in srgb, var(--gold-bright) 80%, transparent);
+  font-size: 14px;
+}
+
+/* 모달 안 증거 화면: 화면 위에 겹치지 않고 내용 흐름 안에 */
+.evidence-insert.is-inline {
+  position: static;
+  margin-top: var(--space-3);
+  transform: none;
+  pointer-events: auto;
+  animation: none;
+}
+
+/* 목록 */
+.evidence-grid {
+  --slot: 64px;
+  --icon: 52px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: var(--space-3) var(--space-2);
+  margin: 0;
+  padding: var(--space-4) var(--space-2) var(--space-4);
+  overflow-y: auto;
+  list-style: none;
+}
+
+.evidence-grid-item {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-1);
+  border: 0;
+  background: transparent;
+  color: var(--paper);
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: center;
+  word-break: keep-all;
+  cursor: pointer;
+}
+
+.evidence-grid-item:hover .evidence-slot-face {
+  filter: brightness(1.25);
+}
+
+@media (max-height: 480px) {
+  .evidence-detail {
+    padding-block: var(--space-2) var(--space-3);
+  }
+  .evidence-detail-icon {
+    width: 88px;
+    height: 88px;
+  }
+  .evidence-detail-icon img {
+    width: 68px;
+    height: 68px;
   }
 }
 
@@ -282,6 +474,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .evidence-backdrop,
+  .evidence-detail {
+    animation: none;
+  }
   .evidence-slot,
   .evidence-insert,
   .rec-dot {
