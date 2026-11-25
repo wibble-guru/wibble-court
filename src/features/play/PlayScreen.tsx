@@ -198,6 +198,15 @@ export function PlayScreen({ start, onEnd }: Props) {
               ids={evidence}
               view={evidenceView.id}
               visited={sceneId ? [...play.story.visited, sceneId] : play.story.visited}
+              cursor={
+                sceneId
+                  ? {
+                      sceneId,
+                      // 대사 단계는 지금 대사까지, 질문 단계는 장면 끝까지 (대본 줄 번호)
+                      upTo: line ? (SCENES[sceneId]?.lines.indexOf(line) ?? -1) : Infinity,
+                    }
+                  : null
+              }
               onView={(id) => setEvidenceView({ id })}
               onClose={closeEvidence}
             />
