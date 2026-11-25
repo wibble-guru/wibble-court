@@ -10,6 +10,7 @@ const speakers = new Set(
 
 /** 그림이 없어 캐릭터가 빠지는 본편 발언자 (계획서 49) */
 const NO_PORTRAIT = [
+  '녹음 속 오지안', // 녹음 속 목소리에는 그림을 띄우지 않는다 (#67)
   '녹음 속 경찰관',
   '경찰관',
   '녹음 속 강도현',
@@ -43,8 +44,8 @@ describe('말하는 인물 그림', () => {
     expect(portraitOf('법원 직원')?.id).toBe('clerk');
   });
 
-  test('녹음 속 오지안은 반투명, 결과 이후 장면의 덧붙인 표기도 같은 인물', () => {
-    expect(portraitOf('녹음 속 오지안')).toEqual({ id: 'defendant', side: 'left', faint: true });
+  test('녹음 속 목소리는 그림 없음, 결과 이후 장면의 덧붙인 표기는 같은 인물', () => {
+    expect(portraitOf('녹음 속 오지안')).toBeNull();
     expect(portraitOf('검사 차윤호(후속 보고를 읽으며)')?.id).toBe('prosecutor');
     expect(portraitOf('오지안(당시 상황 회상)')?.id).toBe('defendant');
     // 화면에 뜨는 글은 인물이 말하는 게 아니다
