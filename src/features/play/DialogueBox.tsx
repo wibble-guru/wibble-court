@@ -1,6 +1,6 @@
 import type { ComponentChildren, Ref } from 'preact';
 import { UI } from '@/data/assets';
-import { portraitOf, portraitSrc } from '@/data/characters';
+import { type Portrait, portraitOf, portraitSrc } from '@/data/characters';
 import { roleOf, sideOf } from '@/data/speakers';
 
 type Props = {
@@ -13,6 +13,8 @@ type Props = {
   /** 보조기기용 버튼 이름 꼬리 (대사 뒤에 읽힘) */
   pressLabel?: string;
   panelRef?: Ref<HTMLButtonElement>;
+  /** 발언자 없이 세울 인물 (질문 단계의 재판장) */
+  figure?: Portrait;
   children: ComponentChildren;
 };
 
@@ -21,10 +23,18 @@ type Props = {
  * 이름표는 발언자 역할에 따라 왼쪽(검사·그 외)·오른쪽(변호인)·가운데(재판장)에 서고, 이름 글자는 역할 색.
  * 같은 사람이 이어 말하면 이름표는 그대로 있고(key = 발언자), 사람이 바뀔 때만 들어오는 움직임이 있다.
  */
-export function DialogueBox({ speaker, showNext, onPress, pressLabel, panelRef, children }: Props) {
+export function DialogueBox({
+  speaker,
+  showNext,
+  onPress,
+  pressLabel,
+  panelRef,
+  figure,
+  children,
+}: Props) {
   const role = speaker ? roleOf(speaker) : 'narration';
   const side = sideOf(role);
-  const portrait = portraitOf(speaker);
+  const portrait = portraitOf(speaker) ?? figure ?? null;
   const face = (
     <span className="dialogue-face">
       {children}
