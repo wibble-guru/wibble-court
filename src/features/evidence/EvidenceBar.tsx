@@ -1,7 +1,7 @@
 import { iconSrc } from '@/data/assets';
 import { EVIDENCE } from '@/data/evidence';
 import type { EvidenceId } from '@/engine/types';
-import { EVIDENCE_COPY } from './EvidenceModal';
+import { EVIDENCE_COPY } from './copy';
 import './evidence.css';
 
 type Props = {

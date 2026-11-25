@@ -64,17 +64,18 @@
 }
 
 /*
- * 말하는 인물 (data/characters, 노션 캐릭터 시트의 플레이용 전신 일러스트를 머리~허벅지로 자름).
- * 대화창 뒤 왼쪽/오른쪽 끝에 서고 아랫부분은 대화창 뒤로 들어간다 (그림 아래가 잘려 있어서).
- * 사람이 바뀔 때만 옆에서 들어온다 (key = 인물).
+ * 말하는 인물 (data/characters, 노션 캐릭터 시트의 플레이용 전신 일러스트·포즈 그림).
+ * 그림은 머리 위 8% 여백 ~ 머리 아래 60% 까지 같은 기준으로 잘려 있다 (scripts/cut-characters.mjs) —
+ * 그래서 높이는 인물 크기 기준(--h) × 1.11, 대화창 뒤로 들어가는 아랫부분은 그림의 22%.
+ * 대화창 뒤 왼쪽/오른쪽 끝에 서고, 사람이 바뀌면 옆에서 들어오고 포즈만 바뀌면 짧게 겹쳐 바뀐다.
  */
 .portrait {
   --h: min(66vh, 560px);
   --from: -28px;
   position: absolute;
-  bottom: calc(100% - var(--h) * 0.24);
+  bottom: calc(100% - var(--h) * 1.11 * 0.22);
   z-index: -1;
-  height: var(--h);
+  height: calc(var(--h) * 1.11);
   width: auto;
   pointer-events: none;
   filter: drop-shadow(0 8px 14px rgb(0 0 0 / 0.5));
@@ -94,6 +95,16 @@
   from {
     opacity: 0;
     transform: translateX(var(--from));
+  }
+}
+
+.portrait.is-swap {
+  animation: portrait-swap 0.18s ease-out;
+}
+
+@keyframes portrait-swap {
+  from {
+    opacity: 0.35;
   }
 }
 
