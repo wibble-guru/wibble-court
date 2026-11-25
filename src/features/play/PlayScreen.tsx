@@ -4,6 +4,7 @@ import { SceneBackground } from '@/components/SceneBackground';
 import { KIT_VARS } from '@/data/assets';
 import { INSERTS } from '@/data/evidence';
 import { sceneTitle } from '@/data/scene-title';
+import { JUDGE_AT_PROMPT } from '@/data/characters';
 import { upcomingBackgrounds } from '@/data/scene-bg';
 import { SCENES } from '@/data/scenes';
 import { EvidenceBar } from '@/features/evidence/EvidenceBar';
@@ -156,7 +157,7 @@ export function PlayScreen({ start, onEnd }: Props) {
 
         {promptKey && prompt && !thought && (
           <>
-            <DialogueBox key={`${promptKey}:box`}>
+            <DialogueBox key={`${promptKey}:box`} figure={JUDGE_AT_PROMPT}>
               <h2 id="prompt-title" ref={titleRef} tabIndex={-1} className="prompt-title">
                 <Emphasis text={prompt.title} />
               </h2>

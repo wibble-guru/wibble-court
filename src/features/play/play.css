@@ -503,6 +503,10 @@ button.dialogue-frame {
   .portrait {
     --h: min(40vh, 340px);
   }
+  /* 질문 단계의 재판장: 선택지 목록이 대화창 위를 가득 채워 그림이 비쳐 글이 안 읽히므로 뺀다 */
+  .play-stage[data-mode='prompt'] .portrait {
+    display: none;
+  }
   .dialogue-frame {
     --k: 0.34;
   }

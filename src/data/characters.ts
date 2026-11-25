@@ -59,6 +59,12 @@ export function portraitOf(speaker: string | undefined): Portrait | null {
   return id ? { id, side: SIDE[id] } : null;
 }
 
+/**
+ * 선택지 질문 단계: 판단하는 사람은 플레이어인 재판장.
+ * 선택지 목록이 오른쪽에 서서 재판장 자리(오른쪽)를 가리므로 이때만 비어 있는 왼쪽에 선다.
+ */
+export const JUDGE_AT_PROMPT: Portrait = { id: 'judge', side: 'left' };
+
 const BASE = import.meta.env.BASE_URL;
 export const portraitSrc = (id: CharacterId) => `${BASE}assets/chars/${id}.webp`;
 export const CHARACTER_IDS = Object.keys(SIDE) as CharacterId[];
