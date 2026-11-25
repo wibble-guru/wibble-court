@@ -57,7 +57,6 @@ export function DialogueBox({
           key={portrait.id}
           className="portrait"
           data-side={portrait.side}
-          data-faint={portrait.faint || undefined}
           src={portraitSrc(portrait.id)}
           alt=""
           draggable={false}

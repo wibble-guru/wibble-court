@@ -66,7 +66,7 @@
 /*
  * 말하는 인물 (data/characters, 노션 캐릭터 시트의 플레이용 전신 일러스트를 머리~허벅지로 자름).
  * 대화창 뒤 왼쪽/오른쪽 끝에 서고 아랫부분은 대화창 뒤로 들어간다 (그림 아래가 잘려 있어서).
- * 사람이 바뀔 때만 옆에서 들어온다 (key = 인물). 녹음 속 목소리는 반투명
+ * 사람이 바뀔 때만 옆에서 들어온다 (key = 인물).
  */
 .portrait {
   --h: min(66vh, 560px);
@@ -88,10 +88,6 @@
 .portrait[data-side='right'] {
   --from: 28px;
   right: 0;
-}
-
-.portrait[data-faint] {
-  opacity: 0.55;
 }
 
 @keyframes portrait-in {

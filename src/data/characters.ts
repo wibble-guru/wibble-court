@@ -9,8 +9,6 @@ export type CharacterId =
 export type Portrait = {
   id: CharacterId;
   side: 'left' | 'right';
-  /** 녹음 속 목소리처럼 그 자리에 없는 사람 — 반투명 */
-  faint?: boolean;
 };
 
 const SIDE: Record<CharacterId, Portrait['side']> = {
@@ -46,15 +44,8 @@ const NAMED: [RegExp, CharacterId][] = [
   [/^오지안[ (]/, 'defendant'],
 ];
 
-/** 녹음으로만 들리는 목소리 */
-const RECORDED: Record<string, CharacterId> = {
-  '녹음 속 오지안': 'defendant',
-};
-
 export function portraitOf(speaker: string | undefined): Portrait | null {
   if (!speaker) return null;
-  const recorded = RECORDED[speaker];
-  if (recorded) return { id: recorded, side: SIDE[recorded], faint: true };
   const id = EXACT[speaker] ?? NAMED.find(([re]) => re.test(speaker))?.[1];
   return id ? { id, side: SIDE[id] } : null;
 }
