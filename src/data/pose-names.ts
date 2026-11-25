@@ -61,7 +61,7 @@ export const POSE_NAMES: Record<CharacterId, string[]> = {
   ],
   clerk: [
     '기본',
-    '손 들어 기립 안내',
+    '두 손으로 서류 들고 정면',
     '서류 건네기',
     '서류 확인',
     '서류 끼고 바른 자세',
