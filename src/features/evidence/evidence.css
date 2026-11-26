@@ -15,16 +15,16 @@
 
 .evidence-bar {
   --hud-btn: 52px; /* .notebook-button */
-  --hud-title: clamp(180px, 22vw, 300px); /* .hud-bar */
+  --hud-title: clamp(240px, 30vw, 420px); /* .hud-bar */
   --slot: 52px;
   --icon: 44px;
   position: absolute;
   top: calc(max(12px, env(safe-area-inset-top)) + (var(--hud-btn) - var(--slot)) / 2);
-  left: calc(16px + var(--hud-btn) + 8px + var(--hud-title) + 14px);
+  left: calc(16px + var(--hud-btn) + 14px + var(--hud-title) + 14px);
   z-index: 2;
   display: flex;
   gap: 6px;
-  max-width: calc(100% - 16px - var(--hud-btn) - var(--hud-title) - 38px - 16px);
+  max-width: calc(100% - 16px - var(--hud-btn) - var(--hud-title) - 44px - 16px);
 }
 
 .evidence-slots {
@@ -59,12 +59,9 @@
   width: var(--slot);
   height: var(--slot);
   padding: 0;
-  border: 0;
-  background: color-mix(in srgb, var(--ui-ink) 88%, transparent);
-  box-shadow:
-    inset 0 0 0 1px var(--ui-brass),
-    inset 0 0 0 3px var(--ui-ink),
-    inset 0 0 0 4px var(--ui-line-in);
+  border: 1px solid var(--ui-brass);
+  border-radius: 4px;
+  background: rgb(14 13 12 / 0.72);
   cursor: pointer;
 }
 
