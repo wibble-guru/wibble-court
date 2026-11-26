@@ -81,15 +81,11 @@
 .plate-face {
   display: block;
   padding: 0.32em 1.8em;
-  background:
-    radial-gradient(circle at 0.75em 50%, var(--ui-brass-hi) 0 2px, transparent 2.5px),
-    radial-gradient(circle at calc(100% - 0.75em) 50%, var(--ui-brass-hi) 0 2px, transparent 2.5px),
-    var(--ui-umber);
+  background: var(--ui-umber);
   box-shadow:
     inset 0 0 0 1px var(--ui-brass),
     inset 0 0 0 4px var(--ui-umber),
-    inset 0 0 0 5px var(--ui-line-in),
-    0 3px 0 rgb(0 0 0 / 0.45);
+    inset 0 0 0 5px var(--ui-line-in);
   font-weight: 700;
   letter-spacing: 0.02em;
   color: var(--ui-cream);
@@ -98,7 +94,6 @@
 /* 버튼 틀: 왼쪽 위·오른쪽 아래 모서리를 깎은 판 (선택지와 같은 모양) */
 .btn-frame {
   display: grid;
-  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
 }
 
 .btn-face {

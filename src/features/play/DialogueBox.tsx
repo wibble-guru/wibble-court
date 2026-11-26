@@ -1,7 +1,7 @@
 import type { ComponentChildren, Ref } from 'preact';
 import { useState } from 'preact/hooks';
 import { flipped, type Portrait, portraitOf, portraitSrc } from '@/data/characters';
-import { roleOf, sideOf, splitSpeaker } from '@/data/speakers';
+import { isVoice, roleOf, sideOf, splitSpeaker } from '@/data/speakers';
 
 type Props = {
   /** 대본 표기 그대로. 없으면(질문 단계) 이름표 없음 */
@@ -21,8 +21,8 @@ type Props = {
 };
 
 /**
- * 대화창 (계획서 83, 림버스풍): 상자 없이 화면 아래 어둠 위에 대사, 그 위에 소속 꼬리표 + 이름 명판.
- * 꼬리표 글자는 역할 색. 인물 그림은 어둠 뒤에 서서 아랫부분이 어둠에 잠긴다.
+ * 대화창 (#87): 상자 없이 화면 아래 어둠 위에. 법정에 선 사람의 대사는 [이름 칸 | 대사] 조서형,
+ * 기기·녹음에서 나오는 목소리(isVoice)는 가운데 자막형. 소속 글자는 역할 색. 인물 그림은 어둠 뒤에 서서 아랫부분이 잠긴다.
  * 같은 사람이 이어 말하면 이름표는 그대로 있고(key = 발언자), 사람이 바뀔 때만 들어오는 움직임이 있다.
  * 인물 그림은 대사마다 포즈가 바뀐다 (계획서 71): 사람이 바뀌면 옆에서 들어오고, 같은 사람의 포즈만 바뀌면 짧게 겹쳐 바뀐다.
  */
@@ -49,22 +49,35 @@ export function DialogueBox({
     setShown({ id, key: imageKey, step: id !== null && id === shown.id ? shown.step + 1 : 0 });
   }
   const samePerson = shown.key === imageKey && shown.step > 0;
+  const voice = speaker ? isVoice(speaker) : false;
   const face = (
     <span className="dialogue-face">
-      {children}
+      {speaker && (
+        // key = 발언자: 사람이 바뀔 때만 이름이 들어오는 움직임
+        <span key={speaker} className="who">
+          <span className="who-name">{voice ? speaker : name}</span>
+          {!voice && tag && <span className="who-role">{tag}</span>}
+        </span>
+      )}
+      <span className="dialogue-body">{children}</span>
       {onPress && pressLabel && <span className="sr-only">{pressLabel}</span>}
       <svg
         className={showNext ? 'dialogue-next is-on' : 'dialogue-next'}
-        viewBox="0 0 12 8"
+        viewBox="0 0 9 9"
         aria-hidden="true"
       >
-        <polygon points="0,0 12,0 6,8" />
+        <rect width="9" height="9" />
       </svg>
     </span>
   );
 
   return (
-    <div className="dialogue" data-side={side} style={{ '--role': `var(--role-${role})` }}>
+    <div
+      className="dialogue"
+      data-side={side}
+      data-voice={voice || undefined}
+      style={{ '--role': `var(--role-${role})` }}
+    >
       {/* 말하는 인물 (그림이 있는 발언자만). key = 인물·포즈 — 사람이 바뀌면 들어오고, 포즈만 바뀌면 겹쳐 바뀜 */}
       {portrait && (
         <img
@@ -76,12 +89,6 @@ export function DialogueBox({
           alt=""
           draggable={false}
         />
-      )}
-      {speaker && (
-        <div key={speaker} className="nameplate">
-          {tag && <span className="plate-tag">{tag}</span>}
-          <span className="plate">{name}</span>
-        </div>
       )}
       {onPress ? (
         <button ref={panelRef} type="button" className="dialogue-frame" onClick={onPress}>

@@ -79,3 +79,9 @@ export function splitSpeaker(speaker: string): { tag?: string; name: string } {
   const m = TAG.exec(speaker);
   return m ? { tag: m[1], name: m[2] } : { name: speaker };
 }
+
+/**
+ * 기기·녹음에서 나오는 목소리·화면 글 (#87): 자막처럼 가운데 정렬로 보인다.
+ * "녹음 속 오지안", "상대 음성", "화면 / 발신자 불명" 등. 그 밖은 법정에 선 사람의 대사(조서형)
+ */
+export const isVoice = (speaker: string) => /^(녹음 속 |상대 음성|화면)/.test(speaker);
