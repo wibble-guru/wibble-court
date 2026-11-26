@@ -40,3 +40,17 @@ describe.skipIf(!existsSync(SPEC))('진실 공개 대본 대조 (로컬 전용)'
     expect(quotes.filter((q) => !blob.includes(q))).toEqual([]);
   });
 });
+
+describe('진실 공개 포즈', () => {
+  it('같은 발언자가 이어 말할 때 같은 그림을 되풀이하지 않는다', () => {
+    const last = new Map<string, number>();
+    for (const scene of TRUTH_SCENES)
+      for (const line of scene.lines) {
+        if (line.pose === undefined) continue;
+        expect(line.pose, `${scene.id} ${line.speaker}`).not.toBe(
+          last.get(line.speaker.slice(0, 2)),
+        );
+        last.set(line.speaker.slice(0, 2), line.pose);
+      }
+  });
+});
