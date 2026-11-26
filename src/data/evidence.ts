@@ -61,7 +61,7 @@ export const INSERTS: Partial<Record<TrialSceneId, InsertCue>> = {
   },
   F60: {
     speaker: '검사',
-    starts: '게다가 오후 9시 54분',
+    starts: '또한 오후 9시 54분',
     insert: {
       kind: 'message',
       bubbles: [{ side: 'out', text: '17층에 계세요. 제가 곧 갈게요.' }],
