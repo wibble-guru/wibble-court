@@ -4,7 +4,9 @@ import { KIT_VARS, type BgId } from '@/data/assets';
 import { portraitOf, portraitSrc } from '@/data/characters';
 import type * as TruthModule from '@/data/truth/truth';
 import type { StoryState } from '@/engine/types';
+import { messageView } from '@/data/evidence';
 import { EvidenceInsert } from '@/features/evidence/EvidenceInsert';
+import { Messenger } from '@/features/evidence/Messenger';
 import { DialogueBox } from '@/features/play/DialogueBox';
 import { Typewriter } from '@/features/play/Typewriter';
 import { preloadImage } from '@/lib/preload';
@@ -65,6 +67,12 @@ export function TruthFlow({
   const atButtons = !line;
   const isGate = scene.id === 'TRUTH-GATE';
   const isEnd = sceneIndex === scenes.length - 1;
+  // 메시지는 메신저 화면 (본편과 같은 규칙, 계획서 78): 말풍선 대사 동안 대화창 대신
+  const message =
+    scene.insert?.kind === 'message' && line
+      ? messageView(scene.insert, lines, 0, lineIndex)
+      : null;
+  const messengerFull = message?.full ?? false;
 
   // 진실 공개에서 쓰는 포즈 그림을 처음에 한 번 미리 받는다 (11장 안팎)
   useEffect(() => {
@@ -78,14 +86,14 @@ export function TruthFlow({
   const reveal = useCallback(() => setRevealed(true), []);
   const press = useCallback(() => {
     if (!line) return;
-    if (!revealed) return setRevealed(true);
+    if (!revealed && !messengerFull) return setRevealed(true);
     setRevealed(false);
     if (lineIndex + 1 < lines.length) return setLineIndex(lineIndex + 1);
     // 장면 끝: GATE·END 는 버튼, 그 사이는 다음 봉투
     if (isGate || isEnd) return setLineIndex(lineIndex + 1);
     setSceneIndex(sceneIndex + 1);
     setLineIndex(0);
-  }, [line, revealed, lineIndex, lines.length, isGate, isEnd, sceneIndex]);
+  }, [line, revealed, messengerFull, lineIndex, lines.length, isGate, isEnd, sceneIndex]);
 
   useEffect(() => {
     if (atButtons) return;
@@ -103,7 +111,7 @@ export function TruthFlow({
   const firstButtonRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
     (atButtons ? firstButtonRef.current : panelRef.current)?.focus({ preventScroll: true });
-  }, [atButtons, sceneIndex]);
+  }, [atButtons, sceneIndex, messengerFull]);
 
   const B = truth.TRUTH_BUTTONS;
   return (
@@ -112,8 +120,20 @@ export function TruthFlow({
       <Backdrop bg={scene.bg as BgId} effect={scene.effect} />
       {scene.insert && !atButtons && <EvidenceInsert key={scene.id} insert={scene.insert} />}
 
+      {/* 메신저가 무대를 차지하는 동안 뒤 장면을 흐리게 (계획서 78) */}
+      {messengerFull && <div className="messenger-veil" aria-hidden="true" />}
       <div className="play-stage" data-mode="line">
-        {line && (
+        {scene.insert?.kind === 'message' && message && (
+          <Messenger
+            key={scene.id}
+            insert={scene.insert}
+            shown={message.shown}
+            onPress={messengerFull ? press : undefined}
+            pressLabel={nextLabel}
+            buttonRef={panelRef}
+          />
+        )}
+        {line && !messengerFull && (
           <DialogueBox
             speaker={line.speaker || undefined}
             pose={line.pose}

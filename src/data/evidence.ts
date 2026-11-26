@@ -23,8 +23,15 @@ export const EVIDENCE: Record<EvidenceId, { name: string; icon: IconId }> = {
 export type Insert =
   /** 녹음 재생 화면 (재생 표시 + 빨간 점). label 은 대본에 파일 이름이 있을 때만 */
   | { kind: 'recorder'; label?: string }
-  /** 메시지 화면. image: M-01 이미지(말풍선 2개) / css: 코드로 그린 폰. in = 받은 말풍선, out = 보낸 말풍선 */
-  | { kind: 'message'; phone: 'image' | 'css'; bubbles: { side: 'in' | 'out'; text: string }[] }
+  /**
+   * 메시지 화면 (메신저, 계획서 78). in = 받은 말풍선, out = 보낸 말풍선.
+   * sender 는 상대 이름(대본 발언자 표기에 있는 것만), time 은 대본 발언자 표기에 시각이 있을 때만
+   */
+  | {
+      kind: 'message';
+      sender?: string;
+      bubbles: { side: 'in' | 'out'; text: string; time?: string }[];
+    }
   /** 시간표: from 에 취소선, 그다음 to */
   | { kind: 'timeline'; from: string; to: string };
 
@@ -44,10 +51,11 @@ export const INSERTS: Partial<Record<TrialSceneId, InsertCue>> = {
     speaker: '화면 / 발신자 불명',
     insert: {
       kind: 'message',
-      phone: 'image',
+      sender: '발신자 불명', // 발언자 '화면 / 발신자 불명'
       bubbles: [
         { side: 'in', text: '네가 경찰서에 가면, 그 뒤에는 아무 일도 없을 거야.' },
-        { side: 'out', text: '알았어. 약속은 지켜. 그 사람은 건드리지 마.' },
+        // 발언자 '화면 / 오지안, 22:00'
+        { side: 'out', text: '알았어. 약속은 지켜. 그 사람은 건드리지 마.', time: '22:00' },
       ],
     },
   },
@@ -56,7 +64,6 @@ export const INSERTS: Partial<Record<TrialSceneId, InsertCue>> = {
     starts: '게다가 오후 9시 54분',
     insert: {
       kind: 'message',
-      phone: 'css',
       bubbles: [{ side: 'out', text: '17층에 계세요. 제가 곧 갈게요.' }],
     },
   },
@@ -66,6 +73,31 @@ export const INSERTS: Partial<Record<TrialSceneId, InsertCue>> = {
     insert: { kind: 'timeline', from: '10시 20분에 사망', to: '10시 20분에 발견' },
   },
 };
+
+export type MessageInsert = Extract<Insert, { kind: 'message' }>;
+
+/**
+ * 메신저가 지금 어떻게 보이는가 (계획서 78).
+ * - 말풍선은 그 문장을 읽는 대사에 이르렀을 때 하나씩 올라온다. 대사에 없는 말풍선(검사가 인용만 하는 F60)은 처음부터 보인다
+ * - 지금 대사가 말풍선 문장 그 자체면 full: 대화창을 숨기고 메신저가 화면을 차지한다
+ * - 마지막 말풍선 대사(없으면 시작 대사)가 지나면 메신저를 닫고 장면으로 돌아간다
+ */
+export function messageView(
+  insert: MessageInsert,
+  lines: readonly { text: string }[],
+  startAt: number,
+  index: number,
+): { shown: number; full: boolean } | null {
+  const at = insert.bubbles.map((b) =>
+    lines.findIndex((l, i) => i >= startAt && l.text === b.text),
+  );
+  const end = Math.max(startAt, ...at);
+  if (index < startAt || index > end) return null;
+  return {
+    shown: at.filter((i) => i <= index).length,
+    full: at.includes(index),
+  };
+}
 
 /** 지나온 장면(visited, 지금 장면 포함) 가운데 이 증거를 얻은 첫 장면 */
 export function gainedAt(

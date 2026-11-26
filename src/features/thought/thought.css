@@ -1,29 +1,37 @@
 /*
- * 생각 기록 화면 (ThoughtRecord): 재판장 기록장 위에 UI 키트 패널 한 장.
- * 패널(--ground) 위 밝은 글자(--ink), 라디오·슬라이더 손잡이·확정 버튼도 키트 조각 (main 의 --kit-* 변수).
- * 뒤의 기록장·법정 그림이 보이게 패널은 한쪽으로 비켜 둔다: PC 는 오른쪽, 세로 화면은 대화창처럼 아래.
+ * 생각 기록 화면 (ThoughtRecord): 재판장 기록장 그림 위에 놓인 종이 한 장 (계획서 78).
+ * 금줄 두 겹을 두른 종이(--sheet), 먹색 글자. 슬라이더 손잡이·확정 버튼은 키트 조각 (main 의 --kit-* 변수).
+ * 넓은 가로 화면은 배경의 펼친 공책 오른쪽, 그 밖의 가로 화면은 공책 위, 세로 화면은 대화창처럼 아래.
  * 움직임은 opacity 만.
  */
 
 .sheet {
-  --ink: var(--paper);
-  --ground: #1d1c26;
+  --ink: var(--sheet-ink);
+  --ground: var(--sheet);
+  --accent: #7a4b2c; /* 종이 위 적갈색 잉크: 제목·고른 줄·수치 */
   /* 선택 줄의 좌우 여백. 줄 배경은 이만큼 바깥으로 나가고, 동그라미는 제목과 같은 왼쪽 선에 선다 */
   --row-x: 0.6em;
   grid-column: 1 / -1;
   grid-row: 1 / -1;
   align-self: center;
-  justify-self: end;
+  justify-self: start;
+  margin-left: clamp(0px, 9vw, 160px); /* 배경 기록장 펼친 면 위 */
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr) auto;
   width: min(100%, 560px);
   max-height: 100%;
   padding: var(--space-7) var(--space-7) var(--space-6);
   /* 키트 패널(451x175): 모서리 장식 34px 은 그대로, 가운데를 늘린다 */
-  border: 0 solid transparent;
-  border-image: var(--kit-panel) 34 fill / 24px;
-  box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.6);
+  border-radius: 3px;
+  background: var(--sheet);
+  /* 종이 가장자리 금줄 두 겹 + 책상 위 그림자 */
+  box-shadow:
+    inset 0 0 0 1px color-mix(in srgb, var(--gold) 70%, transparent),
+    inset 0 0 0 5px var(--sheet),
+    inset 0 0 0 6px color-mix(in srgb, var(--gold) 45%, transparent),
+    0 22px 40px -14px rgb(0 0 0 / 0.65);
   color: var(--ink);
+  rotate: -0.6deg; /* 책상 위에 놓인 종이 */
   letter-spacing: -0.01em;
   animation: sheet-in 0.3s ease-out;
 }
@@ -36,7 +44,7 @@
 
 .sheet-title {
   margin: 0;
-  color: var(--gold-bright);
+  color: var(--accent);
   font-size: 1.1em;
   font-weight: 700;
   line-height: 1.5;
@@ -59,7 +67,9 @@
   overflow-y: auto;
   margin: var(--space-4) calc(-1 * var(--row-x)) 0;
   /* 선택 줄 배경이 잘리지 않게 좌우로 넓히고, 안쪽 글자는 제목 선에 다시 맞춘다 */
-  padding: 2px var(--row-x);
+  padding: 2px var(--row-x) var(--space-5);
+  /* 질문이 길어 아래로 밀릴 때 끝이 흐려져서 더 있음을 보인다. 끝까지 내리면 아래 여백만 흐려진다 */
+  mask-image: linear-gradient(#000 calc(100% - var(--space-5)), transparent);
 }
 
 .sheet-field {
@@ -100,29 +110,32 @@
   cursor: pointer;
 }
 
-/* 키트 라디오: 빈 동그라미 → 고르면 가운데 금 점 */
+/* 종이 위 펜 동그라미: 빈 원 → 고르면 가운데 잉크 점 (어두운 키트 라디오는 종이 위에서 검은 덩어리로 보여 쓰지 않는다) */
 .mark::before {
   content: '';
   position: absolute;
   left: var(--row-x);
   top: calc(var(--py) + 0.775em); /* 첫 줄 가운데 (line-height 1.55 의 절반) */
-  width: 1.1em;
-  height: 1.1em;
-  background: var(--kit-radio) center / contain no-repeat;
+  box-sizing: border-box;
+  width: 1.05em;
+  height: 1.05em;
+  border: 1.5px solid color-mix(in srgb, var(--accent) 65%, transparent);
+  border-radius: 50%;
   transform: translateY(-50%);
 }
 
 .mark:hover {
-  background: color-mix(in srgb, var(--gold) 12%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
 
 .mark[aria-pressed='true']::before {
-  background-image: var(--kit-radio-on);
+  border-color: var(--accent);
+  background: radial-gradient(circle, var(--accent) 0 38%, transparent 42%);
 }
 
 .mark[aria-pressed='true'] {
-  background: color-mix(in srgb, var(--gold) 18%, transparent);
-  color: var(--gold-bright); /* 굵기는 그대로 — 굵어지면 줄이 다시 감긴다 */
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent); /* 굵기는 그대로 — 굵어지면 줄이 다시 감긴다 */
 }
 
 /* 판결: 두 칸을 같은 크기·같은 모양으로 나란히. 어느 쪽에도 색·위치 우위 없음 */
@@ -136,7 +149,7 @@
   margin: 0;
   min-height: 72px;
   padding: var(--space-4);
-  border: 1.5px solid color-mix(in srgb, var(--gold) 70%, transparent);
+  border: 1.5px solid color-mix(in srgb, var(--accent) 45%, transparent);
   font-size: 1.25em;
   font-weight: 700;
   text-align: center;
@@ -149,7 +162,7 @@
 .sheet-verdict-line {
   margin: 0;
   padding-left: var(--space-3);
-  border-left: 2px solid var(--gold);
+  border-left: 2px solid var(--accent);
   line-height: 1.7;
   word-break: keep-all;
 }
@@ -176,14 +189,14 @@
   background:
     linear-gradient(to bottom, var(--gold-bright), var(--gold)) 0 / calc(var(--v, 50) * 1%) 100%
       no-repeat,
-    #0f0e14;
+    color-mix(in srgb, var(--sheet-ink) 18%, var(--sheet));
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold) 50%, transparent);
 }
 
 .sheet-slider input::-moz-range-track {
   height: 8px;
   border-radius: 4px;
-  background: #0f0e14;
+  background: color-mix(in srgb, var(--sheet-ink) 18%, var(--sheet));
 }
 
 .sheet-slider input::-moz-range-progress {
@@ -212,7 +225,7 @@
 
 .sheet-slider output {
   min-width: 3ch;
-  color: var(--gold-bright);
+  color: var(--accent);
   text-align: right;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
@@ -253,15 +266,34 @@
 .mark:focus-visible,
 .sheet-confirm:focus-visible,
 .sheet-slider input:focus-visible {
-  outline: 2px solid var(--gold-bright);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+/*
+ * 넓은 가로 화면: 배경의 펼친 공책(그림 폭 약 16~71%)을 가리지 않게 그 오른쪽 빈 책상에 좁게 세운다 (#78 사용자 요청).
+ * 3:2 보다 좁으면 배경이 양옆으로 잘려 공책 오른쪽 자리가 너무 좁아져서 위의 기본 자리(공책 위)를 쓴다.
+ */
+@media (min-aspect-ratio: 3/2) {
+  .sheet {
+    justify-self: end;
+    width: clamp(300px, 26vw, 500px);
+    margin-left: 0;
+    margin-right: calc(-1 * max(16px, 4.5%) + 16px); /* 무대 옆 여백을 덜 써서 공책과 띄운다 */
+    padding: var(--space-6) var(--space-5) var(--space-5);
+    rotate: 0.6deg;
+    font-size: 0.95em;
+  }
 }
 
 @media (max-aspect-ratio: 4/5) {
   .sheet {
     align-self: end;
+    justify-self: stretch;
     width: 100%;
     max-height: 72%;
+    margin-left: 0;
+    rotate: none;
     padding: var(--space-5) var(--space-5) var(--space-4);
   }
 }

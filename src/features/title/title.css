@@ -233,10 +233,25 @@
   display: grid;
   gap: var(--space-4);
   max-width: max(280px, calc(620 * var(--u)));
-  padding: var(--space-4) var(--space-5);
-  border: 1px solid var(--gold);
-  background: color-mix(in srgb, var(--night) 94%, transparent);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  border: 0 solid transparent;
+  border-image: var(--kit-panel) 34 fill / 20px; /* 다른 창과 같은 키트 금 테두리 (계획서 78) */
+  box-shadow: 0 18px 40px -14px rgb(0 0 0 / 0.7);
   cursor: default;
+  animation: confirm-in 180ms ease-out;
+}
+
+@keyframes confirm-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title-confirm {
+    animation: none;
+  }
 }
 
 .title-confirm p {

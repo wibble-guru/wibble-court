@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { EvidenceId, SceneId, TrialSceneId } from '@/engine/types';
-import { EVIDENCE, gainedAt, INSERTS } from '@/data/evidence';
+import { EVIDENCE, gainedAt, INSERTS, messageView } from '@/data/evidence';
 import { SCENES } from '@/data/scenes';
 
 const scenes = Object.values(SCENES).filter((s) => s !== undefined);
@@ -48,6 +48,28 @@ describe('증거', () => {
     expect(insert.kind === 'message' && insert.bubbles.map((b) => b.text)).toEqual(
       lines.map((l) => l.text),
     );
+  });
+
+  it('메신저: 말풍선 대사마다 하나씩 올라오고 그 대사 동안 화면을 차지, 마지막 말풍선 뒤에는 닫힌다', () => {
+    const insert = INSERTS.E50!.insert;
+    if (insert.kind !== 'message') throw new Error('E50 은 메시지');
+    const lines = SCENES.E50!.lines.filter((l) => l.kind !== 'direction');
+    const start = lines.findIndex((l) => l.speaker === INSERTS.E50!.speaker);
+    expect(messageView(insert, lines, start, start - 1)).toBeNull();
+    expect(messageView(insert, lines, start, start)).toEqual({ shown: 1, full: true });
+    expect(messageView(insert, lines, start, start + 1)).toEqual({ shown: 2, full: true });
+    expect(messageView(insert, lines, start, start + 2)).toBeNull();
+  });
+
+  it('메신저: 대사에 없는 말풍선(검사가 인용하는 F60)은 처음부터 보이고 대화창은 그대로', () => {
+    const insert = INSERTS.F60!.insert;
+    if (insert.kind !== 'message') throw new Error('F60 은 메시지');
+    const lines = SCENES.F60!.lines.filter((l) => l.kind !== 'direction');
+    const start = lines.findIndex(
+      (l) => l.speaker === INSERTS.F60!.speaker && l.text.startsWith(INSERTS.F60!.starts ?? ''),
+    );
+    expect(messageView(insert, lines, start, start)).toEqual({ shown: 1, full: false });
+    expect(messageView(insert, lines, start, start + 1)).toBeNull();
   });
 
   it('얻은 장면은 지나온 장면 가운데 그 증거를 얻은 첫 장면', () => {

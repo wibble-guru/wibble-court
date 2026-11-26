@@ -131,7 +131,7 @@
   display: grid;
   place-items: center;
   padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
-  background: rgb(0 0 0 / 0.55);
+  background: var(--scrim);
   animation: evidence-modal-in 0.2s ease-out;
 }
 
@@ -259,11 +259,14 @@
   margin: 0;
   padding: var(--space-4) var(--space-5);
   overflow-y: auto;
-  border: 1px solid #d8cfbf;
-  border-radius: 4px;
-  background: #f6f1e7;
-  color: #24212a;
+  /* 녹취·진술 기록지: 기록장과 같은 종이 (계획서 78) */
+  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  border-radius: 3px;
+  background: var(--sheet);
+  background-attachment: local;
+  color: var(--sheet-ink);
   list-style: none;
+  box-shadow: inset 0 1px 6px rgb(60 40 20 / 0.12);
 }
 
 .evidence-record li {
@@ -274,7 +277,7 @@
 }
 
 .evidence-record-who {
-  color: #5b4a36;
+  color: #7a4b2c;
   font-size: 13px;
   font-weight: 700;
   line-height: 1.5;
@@ -290,7 +293,7 @@
 
 .evidence-record li.is-direction {
   display: block;
-  color: #6f6658;
+  color: var(--sheet-muted);
   font-size: 13px;
   font-style: italic;
   text-align: center;
@@ -394,11 +397,12 @@
   align-items: center;
   gap: 8px 10px;
   width: min(300px, 80vw);
-  padding: 12px 16px;
-  border: 1px solid var(--gold);
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--night) 92%, transparent);
+  padding: 14px 18px;
+  /* 다른 모달과 같은 키트 패널 틀 (계획서 78) */
+  border: 0 solid transparent;
+  border-image: var(--kit-panel) 34 fill / 16px;
   color: var(--paper);
+  filter: drop-shadow(0 10px 18px rgb(0 0 0 / 0.45));
 }
 
 .rec-dot {
@@ -444,72 +448,189 @@
   flex: 1;
   height: var(--h);
   border-radius: 1px;
-  background: #5aa2ff;
+  background: linear-gradient(to top, var(--gold), var(--gold-bright)); /* 파란 파형 → 키트 금색 */
 }
 
-/* 메시지: M-01 이미지(540×720) 위의 말풍선 자리에 대본 문장, 또는 CSS 로 그린 폰 */
-.phone {
+/*
+ * 메신저 창 (계획서 78, Messenger.tsx).
+ * 배치: 붕괴: 스타레일 메시지 창처럼 흐린 장면 위 창 하나. 모양: 이 게임의 픽셀 증거 아이콘(I-08·I-10 휴대폰)과 같은 색·계단 모서리.
+ * 픽셀 테두리는 2단 계단 모서리 9조각 SVG(border-image, 1칸 = 2px)라 어느 크기에서도 칸이 뭉개지지 않는다.
+ * 그림자는 번지지 않는 픽셀 그림자(drop-shadow 0 블러), 움직임은 steps() 로 칸 단위.
+ */
+.messenger {
+  --px-window: url('data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2716%27%20height%3D%2716%27%20viewBox%3D%270%200%2016%2016%27%20shape-rendering%3D%27crispEdges%27%3E%3Cpath%20fill%3D%27%231d0f11%27%20d%3D%27M2%200h12v1h-12zM1%201h14v1h-14zM0%202h16v1h-16zM0%203h16v1h-16zM0%204h16v1h-16zM0%205h16v1h-16zM0%206h16v1h-16zM0%207h16v1h-16zM0%208h16v1h-16zM0%209h16v1h-16zM0%2010h16v1h-16zM0%2011h16v1h-16zM0%2012h16v1h-16zM0%2013h16v1h-16zM1%2014h14v1h-14zM2%2015h12v1h-12z%27%2F%3E%3Cpath%20fill%3D%27%23946c7f%27%20d%3D%27M3%201h10v1h-10zM2%202h12v1h-12zM1%203h14v1h-14zM1%204h14v1h-14zM1%205h14v1h-14zM1%206h14v1h-14zM1%207h14v1h-14zM1%208h14v1h-14zM1%209h14v1h-14zM1%2010h14v1h-14zM1%2011h14v1h-14zM1%2012h14v1h-14zM2%2013h12v1h-12zM3%2014h10v1h-10z%27%2F%3E%3Cpath%20fill%3D%27%231d0f11%27%20d%3D%27M4%202h8v1h-8zM3%203h10v1h-10zM2%204h12v1h-12zM2%205h12v1h-12zM2%206h12v1h-12zM2%207h12v1h-12zM2%208h12v1h-12zM2%209h12v1h-12zM2%2010h12v1h-12zM2%2011h12v1h-12zM3%2012h10v1h-10zM4%2013h8v1h-8z%27%2F%3E%3Cpath%20fill%3D%27%2326273c%27%20d%3D%27M5%203h6v1h-6zM4%204h8v1h-8zM3%205h10v1h-10zM3%206h10v1h-10zM3%207h10v1h-10zM3%208h10v1h-10zM3%209h10v1h-10zM3%2010h10v1h-10zM4%2011h8v1h-8zM5%2012h6v1h-6z%27%2F%3E%3C%2Fsvg%3E');
+  --px-in: url('data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2710%27%20height%3D%2710%27%20viewBox%3D%270%200%2010%2010%27%20shape-rendering%3D%27crispEdges%27%3E%3Cpath%20fill%3D%27%231d0f11%27%20d%3D%27M2%200h6v1h-6zM1%201h8v1h-8zM0%202h10v1h-10zM0%203h10v1h-10zM0%204h10v1h-10zM0%205h10v1h-10zM0%206h10v1h-10zM0%207h10v1h-10zM1%208h8v1h-8zM2%209h6v1h-6z%27%2F%3E%3Cpath%20fill%3D%27%23d9d9eb%27%20d%3D%27M3%201h4v1h-4zM2%202h6v1h-6zM1%203h8v1h-8zM1%204h8v1h-8zM1%205h8v1h-8zM1%206h8v1h-8zM2%207h6v1h-6zM3%208h4v1h-4z%27%2F%3E%3C%2Fsvg%3E');
+  --px-out: url('data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2710%27%20height%3D%2710%27%20viewBox%3D%270%200%2010%2010%27%20shape-rendering%3D%27crispEdges%27%3E%3Cpath%20fill%3D%27%231d0f11%27%20d%3D%27M2%200h6v1h-6zM1%201h8v1h-8zM0%202h10v1h-10zM0%203h10v1h-10zM0%204h10v1h-10zM0%205h10v1h-10zM0%206h10v1h-10zM0%207h10v1h-10zM1%208h8v1h-8zM2%209h6v1h-6z%27%2F%3E%3Cpath%20fill%3D%27%234a68d2%27%20d%3D%27M3%201h4v1h-4zM2%202h6v1h-6zM1%203h8v1h-8zM1%204h8v1h-8zM1%205h8v1h-8zM1%206h8v1h-8zM2%207h6v1h-6zM3%208h4v1h-4z%27%2F%3E%3C%2Fsvg%3E');
+  --ink: #1d0f11;
+  grid-column: 1 / -1;
+  grid-row: 1;
+  justify-self: center;
+  align-self: start;
   position: relative;
-  width: min(300px, 52vw);
-  aspect-ratio: 3 / 4;
-  container-type: inline-size;
-}
-
-.phone.is-image img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
-}
-
-.phone .bubble {
-  position: absolute;
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  width: min(440px, 92%);
+  max-height: 100%;
+  min-height: 0;
   margin: 0;
-  padding: 0 3cqw;
-  font-size: 4.4cqw;
-  line-height: 1.3;
-  text-align: center;
+  padding: 0;
+  border: 12px solid transparent;
+  border-image: var(--px-window) 6 fill / 12px;
+  background: none;
+  filter: drop-shadow(4px 4px 0 rgb(0 0 0 / 0.55));
+  font: inherit;
+  font-size: clamp(14px, 2.3vmin, 18px);
+  color: #eceaf6;
+  text-align: left;
+  animation: messenger-in 0.24s steps(4, end);
+}
+
+/* 말풍선 대사 동안: 무대 가운데에 크게 */
+.messenger.is-full {
+  align-self: center;
+  width: min(600px, 100%);
+  min-height: min(56%, 400px);
+  cursor: pointer;
+}
+
+.messenger.is-full:focus-visible {
+  outline: 2px solid var(--gold-bright);
+  outline-offset: 6px;
+}
+
+@keyframes messenger-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+}
+
+/* 말풍선 대사 동안 뒤 장면을 흐리게 (PlayScreen·TruthFlow 가 무대 앞에 깐다) */
+.messenger-veil {
+  position: absolute;
+  inset: 0;
+  background: rgb(10 9 20 / 0.55);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  animation: veil-in 0.24s ease-out;
+}
+
+@keyframes veil-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.messenger-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.4em 0.6em 0.7em;
+  border-bottom: 2px solid #946c7f; /* 테두리 띠와 같은 자줏빛 한 칸 */
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.messenger-icon {
+  flex: none;
+  width: 2.4em;
+  height: 2.4em;
+}
+
+.messenger-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.messenger-thread {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.9em;
+  min-height: 0;
+  padding: 0.9em 0.6em 1.2em;
+  overflow-y: auto;
+}
+
+.messenger-row {
+  display: grid;
+  gap: 0.3em;
+  max-width: 80%;
+  align-self: flex-start;
+  animation: bubble-in 0.2s steps(3, end);
+}
+
+.messenger-row.is-out {
+  align-self: flex-end;
+  justify-items: end;
+}
+
+.messenger-text {
+  padding: 0.3em 0.55em;
+  border: 8px solid transparent;
+  border-image: var(--px-in) 4 fill / 8px;
+  color: #1d1b2c;
+  font-weight: 600;
+  line-height: 1.5;
   word-break: keep-all;
 }
 
-/* M-01 말풍선 위치 (원본 540×720 기준 비율) */
-.phone.is-image .bubble.is-in {
-  left: 25%;
-  top: 26.4%;
-  width: 43%;
-  height: 14.2%;
-  color: #1c1b24;
-}
-
-.phone.is-image .bubble.is-out {
-  left: 34.8%;
-  top: 44.9%;
-  width: 40.6%;
-  height: 13.5%;
+.messenger-row.is-out .messenger-text {
+  border-image-source: var(--px-out);
   color: #ffffff;
 }
 
-/* M-02 대신: 같은 모양의 폰을 CSS 로 (사용자 결정) */
-.phone.is-css {
-  width: min(190px, 44vw);
-  aspect-ratio: 9 / 16;
-  border: 3px solid #3a4a66;
-  border-radius: 18px;
-  background: #e8ecf2;
-  box-shadow: 0 0 0 6px #0e1628;
+.messenger-time {
+  font-size: 0.75em;
+  font-weight: 700;
+  color: #9d9cb8;
+  font-variant-numeric: tabular-nums;
 }
 
-.phone.is-css .bubble.is-out {
-  right: 7%;
-  top: 22%;
-  width: 78%;
-  padding: 4cqw 5cqw;
-  font-size: 7cqw;
-  border-radius: 6px;
-  background: #4294ff;
-  color: #ffffff;
+@keyframes bubble-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* 누르면 다음: 창 아래 가장자리에 걸친 칸 모양 갈매기 */
+.messenger-next {
+  position: absolute;
+  bottom: -18px;
+  left: 50%;
+  box-sizing: content-box;
+  width: 22px;
+  height: 12px;
+  padding: 3px 5px;
+  border: 6px solid transparent;
+  border-image: var(--px-window) 6 fill / 12px;
+  border-image-outset: 6px;
+  fill: none;
+  stroke: var(--gold-bright);
+  stroke-width: 3.5;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
+  transform: translateX(-50%);
+  animation: messenger-next 1s steps(2, end) infinite;
+}
+
+@keyframes messenger-next {
+  50% {
+    transform: translate(-50%, 3px);
+  }
+}
+
+/* 세로 화면: 너비를 꽉 쓰고 높이는 내용만큼 (가운데) */
+@media (max-aspect-ratio: 4/5) {
+  .messenger.is-full {
+    width: 100%;
+    min-height: min(50%, 420px);
+    margin-bottom: 22px;
+  }
 }
 
 /* 시간표: 종이 한 줄, 앞 표현에 취소선 */
@@ -520,8 +641,8 @@
   margin: 0;
   padding: 12px 20px;
   border-radius: 2px;
-  background: var(--paper);
-  color: var(--night);
+  background: var(--sheet);
+  color: var(--sheet-ink);
   font-size: clamp(15px, 2.4vmin, 19px);
   white-space: nowrap;
   box-shadow: 0 12px 30px -12px rgb(0 0 0 / 0.6);
@@ -542,8 +663,20 @@
   background: var(--night);
 }
 
-/* 모바일 세로: 아이콘 작게, 증거 화면 조금 작게 */
+/* 모바일 세로: 아이콘 작게, 증거 화면 조금 작게. 증거 모달은 아래에서 올라오는 시트 (기록장과 같게) */
 @media (max-aspect-ratio: 4/5) {
+  .evidence-backdrop {
+    place-items: end stretch;
+    /* 대화창과 같은 자리·같은 폭: 화면 끝에 붙지 않고 대화창 위치에서 올라온다 */
+    padding: max(56px, env(safe-area-inset-top)) max(16px, 4.5vw)
+      max(28px, env(safe-area-inset-bottom));
+  }
+  .evidence-modal {
+    width: 100%;
+    max-height: 88vh;
+    padding: 18px 16px;
+    animation: sheet-up 0.24s ease-out;
+  }
   .evidence-slot {
     width: 32px;
     height: 32px;
@@ -552,25 +685,28 @@
     width: 27px;
     height: 27px;
   }
-  .phone {
-    width: min(250px, 64vw);
-  }
-}
-
-@media (max-height: 480px) {
-  .phone {
-    width: 170px;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .evidence-backdrop,
+  .evidence-modal,
   .evidence-detail {
     animation: none;
   }
   .evidence-slot,
   .evidence-insert,
+  .messenger,
+  .messenger-row,
+  .messenger-veil,
+  .messenger-next,
   .rec-dot {
     animation: none;
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
   }
 }
