@@ -1,7 +1,7 @@
 /**
  * 증거 (로드맵 4b, 계획서 26-evidence.md).
  * - 아이콘 바: 증거 id → 이름(요청서 표 그대로) + 아이콘. 얻는 곳은 장면 데이터의 gain
- * - 증거 화면: 정해진 대사부터 장면 끝(대사 단계)까지 배경 위에 겹쳐 보이는 녹음·메시지·시간표.
+ * - 증거 화면: 정해진 대사부터 장면 끝(대사 단계)까지 보이는 메신저 (시간표·녹음기 겹침은 #96 에서 삭제).
  *   문구는 모두 그 장면의 대사·연출 안에 있는 문장 그대로 (evidence.test 가 확인)
  */
 import type { EvidenceId, SceneId, TrialSceneId } from '@/engine/types';
@@ -20,36 +20,21 @@ export const EVIDENCE: Record<EvidenceId, { name: string; icon: IconId }> = {
   'text-2154': { name: '21:54 발신 문자', icon: 'I-10_message-phone' },
 };
 
-export type Insert =
-  /**
-   * 녹음 재생 화면: 증거 아이콘과 같은 픽셀 기기 (계획서 82). device 는 그 녹음의 증거 아이콘
-   * (자백 녹음 = 녹음기, 통화 녹음 = 휴대폰). label 은 대본에 파일 이름이 있을 때만
-   */
-  | { kind: 'recorder'; device: 'I-01_recorder' | 'I-03_call-phone'; label?: string }
-  /**
-   * 메시지 화면 (메신저, 계획서 78). in = 받은 말풍선, out = 보낸 말풍선.
-   * sender 는 상대 이름(대본 발언자 표기에 있는 것만), time 은 대본 발언자 표기에 시각이 있을 때만
-   */
-  | {
-      kind: 'message';
-      sender?: string;
-      bubbles: { side: 'in' | 'out'; text: string; time?: string }[];
-    }
-  /** 시간표: from 에 취소선, 그다음 to */
-  | { kind: 'timeline'; from: string; to: string };
+/**
+ * 대사 중 겹쳐 뜨는 증거 화면: 메시지(메신저, 계획서 78)만 남았다. 시간표·녹음기 겹침은 #96 에서 지웠다.
+ * in = 받은 말풍선, out = 보낸 말풍선. sender 는 상대 이름(대본 발언자 표기에 있는 것만),
+ * time 은 대본 발언자 표기에 시각이 있을 때만
+ */
+export type Insert = {
+  kind: 'message';
+  sender?: string;
+  bubbles: { side: 'in' | 'out'; text: string; time?: string }[];
+};
 
 /** 이 발언자의 대사(첫머리가 starts)부터 장면의 대사가 끝날 때까지 보인다 */
 export type InsertCue = { speaker: string; starts?: string; insert: Insert };
 
 export const INSERTS: Partial<Record<TrialSceneId, InsertCue>> = {
-  // 연출: 검사 측 화면에 ‘자백 녹음 03:17’이라는 파일이 표시된다
-  A10: {
-    speaker: '검사',
-    starts: '피고인의 최초 자백',
-    insert: { kind: 'recorder', device: 'I-01_recorder', label: '자백 녹음 03:17' },
-  },
-  // 연출: 통화 녹음 재생 화면이 켜진다 (파일 이름은 대본에 없음)
-  C30: { speaker: '녹음 속 강도현', insert: { kind: 'recorder', device: 'I-03_call-phone' } },
   E50: {
     speaker: '화면 / 발신자 불명',
     insert: {
@@ -69,11 +54,6 @@ export const INSERTS: Partial<Record<TrialSceneId, InsertCue>> = {
       kind: 'message',
       bubbles: [{ side: 'out', text: '17층에 계세요. 제가 곧 갈게요.' }],
     },
-  },
-  G70: {
-    speaker: '변호인',
-    starts: '방금 말씀하신 표현을',
-    insert: { kind: 'timeline', from: '10시 20분에 사망', to: '10시 20분에 발견' },
   },
 };
 

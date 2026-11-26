@@ -5,7 +5,6 @@ import { portraitOf, portraitSrc } from '@/data/characters';
 import type * as TruthModule from '@/data/truth/truth';
 import type { StoryState } from '@/engine/types';
 import { messageView } from '@/data/evidence';
-import { EvidenceInsert } from '@/features/evidence/EvidenceInsert';
 import { Messenger } from '@/features/evidence/Messenger';
 import { DialogueBox } from '@/features/play/DialogueBox';
 import { Typewriter } from '@/features/play/Typewriter';
@@ -118,7 +117,6 @@ export function TruthFlow({
     <main className="play-screen truth-screen">
       {/* 진실 공개 전용 배경 이름은 이 청크의 데이터에만 있다 (본편 BgId 에서 뺐음) */}
       <Backdrop bg={scene.bg as BgId} effect={scene.effect} />
-      {scene.insert && !atButtons && <EvidenceInsert key={scene.id} insert={scene.insert} />}
 
       {/* 메신저가 무대를 차지하는 동안 뒤 장면을 흐리게 (계획서 78) */}
       {messengerFull && <div className="messenger-veil" aria-hidden="true" />}

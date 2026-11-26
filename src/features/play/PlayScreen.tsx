@@ -8,7 +8,6 @@ import { poseAt, poseSrcsIn } from '@/data/line-poses';
 import { nextScenes, upcomingBackgrounds } from '@/data/scene-bg';
 import { SCENES } from '@/data/scenes';
 import { EvidenceBar } from '@/features/evidence/EvidenceBar';
-import { EvidenceInsert } from '@/features/evidence/EvidenceInsert';
 import { Messenger } from '@/features/evidence/Messenger';
 import { Epilogue } from '@/features/epilogue/Epilogue';
 import { Notebook } from '@/features/notebook/Notebook';
@@ -246,9 +245,6 @@ export function PlayScreen({ start, onEnd }: Props) {
               onView={(id) => setEvidenceView({ id })}
               onClose={closeEvidence}
             />
-          )}
-          {insert && (
-            <EvidenceInsert key={cursor.at === 'line' ? cursor.sceneId : ''} insert={insert} />
           )}
           <Notebook
             story={play.story}
