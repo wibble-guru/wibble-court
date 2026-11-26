@@ -13,6 +13,17 @@ export type Portrait = {
   pose?: number;
 };
 
+/**
+ * 그림 속 인물이 바라보는 쪽 (#85). 서는 쪽과 반대(화면 밖)를 보면 좌우로 뒤집어 화면 안쪽을 보게 한다.
+ * 변호인 그림은 모두 오른쪽을 보는데 오른쪽에 서서 뒤집는다. 표에 없는 인물은 정면.
+ */
+const FACING: Partial<Record<CharacterId, Portrait['side']>> = {
+  defense: 'right',
+};
+
+/** 이 자리에 설 때 좌우로 뒤집을지: 바라보는 쪽 = 서는 쪽이면 화면 밖을 보므로 뒤집는다 */
+export const flipped = (p: Portrait) => FACING[p.id] === p.side;
+
 const SIDE: Record<CharacterId, Portrait['side']> = {
   judge: 'right',
   prosecutor: 'left',

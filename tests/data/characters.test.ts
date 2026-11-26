@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { SCENES } from '@/data/scenes';
-import { portraitOf } from '@/data/characters';
+import { flipped, JUDGE_AT_PROMPT, portraitOf } from '@/data/characters';
 
 const speakers = new Set(
   Object.values(SCENES).flatMap((scene) =>
@@ -51,5 +51,12 @@ describe('말하는 인물 그림', () => {
     // 화면에 뜨는 글은 인물이 말하는 게 아니다
     expect(portraitOf('오지안의 답장')).toBeNull();
     expect(portraitOf('오지안의 자백')).toBeNull();
+  });
+
+  test('오른쪽에 서는 변호인은 화면 안쪽을 보게 뒤집고, 정면 인물은 그대로', () => {
+    expect(flipped(portraitOf('변호인')!)).toBe(true);
+    expect(flipped(portraitOf('검사')!)).toBe(false);
+    expect(flipped(portraitOf('재판장')!)).toBe(false);
+    expect(flipped(JUDGE_AT_PROMPT)).toBe(false);
   });
 });
