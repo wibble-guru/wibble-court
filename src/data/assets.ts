@@ -75,7 +75,7 @@ const kitSrc = (part: (typeof KIT_PARTS)[number]) => `${BASE}assets/ui/kit-${par
 export const KIT = { emblem: kitSrc('emblem'), gem: kitSrc('gem') };
 
 /**
- * 키트 조각을 CSS 변수(--kit-dialog 등)로. 플레이·진실 공개 화면의 main 에 건다.
+ * 키트 조각을 CSS 변수(--kit-dialog 등)로. 타이틀·플레이·진실 공개 화면의 main 에 건다.
  * CSS 안에 경로를 쓰면 상대 경로 빌드(base './')에서 어긋나서 여기서 넣는다.
  * 변수 안의 상대 url 은 그 변수를 쓰는 스타일시트(assets/index-*.css) 기준으로 풀리므로
  * ("./assets/ui/…" → "/assets/assets/ui/…") 문서 주소 기준의 절대 주소로 바꿔 넣는다.
@@ -136,9 +136,6 @@ export type IconId =
 
 export const iconSrc = (id: IconId) => `${BASE}assets/icons/${id}.webp`;
 
-/** 메시지 증거 화면 (E50): 말풍선 2개짜리 폰 */
-export const MODAL = { twoBubbles: `${BASE}assets/modal/M-01_two-bubbles.webp` };
-
 const ICON_IDS: IconId[] = [
   'I-01_recorder',
   'I-02_statement',
@@ -158,5 +155,4 @@ export const UI_IMAGES = [
   ...KIT_PARTS.map(kitSrc),
   ...CHARACTER_IDS.map((id) => portraitSrc(id)), // 기본 그림만. 포즈는 장면마다 (line-poses)
   ...ICON_IDS.map(iconSrc),
-  MODAL.twoBubbles,
 ];

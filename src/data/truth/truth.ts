@@ -89,7 +89,7 @@ export const TRUTH_SCENES: TruthScene[] = [
     bg: 'E-06_printed-capture',
     insert: {
       kind: 'message',
-      phone: 'image',
+      sender: '발신자 불명',
       bubbles: [
         { side: 'in', text: '네가 경찰서에 가면, 그 뒤에는 아무 일도 없을 거야.' },
         { side: 'out', text: '알았어. 약속은 지켜. 그 사람은 건드리지 마.' },

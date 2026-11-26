@@ -1,11 +1,11 @@
-import { MODAL } from '@/data/assets';
 import type { Insert } from '@/data/evidence';
 
 /**
- * 증거 화면: 대사 진행을 막지 않고 배경 위에 겹쳐 보이는 녹음·메시지·시간표.
+ * 증거 화면: 대사 진행을 막지 않고 배경 위에 겹쳐 보이는 녹음·시간표. 메시지는 Messenger (대화창과 자리를 나눔).
  * 같은 문장이 대사로 이미 읽히므로 보조기기에는 숨긴다(aria-hidden). 문구는 data/evidence 의 대본 문장 그대로.
  */
 export function EvidenceInsert({ insert }: { insert: Insert }) {
+  if (insert.kind === 'message') return null;
   return (
     <div className={`evidence-insert is-${insert.kind}`} aria-hidden="true">
       {insert.kind === 'recorder' && (
@@ -18,17 +18,6 @@ export function EvidenceInsert({ insert }: { insert: Insert }) {
               <i key={i} style={{ '--h': `${30 + ((i * 37) % 70)}%` }} />
             ))}
           </span>
-        </div>
-      )}
-
-      {insert.kind === 'message' && (
-        <div className={insert.phone === 'image' ? 'phone is-image' : 'phone is-css'}>
-          {insert.phone === 'image' && <img className="pixelated" src={MODAL.twoBubbles} alt="" />}
-          {insert.bubbles.map((bubble, i) => (
-            <p key={i} className={`bubble is-${bubble.side}`}>
-              {bubble.text}
-            </p>
-          ))}
         </div>
       )}
 

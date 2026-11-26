@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { Backdrop } from '@/components/Backdrop';
 import { SceneBackground } from '@/components/SceneBackground';
 import { KIT_VARS } from '@/data/assets';
-import { INSERTS } from '@/data/evidence';
+import { INSERTS, messageView } from '@/data/evidence';
 import { sceneTitle } from '@/data/scene-title';
 import { JUDGE_AT_PROMPT } from '@/data/characters';
 import { poseAt, poseSrcsIn } from '@/data/line-poses';
@@ -10,6 +10,7 @@ import { nextScenes, upcomingBackgrounds } from '@/data/scene-bg';
 import { SCENES } from '@/data/scenes';
 import { EvidenceBar } from '@/features/evidence/EvidenceBar';
 import { EvidenceInsert } from '@/features/evidence/EvidenceInsert';
+import { Messenger } from '@/features/evidence/Messenger';
 import { Epilogue } from '@/features/epilogue/Epilogue';
 import { Notebook } from '@/features/notebook/Notebook';
 import { loadResultCopy } from '@/features/result/ResultScreen';
@@ -68,13 +69,29 @@ export function PlayScreen({ start, onEnd }: Props) {
     if (cursor.at === 'end') onEnd(play);
   }, [play, cursor.at, saveStory, onEnd]);
 
+  // 증거 화면: 정해진 대사부터 그 장면의 대사가 끝날 때까지 (질문 단계에서는 숨김)
+  const sceneLines = cursor.at === 'line' ? visibleLines(cursor.sceneId, play.story) : [];
+  const cue = cursor.at === 'line' ? INSERTS[cursor.sceneId as keyof typeof INSERTS] : undefined;
+  const cueAt = cue
+    ? sceneLines.findIndex((l) => l.speaker === cue.speaker && l.text.startsWith(cue.starts ?? ''))
+    : -1;
+  const insert =
+    cue && cursor.at === 'line' && cueAt >= 0 && cursor.index >= cueAt ? cue.insert : null;
+  // 메시지는 메신저 화면: 말풍선 대사 동안은 대화창 대신 화면을 차지한다 (계획서 78)
+  const message =
+    insert?.kind === 'message' && cursor.at === 'line'
+      ? messageView(insert, sceneLines, cueAt, cursor.index)
+      : null;
+  const messengerFull = message?.full ?? false;
+
   /** 에필로그는 타자 효과 없이 기록 카드라 한 번 누르면 다음 (features/epilogue) */
   const epilogue = cursor.at === 'line' && cursor.sceneId === 'EPILOGUE';
   const press = useCallback(() => {
     if (!lineKey) return;
-    if (epilogue || revealed === lineKey) setPlay(advance);
+    // 메신저가 화면을 차지한 대사는 타자 효과가 없어 한 번에 다음
+    if (epilogue || messengerFull || revealed === lineKey) setPlay(advance);
     else setRevealed(lineKey);
-  }, [lineKey, revealed, epilogue]);
+  }, [lineKey, revealed, epilogue, messengerFull]);
 
   const reveal = useCallback(() => setRevealed(lineKey), [lineKey]);
 
@@ -97,7 +114,7 @@ export function PlayScreen({ start, onEnd }: Props) {
   const prompt = currentPrompt(play);
   useEffect(() => {
     (lineKey ? panelRef.current : titleRef.current)?.focus({ preventScroll: true });
-  }, [lineKey, prompt]);
+  }, [lineKey, prompt, messengerFull]);
 
   // 배경: 장면이 바뀌면 다음에 올 수 있는 장면들의 배경을 미리 받는다 (이미 받은 것은 캐시)
   const sceneId = cursor.at === 'end' ? null : cursor.sceneId;
@@ -117,7 +134,7 @@ export function PlayScreen({ start, onEnd }: Props) {
     setBackdrop(current); // 끝(end)에서는 마지막 배경을 그대로 둔 채 암전
   }
 
-  const line = cursor.at === 'line' ? visibleLines(cursor.sceneId, play.story)[cursor.index] : null;
+  const line = cursor.at === 'line' ? (sceneLines[cursor.index] ?? null) : null;
   /** 지금 대사의 대본 줄 번호 (조건부 대사를 빼고 보여 주므로 화면 순번과 다를 수 있다) */
   const lineIndex = line && sceneId ? (SCENES[sceneId]?.lines.indexOf(line) ?? -1) : -1;
 
@@ -131,16 +148,6 @@ export function PlayScreen({ start, onEnd }: Props) {
       setEvidenceModal(() => m.EvidenceModal),
     );
   }, [hasEvidence, EvidenceModal]);
-  // 증거 화면: 정해진 대사부터 그 장면의 대사가 끝날 때까지 (질문 단계에서는 숨김)
-  const cue = cursor.at === 'line' ? INSERTS[cursor.sceneId as keyof typeof INSERTS] : undefined;
-  const cueAt =
-    cue && cursor.at === 'line'
-      ? visibleLines(cursor.sceneId, play.story).findIndex(
-          (l) => l.speaker === cue.speaker && l.text.startsWith(cue.starts ?? ''),
-        )
-      : -1;
-  const insert =
-    cue && cursor.at === 'line' && cueAt >= 0 && cursor.index >= cueAt ? cue.insert : null;
   const thought = prompt !== null && isThoughtPrompt(prompt);
   const promptKey = prompt && cursor.at === 'prompt' ? `${cursor.sceneId}:${prompt.id}` : '';
   const onSubmit = (input: AnswerInput) => setPlay((p) => submit(p, input).play);
@@ -153,8 +160,20 @@ export function PlayScreen({ start, onEnd }: Props) {
         <SceneBackground id="L-08_judge-notebook" />
       </div>
 
+      {/* 메신저가 무대를 차지하는 동안 뒤 장면을 흐리게 (계획서 78) */}
+      {messengerFull && <div className="messenger-veil" aria-hidden="true" />}
       <div className="play-stage" data-mode={line ? 'line' : thought ? 'thought' : 'prompt'}>
-        {line && !epilogue && (
+        {insert?.kind === 'message' && message && (
+          <Messenger
+            key={cursor.at === 'line' ? cursor.sceneId : ''}
+            insert={insert}
+            shown={message.shown}
+            onPress={messengerFull ? press : undefined}
+            pressLabel={UI_COPY.nextLine}
+            buttonRef={panelRef}
+          />
+        )}
+        {line && !epilogue && !messengerFull && (
           <DialogueBox
             speaker={line.speaker}
             pose={sceneId ? poseAt(sceneId, lineIndex) : 0}
