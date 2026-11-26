@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { TRUTH_BUTTONS, TRUTH_SCENES } from './truth';
+import { TRUTH_BUTTONS, TRUTH_SCENES } from '@/data/truth/truth';
 
 const SPEC = resolve(process.cwd(), '.claude/docs/specs/script-v4.md');
 

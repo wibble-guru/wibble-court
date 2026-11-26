@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { analyze, computedMax, MAX, resultId, supportingChoices } from './score';
-import type { Answers } from './types';
+import { analyze, computedMax, MAX, resultId, supportingChoices } from '@/engine/score';
+import type { Answers } from '@/engine/types';
 
 /** 6부 예시의 `Q1=A, …, Q10-3=C` 표기를 answers 로 */
 function parse(spec: string): Answers {

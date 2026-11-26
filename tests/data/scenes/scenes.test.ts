@@ -10,7 +10,7 @@ import {
   type AnswerInput,
 } from '@/engine/engine';
 import type { ABC, Line, Scene, SceneId, StoryState } from '@/engine/types';
-import { SCENES, START_SCENE } from '.';
+import { SCENES, START_SCENE } from '@/data/scenes';
 
 const LETTERS = ['A', 'B', 'C'] as const;
 /** 분기 질문 Q1~Q9 (답 이름 순서 = 장면 순서) */

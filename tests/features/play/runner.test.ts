@@ -11,7 +11,7 @@ import {
   submit,
   visibleLines,
   type Play,
-} from './runner';
+} from '@/features/play/runner';
 
 /** 모든 질문에 줄 답 (Q1~Q9 는 A, 판결은 무죄) */
 const INPUT: AnswerInput = {

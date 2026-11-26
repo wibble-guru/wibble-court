@@ -1,4 +1,5 @@
 /// <reference types="node" />
+/// <reference types="vitest/config" />
 import preact from '@preact/preset-vite';
 import tailwindcss from '@tailwindcss/vite';
 import { wibble } from '@wibble-guru/boilerplate/vite';
@@ -12,6 +13,9 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
+  },
+  test: {
+    include: ['tests/**/*.test.{ts,tsx}'], // 테스트는 tests/ 에만 둔다 (src/ 와 같은 폴더 모양)
   },
   build: {
     target: 'es2022',

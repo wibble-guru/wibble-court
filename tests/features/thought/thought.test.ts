@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { SCENES } from '@/data/scenes';
-import { isThoughtPrompt, needsConfirm } from './thought';
+import { isThoughtPrompt, needsConfirm } from '@/features/thought/thought';
 
 const prompts = Object.values(SCENES).flatMap((scene) => scene?.prompts ?? []);
 

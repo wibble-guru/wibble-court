@@ -1,9 +1,9 @@
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { SceneId } from '@/engine/types';
-import { portraitOf } from './characters';
-import { LINE_POSES, poseAt, poseSrcsIn } from './line-poses';
-import { SCENES } from './scenes';
+import { portraitOf } from '@/data/characters';
+import { LINE_POSES, poseAt, poseSrcsIn } from '@/data/line-poses';
+import { SCENES } from '@/data/scenes';
 
 describe('줄별 포즈', () => {
   it('그림 있는 발언자 줄에는 모두 포즈가 있고, 나머지 줄은 비어 있다', () => {

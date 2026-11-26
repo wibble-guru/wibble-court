@@ -1,7 +1,7 @@
 import { describe, expect, test } from 'vitest';
 import { SCENES } from '@/data/scenes';
 import type { SceneId } from '@/engine/types';
-import { sceneTitle } from './scene-title';
+import { sceneTitle } from '@/data/scene-title';
 
 const ids = Object.keys(SCENES).filter((id) => id !== 'EPILOGUE') as SceneId[];
 

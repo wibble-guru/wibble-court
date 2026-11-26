@@ -9,7 +9,7 @@ import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import type { Scene } from '@/engine/types';
-import { SCENES } from '.';
+import { SCENES } from '@/data/scenes';
 
 const SPEC = resolve(process.cwd(), '.claude/docs/specs/script-v4.md');
 const hasSpec = existsSync(SPEC);
