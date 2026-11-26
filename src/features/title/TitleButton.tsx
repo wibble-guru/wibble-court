@@ -10,8 +10,7 @@ type Props = {
 };
 
 /**
- * UI 키트 모양 버튼: 양끝을 깎은 육각형 + 동판 금 테두리.
- * 테두리는 바깥 금색 겹(.btn-frame) 안에 1px 작은 바탕 겹(.btn-face)을 얹어 만든다 (clip-path 는 border 를 자르므로).
+ * 황동 UI 버튼 (계획서 83): 모서리 둘을 깎은 판(.btn-frame clip-path) 안에 적갈색 바탕 + 황동 두 줄(.btn-face).
  */
 export function TitleButton({
   children,

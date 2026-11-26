@@ -71,62 +71,38 @@
   color: var(--paper);
 }
 
-/* 부제: 키트의 월계수(이미지) + 깎은 육각 플레이트(CSS) */
+/* 부제: 플레이 화면 이름표와 같은 적갈색 명판 + 황동 두 줄 + 양 끝 못 (계획서 83) */
 .title-plate {
   display: inline-flex;
-  align-items: center;
   margin: 0;
   font-size: max(15px, calc(30 * var(--u)));
 }
 
-/* 월계수 이미지는 그림 테두리에 딱 맞게 잘라 두었다 (투명 여백이 있으면 왼쪽 축과 양쪽 겹침이 어긋난다) */
-.title-plate .laurel {
-  position: relative;
-  z-index: 1;
-  height: 1.85em;
-  width: auto;
+.plate-face {
+  display: block;
+  padding: 0.32em 1.8em;
+  background:
+    radial-gradient(circle at 0.75em 50%, var(--ui-brass-hi) 0 2px, transparent 2.5px),
+    radial-gradient(circle at calc(100% - 0.75em) 50%, var(--ui-brass-hi) 0 2px, transparent 2.5px),
+    var(--ui-umber);
+  box-shadow:
+    inset 0 0 0 1px var(--ui-brass),
+    inset 0 0 0 4px var(--ui-umber),
+    inset 0 0 0 5px var(--ui-line-in),
+    0 3px 0 rgb(0 0 0 / 0.45);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ui-cream);
 }
 
-.title-plate .laurel:first-child {
-  margin-right: -0.32em;
-}
-
-.title-plate .laurel:last-child {
-  margin-left: -0.32em;
-}
-
-.plate-frame,
+/* 버튼 틀: 왼쪽 위·오른쪽 아래 모서리를 깎은 판 (선택지와 같은 모양) */
 .btn-frame {
-  --cut: 0.8em;
   display: grid;
-  padding: 1px;
-  background: var(--gold);
-  clip-path: polygon(
-    var(--cut) 0,
-    calc(100% - var(--cut)) 0,
-    100% 50%,
-    calc(100% - var(--cut)) 100%,
-    var(--cut) 100%,
-    0 50%
-  );
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
 }
 
-.plate-face,
 .btn-face {
   display: block;
-  clip-path: inherit;
-}
-
-.plate-face {
-  padding: 0.32em 1.6em;
-  background: linear-gradient(
-    to bottom,
-    color-mix(in srgb, var(--plate), var(--paper) 14%),
-    var(--plate) 60%
-  );
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  color: var(--paper);
 }
 
 .title-info {
@@ -162,22 +138,25 @@
 }
 
 .title-btn .btn-face {
+  --fill: var(--ui-umber);
   min-width: max(150px, calc(280 * var(--u)));
-  padding: 0.55em 2em;
-  background: color-mix(in srgb, var(--night) 86%, transparent);
+  padding: 0.6em 2em;
+  background: var(--fill);
+  box-shadow:
+    inset 0 0 0 1px var(--ui-brass),
+    inset 0 0 0 4px var(--fill),
+    inset 0 0 0 5px var(--ui-line-in);
   font-size: max(15px, calc(26 * var(--u)));
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.04em;
   text-align: center;
   white-space: nowrap;
 }
 
-.title-btn.is-secondary .btn-frame {
-  background: color-mix(in srgb, var(--gold) 55%, transparent);
-}
-
+/* 보조 버튼: 어두운 바탕에 황동 선 하나 */
 .title-btn.is-secondary .btn-face {
-  background: color-mix(in srgb, var(--night) 70%, transparent);
+  --fill: color-mix(in srgb, var(--ui-ink) 80%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-brass) 70%, transparent);
   color: var(--mist);
 }
 
@@ -187,23 +166,14 @@
   font-size: max(14px, calc(22 * var(--u)));
 }
 
-.title-btn:hover,
-.title-btn:focus-visible {
-  transform: scale(1.02);
-}
-
-.title-btn:hover .btn-frame,
-.title-btn:focus-visible .btn-frame {
-  background: var(--gold-bright);
-}
-
 .title-btn:hover .btn-face,
 .title-btn:focus-visible .btn-face {
-  color: var(--paper);
+  --fill: var(--ui-umber-hi);
+  color: var(--ui-brass-hi);
 }
 
 .title-btn:focus-visible {
-  outline: 2px solid var(--gold-bright);
+  outline: 2px solid var(--ui-brass-hi);
   outline-offset: var(--space-1);
 }
 
