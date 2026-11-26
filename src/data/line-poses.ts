@@ -1,6 +1,6 @@
 /**
  * 대사 상황에 맞는 인물 포즈 (계획서 71). 장면별로 대본 줄 순서대로 한 글자씩:
- * 숫자 = 그 줄 발언자의 포즈 번호(0 기본, 1~6 포즈 그림), '.' = 연출이거나 그림 없는 발언자.
+ * 숫자 = 그 줄 발언자의 포즈 번호(0 기본, 1~9 포즈 그림 — 인물마다 있는 번호만), '.' = 연출이거나 그림 없는 발언자.
  * 포즈 번호 뜻은 pose-names.ts (확인용, 번들에 안 들어감). line-poses.test 가 줄 수·발언자와 맞는지 확인한다.
  */
 import type { SceneId } from '@/engine/types';
@@ -8,7 +8,7 @@ import { portraitOf, portraitSrc } from './characters';
 import { SCENES } from './scenes';
 
 export const LINE_POSES: Partial<Record<SceneId, string>> = {
-  P00: '.11133541',
+  P00: '.11733541',
   A10: '.1.4123133',
   'A11-A': '1...1.4323',
   'A11-B': '1.2332',

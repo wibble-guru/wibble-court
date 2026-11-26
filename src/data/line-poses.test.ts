@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { SceneId } from '@/engine/types';
 import { portraitOf } from './characters';
@@ -21,7 +22,7 @@ describe('줄별 포즈', () => {
       expect(row, id).toBeDefined();
       expect(row!.length, id).toBe(scene.lines.length);
       hasPortrait.forEach((has, i) => {
-        expect(has ? /[0-6]/.test(row![i]!) : row![i] === '.', `${id}[${i}]`).toBe(true);
+        expect(has ? /[0-9]/.test(row![i]!) : row![i] === '.', `${id}[${i}]`).toBe(true);
       });
     }
   });
@@ -33,7 +34,7 @@ describe('줄별 포즈', () => {
   });
 
   it('장면에서 쓰는 포즈 그림 주소를 중복 없이 모은다', () => {
-    // P00: 서기 1, 재판장 1, 검사 1·3·4, 변호인 3·5
+    // P00: 서기 1, 재판장 1, 검사 7·3·4, 변호인 3·5
     expect(
       poseSrcsIn('P00')
         .map((s) => s.split('/').pop())
@@ -43,9 +44,18 @@ describe('줄별 포즈', () => {
       'defense-3.webp',
       'defense-5.webp',
       'judge-1.webp',
-      'prosecutor-1.webp',
       'prosecutor-3.webp',
       'prosecutor-4.webp',
+      'prosecutor-7.webp',
     ]);
+  });
+
+  it('표에 쓴 포즈 그림 파일이 모두 있다', () => {
+    for (const id of Object.keys(LINE_POSES) as SceneId[]) {
+      for (const src of poseSrcsIn(id)) {
+        const file = `public/assets/chars/${src.split('/').pop()}`;
+        expect(existsSync(file), `${id}: ${file}`).toBe(true);
+      }
+    }
   });
 });

@@ -1,6 +1,6 @@
 /**
  * 포즈 번호 뜻 (계획서 71). 줄별 포즈 표를 사람이 확인할 때만 쓴다 — 게임 코드는 가져오지 않는다.
- * 그림: public/assets/chars/<id>.webp (0) · <id>-<n>.webp (1~6), 원본은 노션 캐릭터 시트
+ * 그림: public/assets/chars/<id>.webp (0) · <id>-<n>.webp (1~), 원본은 노션 캐릭터 시트 (검사 7 은 사용자가 따로 준 그림)
  */
 import type { CharacterId } from './characters';
 
@@ -22,6 +22,7 @@ export const POSE_NAMES: Record<CharacterId, string[]> = {
     '허리에 손, 자신만만',
     '서류 끼고 못마땅',
     '어깨 너머 노려봄',
+    '서류철 펼쳐 읽기', // 7: P00 공소사실 진술 (#75)
   ],
   defense: [
     '기본',
