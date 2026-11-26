@@ -22,7 +22,7 @@ export const POSE_NAMES: Record<CharacterId, string[]> = {
     '허리에 손, 자신만만',
     '서류 끼고 못마땅',
     '어깨 너머 노려봄',
-    '서류철 펼쳐 읽기', // 7: P00 공소사실 진술 (#75)
+    '서류철 펼쳐 읽기', // 7: P00 검사 두 줄 (#75)
   ],
   defense: [
     '기본',

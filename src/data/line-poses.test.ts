@@ -34,7 +34,7 @@ describe('줄별 포즈', () => {
   });
 
   it('장면에서 쓰는 포즈 그림 주소를 중복 없이 모은다', () => {
-    // P00: 서기 1, 재판장 1, 검사 7·3·4, 변호인 3·5
+    // P00: 서기 1, 재판장 1, 검사 7·3, 변호인 3·5
     expect(
       poseSrcsIn('P00')
         .map((s) => s.split('/').pop())
@@ -45,7 +45,6 @@ describe('줄별 포즈', () => {
       'defense-5.webp',
       'judge-1.webp',
       'prosecutor-3.webp',
-      'prosecutor-4.webp',
       'prosecutor-7.webp',
     ]);
   });

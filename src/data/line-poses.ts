@@ -8,7 +8,7 @@ import { portraitOf, portraitSrc } from './characters';
 import { SCENES } from './scenes';
 
 export const LINE_POSES: Partial<Record<SceneId, string>> = {
-  P00: '.11733541',
+  P00: '.11733571',
   A10: '.1.4123133',
   'A11-A': '1...1.4323',
   'A11-B': '1.2332',
