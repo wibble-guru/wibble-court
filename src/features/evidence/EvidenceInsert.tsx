@@ -1,3 +1,4 @@
+import { iconSrc } from '@/data/assets';
 import type { Insert } from '@/data/evidence';
 
 /**
@@ -9,15 +10,24 @@ export function EvidenceInsert({ insert }: { insert: Insert }) {
   return (
     <div className={`evidence-insert is-${insert.kind}`} aria-hidden="true">
       {insert.kind === 'recorder' && (
-        <div className="rec">
-          <span className="rec-dot" />
-          <span className="rec-play" />
-          {insert.label && <span className="rec-label">{insert.label}</span>}
-          <span className="rec-wave">
-            {Array.from({ length: 24 }, (_, i) => (
+        // 증거 아이콘과 같은 픽셀 기기: 머리(아이콘·녹음 표시·파일 이름) → 화면(파형) → 버튼
+        <div className="rec" data-device={insert.device}>
+          <span className="rec-head">
+            <img
+              className="rec-icon pixelated"
+              src={iconSrc(insert.device)}
+              alt=""
+              draggable={false}
+            />
+            <span className="rec-dot" />
+            {insert.label && <span className="rec-label">{insert.label}</span>}
+          </span>
+          <span className="rec-screen">
+            {Array.from({ length: 20 }, (_, i) => (
               <i key={i} style={{ '--h': `${30 + ((i * 37) % 70)}%` }} />
             ))}
           </span>
+          <span className="rec-keys" />
         </div>
       )}
 

@@ -44,6 +44,20 @@
   /* 모달 뒤를 덮는 어둠 — 모든 모달이 같은 값 */
   --scrim: rgb(8 7 10 / 0.62);
 
+  /*
+   * 황동 UI (계획서 83, 림버스 컴퍼니 스토리 화면 참고). 금테 키트 대신 어두운 판 + 얇은 황동 두 줄 + 작은 명판.
+   * 장식은 줄이고 화려함은 배경·인물 그림에 맡긴다
+   */
+  --ui-ink: #0c0907; /* 화면 아래 어둠, 모달 뒤 */
+  --ui-umber: #2b1713; /* 명판·선택지·패널 바탕 (짙은 적갈색) */
+  --ui-umber-hi: #43241c; /* 고른 선택지, hover */
+  --ui-brass: #a97c52; /* 바깥 선 */
+  --ui-brass-hi: #e2c393; /* 안쪽 선, 강조 글자 */
+  --ui-cream: #ece0c9; /* 본문 글자 */
+  --ui-copper: #b0643a; /* 붓 자국 꼬리표, 확정 버튼 */
+  /* 황동 두 줄 테두리는 판마다 box-shadow 로: 바깥 1px 황동, 3px 띄우고 1px 옅은 황동 (play.css .choice 등) */
+  --ui-line-in: color-mix(in srgb, var(--ui-brass-hi) 40%, transparent);
+
   /* 발언자 역할 색 (data/speakers.ts). 이름표 글자·대화창 테두리 강조에만 쓴다. 이름표 플레이트(--plate) 위 대비 4.5:1 이상 */
   --role-prosecutor: #e89a8e; /* 검사: 벽돌 붉은색 */
   --role-defense: #8fb0e0; /* 변호인: 법복 청색 */

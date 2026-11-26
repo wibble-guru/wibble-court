@@ -8,35 +8,29 @@
 }
 
 /*
- * ───────── 증거 상자: 왼쪽 위 장면 제목 막대 오른쪽 같은 줄, 키트 아이템 막대(994x175) — 오른쪽 갈매기 = 목록 버튼 ─────────
+ * ───────── 증거 상자 (계획서 83): 왼쪽 위 장면 제목 명판 오른쪽 같은 줄, 황동 두 줄 네모 칸 + 목록 버튼 ─────────
  * 오른쪽 위는 사이트가 전체화면에서 "전체화면 나가기" 버튼을 띄우는 자리라 비워 둔다 (#61).
- * 위치와 크기는 notebook.css 의 .hud 값에 맞춘다 (#65)
- *  - 높이 = 장면 제목 막대 높이(110px x 막대 --k), 세로 위치도 막대와 같게(엠블럼 가운데) → 칸 크기 = 높이 − 위아래 테두리
- *  - 테두리 두께(--k)도 막대 테두리와 비슷하게 얇게
- *  - left = .hud 왼쪽(16px) + 엠블럼 폭 + 장면 제목 막대 폭(엠블럼 밑으로 16px 겹침) + 간격
+ * 위치·크기는 notebook.css 의 .hud 값(--hud-btn, --hud-title)에 맞춘다.
  */
 
 .evidence-bar {
-  --k: 0.24;
-  --emblem: 72px; /* .notebook-button 폭 */
-  --hud-bar: clamp(220px, 28vw, 380px); /* .hud-bar 폭 */
-  --bar-h: calc(110px * 0.42); /* .hud-bar 높이 (line-height 110px x 막대 --k) */
-  --slot: calc(var(--bar-h) - 68px * var(--k));
-  --icon: calc(var(--slot) - 6px);
+  --hud-btn: 44px; /* .notebook-button */
+  --hud-title: clamp(200px, 24vw, 340px); /* .hud-bar */
+  --slot: 40px;
+  --icon: 32px;
   position: absolute;
-  top: calc(max(10px, env(safe-area-inset-top)) + (var(--emblem) * 167 / 170 - var(--bar-h)) / 2);
-  left: calc(16px + var(--emblem) + var(--hud-bar) - 16px + 10px);
+  top: calc(max(12px, env(safe-area-inset-top)) + (var(--hud-btn) - var(--slot)) / 2);
+  left: calc(16px + var(--hud-btn) + 8px + var(--hud-title) + 14px);
   z-index: 2;
-  max-width: calc(100% - 16px - var(--emblem) - var(--hud-bar) - 10px - 16px);
-  padding: calc(34px * var(--k)) calc(88px * var(--k)) calc(34px * var(--k)) calc(50px * var(--k));
-  border: 0 solid transparent;
-  border-image: var(--kit-tray) 34 88 34 50 fill / calc(34px * var(--k)) calc(88px * var(--k))
-    calc(34px * var(--k)) calc(50px * var(--k));
+  display: flex;
+  gap: 6px;
+  max-width: calc(100% - 16px - var(--hud-btn) - var(--hud-title) - 38px - 16px);
 }
 
 .evidence-slots {
   display: flex;
   gap: 6px;
+  min-width: 0;
   margin: 0;
   padding: 0;
   overflow-x: auto;
@@ -51,23 +45,26 @@
   }
 }
 
-/* 칸: 키트 빈 칸 틀(113x117) 테두리 + 어두운 안쪽. 상자 칸과 목록 칸이 같이 쓴다 */
+/* 칸: 어두운 네모 + 황동 두 줄. 상자 칸과 목록 칸이 같이 쓴다 */
 .evidence-slot {
   flex: none;
   animation: slot-in 0.3s ease-out;
 }
 
 .evidence-slot button,
-.evidence-slot-face {
+.evidence-slot-face,
+.evidence-more {
   display: grid;
   place-items: center;
   width: var(--slot);
   height: var(--slot);
   padding: 0;
-  border: 0 solid transparent;
-  border-image: var(--kit-slot) 16 / 7px;
-  background: #16151d;
-  background-clip: padding-box;
+  border: 0;
+  background: color-mix(in srgb, var(--ui-ink) 88%, transparent);
+  box-shadow:
+    inset 0 0 0 1px var(--ui-brass),
+    inset 0 0 0 3px var(--ui-ink),
+    inset 0 0 0 4px var(--ui-line-in);
   cursor: pointer;
 }
 
@@ -77,46 +74,44 @@
   height: var(--icon);
 }
 
-/* 갈매기: 막대 오른쪽 장식 자리 전체를 누르는 곳으로 */
+/* 목록 버튼: 같은 칸에 아래 삼각형 */
 .evidence-more {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  width: calc(88px * var(--k));
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
+  flex: none;
+  color: var(--ui-brass-hi);
+}
+
+.evidence-more::before {
+  content: '';
+  width: 10px;
+  height: 7px;
+  background: currentColor;
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
 }
 
 .evidence-slot button:hover,
+.evidence-more:hover {
+  background: var(--ui-umber-hi);
+}
+
 .evidence-slot button:focus-visible,
-.evidence-more:hover,
 .evidence-more:focus-visible {
-  outline: none;
-  filter: brightness(1.25);
+  outline: 2px solid var(--ui-brass-hi);
+  outline-offset: 2px;
 }
 
-.evidence-more:focus-visible {
-  background: radial-gradient(closest-side, rgb(255 220 150 / 0.25), transparent);
-}
-
-/* 낮은 가로 화면: 엠블럼 50px, 막대 --k 0.32, 같은 줄 */
+/* 낮은 가로 화면: 버튼·칸을 줄인다 */
 @media (max-height: 480px) {
   .evidence-bar {
-    --k: 0.2;
-    --emblem: 50px;
-    --bar-h: calc(110px * 0.32);
+    --hud-btn: 36px;
+    --slot: 34px;
+    --icon: 26px;
   }
 }
 
-/* 세로 화면: 장면 제목 막대가 폭을 다 쓰므로 엠블럼(58px) 아래 줄. 높이는 막대와 같게 */
+/* 세로 화면: 장면 제목 명판이 폭을 다 쓰므로 그 아래 줄 */
 @media (max-width: 760px) {
   .evidence-bar {
-    --k: 0.22;
-    --bar-h: calc(110px * 0.36); /* 세로 화면 막대 --k */
-    top: calc(max(10px, env(safe-area-inset-top)) + 62px);
+    top: calc(max(12px, env(safe-area-inset-top)) + var(--hud-btn) + 8px);
     left: 16px;
     max-width: calc(100% - 32px);
   }
@@ -389,28 +384,61 @@
   }
 }
 
-/* 녹음 재생 */
+/*
+ * 녹음 재생 (계획서 82): 증거 아이콘(I-01 녹음기, I-03 통화 휴대폰)과 같은 픽셀 기기.
+ * 몸체는 메신저 창과 같은 계단 모서리 9조각(--px-window), 화면은 남색 칸에 파란 파형, 아래는 기기 버튼.
+ * 움직임은 transform·opacity 를 steps() 로 칸 단위.
+ */
 .rec {
   display: grid;
-  grid-template-columns: auto auto 1fr;
-  grid-template-areas: 'dot play label' 'wave wave wave';
+  gap: 10px;
+  width: min(340px, 84vw);
+  padding: 2px 4px;
+  border: 12px solid transparent;
+  border-image: var(--px-window) 6 fill / 12px;
+  color: #f4ecff;
+  filter: drop-shadow(4px 4px 0 rgb(0 0 0 / 0.55));
+}
+
+/* 휴대폰은 조금 좁고 세로로: 화면이 위, 버튼 하나 */
+.rec[data-device='I-03_call-phone'] {
+  width: min(210px, 60vw);
+}
+
+.rec[data-device='I-03_call-phone'] .rec-screen {
+  height: 92px;
+}
+
+.rec-head {
+  display: flex;
   align-items: center;
-  gap: 8px 10px;
-  width: min(300px, 80vw);
-  padding: 14px 18px;
-  /* 다른 모달과 같은 키트 패널 틀 (계획서 78) */
-  border: 0 solid transparent;
-  border-image: var(--kit-panel) 34 fill / 16px;
-  color: var(--paper);
-  filter: drop-shadow(0 10px 18px rgb(0 0 0 / 0.45));
+  gap: 8px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #946c7f;
+}
+
+/* 기기 위쪽 스피커 구멍 (아이콘의 점 격자) */
+.rec-head::after {
+  content: '';
+  flex: none;
+  width: 30px;
+  height: 10px;
+  margin-left: auto;
+  background: radial-gradient(#0d0a14 45%, transparent 50%) 0 0 / 6px 5px;
+}
+
+.rec-icon {
+  width: 32px;
+  height: 32px;
+  flex: none;
 }
 
 .rec-dot {
-  grid-area: dot;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+  flex: none;
+  width: 8px;
+  height: 8px;
   background: #e0453b;
+  box-shadow: 0 0 0 2px #1d0f11;
   animation: rec-blink 1s steps(1) infinite;
 }
 
@@ -420,35 +448,70 @@
   }
 }
 
-.rec-play {
-  grid-area: play;
-  width: 0;
-  height: 0;
-  border-top: 6px solid transparent;
-  border-bottom: 6px solid transparent;
-  border-left: 10px solid var(--gold-bright);
-}
-
 .rec-label {
-  grid-area: label;
+  min-width: 0;
   font-size: 14px;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-.rec-wave {
-  grid-area: wave;
+/* 기기 화면: 어두운 칸 + 파형 (아이콘 화면의 파란 파형) */
+.rec-screen {
   display: flex;
   align-items: center;
   gap: 3px;
-  height: 28px;
+  height: 52px;
+  padding: 8px 10px;
+  background: #121327;
+  box-shadow:
+    inset 0 0 0 2px #1d0f11,
+    inset 0 0 0 4px #3a3b5c;
 }
 
-.rec-wave i {
+.rec-screen i {
   flex: 1;
   height: var(--h);
-  border-radius: 1px;
-  background: linear-gradient(to top, var(--gold), var(--gold-bright)); /* 파란 파형 → 키트 금색 */
+  background: #5aa8ff;
+  box-shadow: inset 0 -2px 0 #2f6fd0;
+  transform-origin: center;
+  animation: rec-wave 0.6s steps(3) infinite alternate;
+}
+
+.rec-screen i:nth-child(odd) {
+  animation-delay: -0.3s;
+}
+
+.rec-screen i:nth-child(3n) {
+  animation-delay: -0.45s;
+}
+
+@keyframes rec-wave {
+  to {
+    transform: scaleY(0.45);
+  }
+}
+
+/* 기기 버튼: 정지(회색) · 녹음(빨강) · 재생(초록) 픽셀 단추. 휴대폰은 통화 화면이라 빨간 버튼 하나 */
+.rec-keys {
+  justify-self: center;
+  width: 22px;
+  height: 14px;
+  margin-inline: 34px;
+  background: #d8433a;
+  box-shadow:
+    0 0 0 2px #1d0f11,
+    -34px 0 0 0 #4b3a44,
+    -34px 0 0 2px #1d0f11,
+    34px 0 0 0 #4fb36a,
+    34px 0 0 2px #1d0f11;
+}
+
+.rec[data-device='I-03_call-phone'] .rec-keys {
+  width: 44px;
+  box-shadow: 0 0 0 2px #1d0f11;
 }
 
 /*
@@ -457,10 +520,14 @@
  * 픽셀 테두리는 2단 계단 모서리 9조각 SVG(border-image, 1칸 = 2px)라 어느 크기에서도 칸이 뭉개지지 않는다.
  * 그림자는 번지지 않는 픽셀 그림자(drop-shadow 0 블러), 움직임은 steps() 로 칸 단위.
  */
-.messenger {
+.messenger,
+.rec {
   --px-window: url('data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2716%27%20height%3D%2716%27%20viewBox%3D%270%200%2016%2016%27%20shape-rendering%3D%27crispEdges%27%3E%3Cpath%20fill%3D%27%231d0f11%27%20d%3D%27M2%200h12v1h-12zM1%201h14v1h-14zM0%202h16v1h-16zM0%203h16v1h-16zM0%204h16v1h-16zM0%205h16v1h-16zM0%206h16v1h-16zM0%207h16v1h-16zM0%208h16v1h-16zM0%209h16v1h-16zM0%2010h16v1h-16zM0%2011h16v1h-16zM0%2012h16v1h-16zM0%2013h16v1h-16zM1%2014h14v1h-14zM2%2015h12v1h-12z%27%2F%3E%3Cpath%20fill%3D%27%23946c7f%27%20d%3D%27M3%201h10v1h-10zM2%202h12v1h-12zM1%203h14v1h-14zM1%204h14v1h-14zM1%205h14v1h-14zM1%206h14v1h-14zM1%207h14v1h-14zM1%208h14v1h-14zM1%209h14v1h-14zM1%2010h14v1h-14zM1%2011h14v1h-14zM1%2012h14v1h-14zM2%2013h12v1h-12zM3%2014h10v1h-10z%27%2F%3E%3Cpath%20fill%3D%27%231d0f11%27%20d%3D%27M4%202h8v1h-8zM3%203h10v1h-10zM2%204h12v1h-12zM2%205h12v1h-12zM2%206h12v1h-12zM2%207h12v1h-12zM2%208h12v1h-12zM2%209h12v1h-12zM2%2010h12v1h-12zM2%2011h12v1h-12zM3%2012h10v1h-10zM4%2013h8v1h-8z%27%2F%3E%3Cpath%20fill%3D%27%2326273c%27%20d%3D%27M5%203h6v1h-6zM4%204h8v1h-8zM3%205h10v1h-10zM3%206h10v1h-10zM3%207h10v1h-10zM3%208h10v1h-10zM3%209h10v1h-10zM3%2010h10v1h-10zM4%2011h8v1h-8zM5%2012h6v1h-6z%27%2F%3E%3C%2Fsvg%3E');
   --px-in: url('data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2710%27%20height%3D%2710%27%20viewBox%3D%270%200%2010%2010%27%20shape-rendering%3D%27crispEdges%27%3E%3Cpath%20fill%3D%27%231d0f11%27%20d%3D%27M2%200h6v1h-6zM1%201h8v1h-8zM0%202h10v1h-10zM0%203h10v1h-10zM0%204h10v1h-10zM0%205h10v1h-10zM0%206h10v1h-10zM0%207h10v1h-10zM1%208h8v1h-8zM2%209h6v1h-6z%27%2F%3E%3Cpath%20fill%3D%27%23d9d9eb%27%20d%3D%27M3%201h4v1h-4zM2%202h6v1h-6zM1%203h8v1h-8zM1%204h8v1h-8zM1%205h8v1h-8zM1%206h8v1h-8zM2%207h6v1h-6zM3%208h4v1h-4z%27%2F%3E%3C%2Fsvg%3E');
   --px-out: url('data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2710%27%20height%3D%2710%27%20viewBox%3D%270%200%2010%2010%27%20shape-rendering%3D%27crispEdges%27%3E%3Cpath%20fill%3D%27%231d0f11%27%20d%3D%27M2%200h6v1h-6zM1%201h8v1h-8zM0%202h10v1h-10zM0%203h10v1h-10zM0%204h10v1h-10zM0%205h10v1h-10zM0%206h10v1h-10zM0%207h10v1h-10zM1%208h8v1h-8zM2%209h6v1h-6z%27%2F%3E%3Cpath%20fill%3D%27%234a68d2%27%20d%3D%27M3%201h4v1h-4zM2%202h6v1h-6zM1%203h8v1h-8zM1%204h8v1h-8zM1%205h8v1h-8zM1%206h8v1h-8zM2%207h6v1h-6zM3%208h4v1h-4z%27%2F%3E%3C%2Fsvg%3E');
+}
+
+.messenger {
   --ink: #1d0f11;
   grid-column: 1 / -1;
   grid-row: 1;
@@ -699,7 +766,8 @@
   .messenger-row,
   .messenger-veil,
   .messenger-next,
-  .rec-dot {
+  .rec-dot,
+  .rec-screen i {
     animation: none;
   }
 }

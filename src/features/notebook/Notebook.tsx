@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
-import { KIT } from '@/data/assets';
 import { TAB_LABELS, TAB_ORDER, type NotebookTab } from '@/data/notebook';
 import { buildNotebook } from '@/engine/notebook';
 import type { StoryState } from '@/engine/types';
@@ -56,7 +55,7 @@ export function Notebook({ story, open, onOpenChange, title }: Props) {
 
   return (
     <>
-      {/* 왼쪽 위: 저울 엠블럼 = 기록장 버튼, 옆 막대 = 장면 제목 (UI 키트) */}
+      {/* 왼쪽 위: 기록장 버튼(펼친 책) + 장면 제목 명판 (계획서 83) */}
       <div className="hud">
         {title && <p className="hud-bar">{title}</p>}
         <button
@@ -69,7 +68,9 @@ export function Notebook({ story, open, onOpenChange, title }: Props) {
           title={COPY.open}
           onClick={() => onOpenChange(true)}
         >
-          <img src={KIT.emblem} alt="" draggable={false} />
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 6.5C9.8 5 7 4.6 3.5 5v13c3.5-.4 6.3 0 8.5 1.5 2.2-1.5 5-1.9 8.5-1.5V5c-3.5-.4-6.3 0-8.5 1.5zM12 6.5v13" />
+          </svg>
         </button>
       </div>
 

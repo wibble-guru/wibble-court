@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { SCENES } from '@/data/scenes';
-import { isKnownSpeaker, roleOf, sideOf } from '@/data/speakers';
+import { isKnownSpeaker, roleOf, sideOf, splitSpeaker } from '@/data/speakers';
 
 const speakers = new Set(
   Object.values(SCENES).flatMap((scene) =>
@@ -22,5 +22,16 @@ describe('발언자 분류', () => {
   it('정체가 쟁점인 음성·문자는 특정 인물 색을 받지 않는다', () => {
     expect(roleOf('상대 음성')).toBe('narration');
     expect(roleOf('화면 / 발신자 불명')).toBe('narration');
+  });
+
+  it('이름표: 소속이 붙은 표기만 꼬리표와 이름으로 나누고, 글자는 그대로', () => {
+    expect(splitSpeaker('검사 차윤호')).toEqual({ tag: '검사', name: '차윤호' });
+    expect(splitSpeaker('녹음 속 강도현')).toEqual({ tag: '녹음 속', name: '강도현' });
+    expect(splitSpeaker('법원 직원')).toEqual({ name: '법원 직원' });
+    expect(splitSpeaker('화면 / 발신자 불명')).toEqual({ name: '화면 / 발신자 불명' });
+    for (const s of speakers) {
+      const { tag, name } = splitSpeaker(s);
+      expect(tag ? `${tag} ${name}` : name).toBe(s);
+    }
   });
 });

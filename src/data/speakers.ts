@@ -68,3 +68,14 @@ export function sideOf(role: Role): Side {
   if (role === 'judge') return 'center';
   return 'left';
 }
+
+/**
+ * 이름표를 소속 꼬리표 + 이름 명판으로 나눈다 (계획서 83). 글자는 대본 표기 그대로, 보이는 자리만 나눈다.
+ * "검사 차윤호" → ["검사", "차윤호"], "녹음 속 강도현" → ["녹음 속", "강도현"]. 그 밖의 표기는 명판 하나.
+ */
+const TAG = /^(검사|변호인|녹음 속|제보자) (.+)$/;
+
+export function splitSpeaker(speaker: string): { tag?: string; name: string } {
+  const m = TAG.exec(speaker);
+  return m ? { tag: m[1], name: m[2] } : { name: speaker };
+}

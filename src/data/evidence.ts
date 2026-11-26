@@ -21,8 +21,11 @@ export const EVIDENCE: Record<EvidenceId, { name: string; icon: IconId }> = {
 };
 
 export type Insert =
-  /** 녹음 재생 화면 (재생 표시 + 빨간 점). label 은 대본에 파일 이름이 있을 때만 */
-  | { kind: 'recorder'; label?: string }
+  /**
+   * 녹음 재생 화면: 증거 아이콘과 같은 픽셀 기기 (계획서 82). device 는 그 녹음의 증거 아이콘
+   * (자백 녹음 = 녹음기, 통화 녹음 = 휴대폰). label 은 대본에 파일 이름이 있을 때만
+   */
+  | { kind: 'recorder'; device: 'I-01_recorder' | 'I-03_call-phone'; label?: string }
   /**
    * 메시지 화면 (메신저, 계획서 78). in = 받은 말풍선, out = 보낸 말풍선.
    * sender 는 상대 이름(대본 발언자 표기에 있는 것만), time 은 대본 발언자 표기에 시각이 있을 때만
@@ -43,10 +46,10 @@ export const INSERTS: Partial<Record<TrialSceneId, InsertCue>> = {
   A10: {
     speaker: '검사',
     starts: '피고인의 최초 자백',
-    insert: { kind: 'recorder', label: '자백 녹음 03:17' },
+    insert: { kind: 'recorder', device: 'I-01_recorder', label: '자백 녹음 03:17' },
   },
   // 연출: 통화 녹음 재생 화면이 켜진다 (파일 이름은 대본에 없음)
-  C30: { speaker: '녹음 속 강도현', insert: { kind: 'recorder' } },
+  C30: { speaker: '녹음 속 강도현', insert: { kind: 'recorder', device: 'I-03_call-phone' } },
   E50: {
     speaker: '화면 / 발신자 불명',
     insert: {

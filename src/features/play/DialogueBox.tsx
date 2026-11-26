@@ -1,8 +1,7 @@
 import type { ComponentChildren, Ref } from 'preact';
 import { useState } from 'preact/hooks';
-import { UI } from '@/data/assets';
 import { type Portrait, portraitOf, portraitSrc } from '@/data/characters';
-import { roleOf, sideOf } from '@/data/speakers';
+import { roleOf, sideOf, splitSpeaker } from '@/data/speakers';
 
 type Props = {
   /** 대본 표기 그대로. 없으면(질문 단계) 이름표 없음 */
@@ -22,8 +21,8 @@ type Props = {
 };
 
 /**
- * 대화창 (UI 키트 대화창·이름표 조각을 border-image 로, 월계수 이름표) + 말하는 인물 그림.
- * 이름표는 발언자 역할에 따라 왼쪽(검사·그 외)·오른쪽(변호인)·가운데(재판장)에 서고, 이름 글자는 역할 색.
+ * 대화창 (계획서 83, 림버스풍): 상자 없이 화면 아래 어둠 위에 대사, 그 위에 소속 꼬리표 + 이름 명판.
+ * 꼬리표 글자는 역할 색. 인물 그림은 어둠 뒤에 서서 아랫부분이 어둠에 잠긴다.
  * 같은 사람이 이어 말하면 이름표는 그대로 있고(key = 발언자), 사람이 바뀔 때만 들어오는 움직임이 있다.
  * 인물 그림은 대사마다 포즈가 바뀐다 (계획서 71): 사람이 바뀌면 옆에서 들어오고, 같은 사람의 포즈만 바뀌면 짧게 겹쳐 바뀐다.
  */
@@ -39,6 +38,7 @@ export function DialogueBox({
 }: Props) {
   const role = speaker ? roleOf(speaker) : 'narration';
   const side = sideOf(role);
+  const { tag, name } = speaker ? splitSpeaker(speaker) : { tag: undefined, name: '' };
   const speakerPortrait = portraitOf(speaker);
   const portrait = speakerPortrait ? { ...speakerPortrait, pose } : (figure ?? null);
   // 그림이 바뀐 차례: 사람이 바뀌면 0(옆에서 들어옴), 같은 사람의 포즈만 바뀌면 1, 2, … (겹쳐 바뀜)
@@ -55,10 +55,10 @@ export function DialogueBox({
       {onPress && pressLabel && <span className="sr-only">{pressLabel}</span>}
       <svg
         className={showNext ? 'dialogue-next is-on' : 'dialogue-next'}
-        viewBox="0 0 24 14"
+        viewBox="0 0 12 8"
         aria-hidden="true"
       >
-        <polyline points="2,2 12,12 22,2" />
+        <polygon points="0,0 12,0 6,8" />
       </svg>
     </span>
   );
@@ -78,9 +78,8 @@ export function DialogueBox({
       )}
       {speaker && (
         <div key={speaker} className="nameplate">
-          <img className="laurel" src={UI.laurelLeft} alt="" />
-          <span className="plate">{speaker}</span>
-          <img className="laurel" src={UI.laurelRight} alt="" />
+          {tag && <span className="plate-tag">{tag}</span>}
+          <span className="plate">{name}</span>
         </div>
       )}
       {onPress ? (
@@ -90,7 +89,6 @@ export function DialogueBox({
       ) : (
         <div className="dialogue-frame">{face}</div>
       )}
-      <span className="dialogue-gem" aria-hidden="true" />
     </div>
   );
 }
