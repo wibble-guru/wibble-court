@@ -16,7 +16,7 @@ describe('증거', () => {
     expect(where).toEqual(['C31-C', 'G70']);
   });
 
-  it('증거 화면은 실제 대사에서 시작하고, 문구는 그 장면의 대사·연출 안에 글자 그대로 있다', () => {
+  it('메신저는 실제 대사에서 시작하고, 말풍선 문구는 그 장면의 대사·연출 안에 글자 그대로 있다', () => {
     for (const [id, cue] of Object.entries(INSERTS) as [
       TrialSceneId,
       (typeof INSERTS)[TrialSceneId],
@@ -31,28 +31,19 @@ describe('증거', () => {
       expect(start, id).toHaveLength(1);
 
       const all = lines.map((l) => l.text).join('\n');
-      const insert = cue!.insert;
-      const texts =
-        insert.kind === 'recorder'
-          ? [insert.label ?? '']
-          : insert.kind === 'message'
-            ? insert.bubbles.map((b) => b.text)
-            : [insert.from, insert.to];
-      for (const text of texts) expect(all.includes(text), `${id}: ${text}`).toBe(true);
+      for (const { text } of cue!.insert.bubbles)
+        expect(all.includes(text), `${id}: ${text}`).toBe(true);
     }
   });
 
   it('E50 말풍선은 화면에 나온 두 문장 그대로 (받은 것, 보낸 것 순서)', () => {
     const lines = SCENES.E50!.lines.filter((l) => l.speaker.startsWith('화면 /'));
     const insert = INSERTS.E50!.insert;
-    expect(insert.kind === 'message' && insert.bubbles.map((b) => b.text)).toEqual(
-      lines.map((l) => l.text),
-    );
+    expect(insert.bubbles.map((b) => b.text)).toEqual(lines.map((l) => l.text));
   });
 
   it('메신저: 말풍선 대사마다 하나씩 올라오고 그 대사 동안 화면을 차지, 마지막 말풍선 뒤에는 닫힌다', () => {
     const insert = INSERTS.E50!.insert;
-    if (insert.kind !== 'message') throw new Error('E50 은 메시지');
     const lines = SCENES.E50!.lines.filter((l) => l.kind !== 'direction');
     const start = lines.findIndex((l) => l.speaker === INSERTS.E50!.speaker);
     expect(messageView(insert, lines, start, start - 1)).toBeNull();
@@ -63,7 +54,6 @@ describe('증거', () => {
 
   it('메신저: 대사에 없는 말풍선(검사가 인용하는 F60)은 처음부터 보이고 대화창은 그대로', () => {
     const insert = INSERTS.F60!.insert;
-    if (insert.kind !== 'message') throw new Error('F60 은 메시지');
     const lines = SCENES.F60!.lines.filter((l) => l.kind !== 'direction');
     const start = lines.findIndex(
       (l) => l.speaker === INSERTS.F60!.speaker && l.text.startsWith(INSERTS.F60!.starts ?? ''),

@@ -1,6 +1,7 @@
 /*
- * 결과 화면 (ResultScreen). 대본 "법정 배경이 사라지고 질문이 나온다" — 어두운 바탕 위 질문, 그 아래 종이 한 장.
- * 종이·먹은 생각 기록·기록장과 같은 계열. 움직임은 opacity 만: 질문이 먼저, 나머지가 이어서.
+ * 결과 화면 (ResultScreen). 대본 "법정 배경이 사라지고 질문이 나온다" — 어두운 바탕 위 질문, 그 아래 결과.
+ * 조서 UI (#87, #96): 종이 카드 대신 어두운 면에 종이색 글자, 항목은 [이름 칸 | 내용] 과 얇은 선,
+ * 강조는 인주 빨강 하나. 움직임은 opacity 만: 질문이 먼저, 나머지가 이어서.
  */
 
 .result-screen {
@@ -12,8 +13,8 @@
   gap: var(--space-5);
   overflow-y: auto;
   padding: max(40px, env(safe-area-inset-top)) 16px max(32px, env(safe-area-inset-bottom));
-  background: var(--night);
-  color: var(--paper);
+  background: var(--ui-ink);
+  color: var(--ui-cream);
 }
 
 .result-head {
@@ -28,14 +29,14 @@
   font-size: clamp(22px, 4vmin, 32px);
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--gold-bright);
+  color: var(--ui-cream);
   animation: result-in 0.6s ease-out both;
 }
 
 .result-narration {
   margin: 0;
   line-height: 1.7;
-  color: var(--mist);
+  color: var(--ui-muted);
   word-break: keep-all;
   animation: result-in 0.6s ease-out 0.6s both;
 }
@@ -43,17 +44,18 @@
 .result-card {
   display: grid;
   gap: var(--space-4);
-  width: min(100%, 680px);
-  padding: var(--space-6) var(--space-6) var(--space-5);
-  border-radius: 2px;
-  background: var(--paper);
-  color: var(--night);
-  box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.6);
+  width: min(100%, 720px);
+  padding: var(--space-6) 0 var(--space-5);
+  border-top: 1px solid var(--ui-brass);
+  border-bottom: 1px solid var(--ui-brass);
+  color: var(--ui-cream);
   animation: result-in 0.6s ease-out 1s both;
 }
 
 .result-card h1 {
   margin: 0;
+  padding-left: var(--space-3);
+  border-left: 3px solid var(--ui-copper);
   font-size: clamp(20px, 3.4vmin, 26px);
   font-weight: 800;
   line-height: 1.45;
@@ -67,22 +69,32 @@
   word-break: keep-all;
 }
 
-.result-lead {
-  font-size: 1.05em;
+.result-card > p {
+  color: color-mix(in srgb, var(--ui-cream) 82%, transparent);
 }
 
+.result-card .result-lead {
+  font-size: 1.05em;
+  color: var(--ui-cream);
+}
+
+/* 항목: [이름 칸 | 내용] 두 칸, 위에 얇은 선 (조서형 대사와 같은 짜임) */
 .result-card section {
   display: grid;
-  gap: var(--space-1);
-  padding-top: var(--space-3);
-  border-top: 1px solid color-mix(in srgb, var(--plate) 18%, transparent);
+  grid-template-columns: 8.5em minmax(0, 1fr);
+  gap: var(--space-1) var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--ui-brass);
 }
 
 .result-card h2 {
   margin: 0;
-  font-size: 14px;
+  padding-top: 0.2em;
+  font-size: 13px;
   font-weight: 700;
-  color: color-mix(in srgb, var(--night) 72%, var(--paper));
+  line-height: 1.5;
+  color: var(--ui-muted);
+  word-break: keep-all;
 }
 
 .result-one {
@@ -90,14 +102,14 @@
   font-weight: 700;
 }
 
-.result-change {
+.result-card .result-change {
   padding-left: var(--space-3);
-  border-left: 2px solid var(--gold);
-  color: color-mix(in srgb, var(--night) 80%, var(--paper));
+  border-left: 2px solid var(--ui-brass);
+  color: var(--ui-muted);
 }
 
-.result-reason {
-  color: color-mix(in srgb, var(--night) 80%, var(--paper));
+.result-card .result-reason {
+  color: var(--ui-muted);
 }
 
 /* 접이식 근거 (ResultDetails): 누를 때만 펼침 */
@@ -114,7 +126,7 @@
   padding: 0 var(--space-4);
   border: 0;
   background: transparent;
-  color: var(--mist);
+  color: var(--ui-muted);
   font: inherit;
   text-decoration: underline;
   text-underline-offset: 4px;
@@ -122,7 +134,7 @@
 }
 
 .result-toggle[aria-expanded='true'] {
-  color: var(--gold-bright);
+  color: var(--ui-cream);
 }
 
 .result-details-body {
@@ -130,16 +142,17 @@
   gap: var(--space-3);
   width: 100%;
   padding: var(--space-5);
-  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
-  border-radius: 2px;
-  color: var(--paper);
+  border: 1px solid var(--ui-brass);
+  border-radius: 4px;
+  background: rgb(255 255 255 / 0.03);
+  color: var(--ui-cream);
   animation: result-in 0.3s ease-out both;
 }
 
 .result-details-body h2 {
   margin: 0;
   font-size: 15px;
-  color: var(--gold-bright);
+  color: var(--ui-cream);
 }
 
 .result-details-body p {
@@ -173,7 +186,7 @@
 .result-picks span,
 .result-facts dt {
   font-size: 13px;
-  color: var(--mist);
+  color: var(--ui-muted);
 }
 
 .result-facts {
@@ -182,7 +195,7 @@
   gap: var(--space-1) var(--space-4);
   margin: 0;
   padding-top: var(--space-3);
-  border-top: 1px solid color-mix(in srgb, var(--paper) 12%, transparent);
+  border-top: 1px solid var(--ui-brass);
 }
 
 .result-facts dd {
@@ -193,11 +206,11 @@
 
 .result-note {
   font-size: 13px;
-  color: var(--mist);
+  color: var(--ui-muted);
 }
 
 .result-toggle:focus-visible {
-  outline: 2px solid var(--gold-bright);
+  outline: 2px solid var(--ui-cream);
   outline-offset: 2px;
 }
 
@@ -208,18 +221,15 @@
   gap: var(--space-3);
 }
 
+/* 다음: 선택지 확정과 같은 종이색 판 (자막형 선택지의 고른 줄) */
 .result-next {
   min-width: 10em;
   min-height: 48px;
   padding: 0 var(--space-6);
-  --fill: var(--ui-umber);
-  border: 0;
-  background: var(--fill);
-  box-shadow:
-    inset 0 0 0 1px var(--ui-brass),
-    inset 0 0 0 4px var(--fill),
-    inset 0 0 0 5px var(--ui-line-in);
-  color: var(--ui-brass-hi);
+  border: 1px solid var(--ui-cream);
+  border-radius: 4px;
+  background: var(--ui-cream);
+  color: #141210;
   font: inherit;
   font-weight: 800;
   cursor: pointer;
@@ -227,11 +237,11 @@
 }
 
 .result-next:hover {
-  --fill: var(--ui-umber-hi);
+  background: #fff;
 }
 
 .result-next:focus-visible {
-  outline: 2px solid var(--gold-bright);
+  outline: 2px solid var(--ui-cream);
   outline-offset: 3px;
 }
 
@@ -241,9 +251,13 @@
   }
 }
 
+/* 세로 화면: 항목 이름을 내용 위 한 줄로 */
 @media (max-aspect-ratio: 4/5) {
   .result-card {
-    padding: var(--space-5) var(--space-5) var(--space-4);
+    padding: var(--space-5) 0 var(--space-4);
+  }
+  .result-card section {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 

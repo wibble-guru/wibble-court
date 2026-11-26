@@ -1,3 +1,4 @@
+import { promptTitle } from '@/data/prompt-title';
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { Backdrop } from '@/components/Backdrop';
 import { SceneBackground } from '@/components/SceneBackground';
@@ -8,7 +9,6 @@ import { poseAt, poseSrcsIn } from '@/data/line-poses';
 import { nextScenes, upcomingBackgrounds } from '@/data/scene-bg';
 import { SCENES } from '@/data/scenes';
 import { EvidenceBar } from '@/features/evidence/EvidenceBar';
-import { EvidenceInsert } from '@/features/evidence/EvidenceInsert';
 import { Messenger } from '@/features/evidence/Messenger';
 import { Epilogue } from '@/features/epilogue/Epilogue';
 import { Notebook } from '@/features/notebook/Notebook';
@@ -201,7 +201,7 @@ export function PlayScreen({ start, onEnd }: Props) {
           <>
             <DialogueBox key={`${promptKey}:box`} figure={JUDGE_AT_PROMPT}>
               <h2 id="prompt-title" ref={titleRef} tabIndex={-1} className="prompt-title">
-                <Emphasis text={prompt.title} />
+                <Emphasis text={promptTitle(prompt)} />
               </h2>
               {prompt.memo && (
                 <p className="prompt-memo">
@@ -246,9 +246,6 @@ export function PlayScreen({ start, onEnd }: Props) {
               onView={(id) => setEvidenceView({ id })}
               onClose={closeEvidence}
             />
-          )}
-          {insert && (
-            <EvidenceInsert key={cursor.at === 'line' ? cursor.sceneId : ''} insert={insert} />
           )}
           <Notebook
             story={play.story}

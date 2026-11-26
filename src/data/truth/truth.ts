@@ -54,7 +54,6 @@ export const TRUTH_SCENES: TruthScene[] = [
     id: 'TRUTH-01',
     title: '첫 번째 봉투 — 22시 20분의 의미',
     bg: 'E-11_cctv',
-    insert: { kind: 'timeline', from: '사망 22:20', to: '발견 22:20' },
     lines: [
       {
         speaker: '연출',
