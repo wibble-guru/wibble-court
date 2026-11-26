@@ -1,7 +1,9 @@
 /*
- * 플레이 화면 (features/play). 황동 UI (계획서 83, 림버스풍): 대사는 상자 없이 화면 아래 어둠 위,
- * 이름·선택지는 짙은 적갈색 판 + 얇은 황동 두 줄. 이미지 조각 없이 CSS 로 그린다.
- * 배경 그림 위라 테마와 상관없이 법정 토큰(tokens.css)만 쓴다. 움직임은 opacity·transform 만.
+ * 플레이 화면 (features/play). 조서 UI (#87, 사용자가 고른 시안):
+ *  - 인물 대사(A 조서): 화면 아래 어둠 위에 [이름 칸 | 세로선 | 대사]. 상자·테두리 없음
+ *  - 기기·녹음 목소리(B 자막): 가운데 정렬 자막, 이름은 위에 작게
+ *  - 선택지(B 자막): 장면을 어둡게 하고 가운데 반투명 줄. 고른 줄은 밝게 뒤집는다
+ * 강조색은 인주 빨강(--ui-copper) 하나. 배경 그림 위라 테마와 상관없이 법정 토큰만 쓴다. 움직임은 opacity·transform 만.
  */
 
 .play-screen {
@@ -52,6 +54,55 @@
   .play-stage .choices {
     grid-column: 1;
   }
+}
+
+/*
+ * 질문 단계 (B 자막): 장면 전체를 어둡게 깔고 [질문 제목 → 선택지]를 가운데 한 열로.
+ * 무대가 쌓임 맥락(isolation)이라 어둠(::before, z -1)은 배경 위·내용 아래에 깔린다
+ */
+.play-stage[data-mode='prompt'] {
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+.play-stage[data-mode='prompt']::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  z-index: -1;
+  width: 100vw;
+  background: rgb(0 0 0 / 0.5);
+  transform: translateX(-50%);
+  animation: prompt-dim 0.3s ease-out;
+}
+
+@keyframes prompt-dim {
+  from {
+    opacity: 0;
+  }
+}
+
+.play-stage[data-mode='prompt'] .portrait,
+.play-stage[data-mode='prompt'] .dialogue::before {
+  display: none;
+}
+
+.play-stage[data-mode='prompt'] .dialogue,
+.play-stage[data-mode='prompt'] .choices {
+  align-self: center;
+  width: min(100%, 640px);
+}
+
+.play-stage[data-mode='prompt'] .dialogue-face {
+  min-height: 0;
+  padding: 0;
+  text-align: center;
 }
 
 /* ───────── 대화창 ───────── */
@@ -114,70 +165,8 @@
 }
 
 /*
- * 이름표: 소속 꼬리표(작은 판) 위, 이름 명판(적갈색 판 + 황동 두 줄 + 양 끝 못) 아래. 대사 바로 위 왼쪽.
- * 꼬리표 글자는 역할 색. 사람이 바뀔 때만 옆에서 들어온다 (key = 발언자)
- */
-.nameplate {
-  z-index: 1;
-  display: grid;
-  justify-items: start;
-  justify-self: start;
-  gap: 3px;
-  margin: 0 0 var(--space-2) var(--space-5);
-  animation: plate-in 0.2s ease-out;
-}
-
-.plate-tag {
-  padding: 0.15em 0.7em;
-  background: color-mix(in srgb, var(--ui-ink) 80%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-brass) 70%, transparent);
-  color: var(--role);
-  font-size: 0.68em;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-}
-
-.plate {
-  min-width: 6.5em;
-  padding: 0.3em 1.5em;
-  background:
-    radial-gradient(
-      circle at 0.65em 50%,
-      var(--ui-brass-hi) 0 2px,
-      var(--ui-ink) 2.5px 3.5px,
-      transparent 4px
-    ),
-    radial-gradient(
-      circle at calc(100% - 0.65em) 50%,
-      var(--ui-brass-hi) 0 2px,
-      var(--ui-ink) 2.5px 3.5px,
-      transparent 4px
-    ),
-    var(--ui-umber);
-  box-shadow:
-    inset 0 0 0 1px var(--ui-brass),
-    inset 0 0 0 4px var(--ui-umber),
-    inset 0 0 0 5px var(--ui-line-in),
-    0 3px 0 rgb(0 0 0 / 0.45);
-  color: var(--ui-cream);
-  font-size: 0.95em;
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  text-align: center;
-  white-space: nowrap;
-}
-
-@keyframes plate-in {
-  from {
-    opacity: 0;
-    transform: translateX(-8px);
-  }
-}
-
-/*
- * 대사: 상자 없이 화면 아래 어둠 위에. 어둠은 화면 폭 전체(100vw)로 깔고, 인물 그림(z -1)보다 위라
- * 인물 아랫부분이 어둠에 잠긴다. 글자는 왼쪽 정렬, 한 줄 길이는 46em 까지.
+ * 대사 (A 조서): 상자 없이 화면 아래 어둠 위에. 어둠은 화면 폭 전체(100vw)로 깔고, 인물 그림(z -1)보다 위라
+ * 인물 아랫부분이 어둠에 잠긴다. [이름 칸 | 세로선 | 대사] 두 칸, 대사 한 줄 길이는 40em 까지.
  */
 .dialogue::before {
   content: '';
@@ -186,13 +175,12 @@
   bottom: calc(-1 * max(28px, env(safe-area-inset-bottom)));
   z-index: 0;
   width: 100vw;
-  height: calc(100% + max(28px, env(safe-area-inset-bottom)) + 14vh);
+  height: calc(100% + max(28px, env(safe-area-inset-bottom)) + 16vh);
   background: linear-gradient(
     to bottom,
     transparent,
-    rgb(12 9 7 / 0.78) 34%,
-    rgb(12 9 7 / 0.92) 62%,
-    rgb(12 9 7 / 0.96)
+    rgb(14 13 12 / 0.86) 42%,
+    rgb(14 13 12 / 0.97)
   );
   transform: translateX(-50%);
   pointer-events: none;
@@ -204,9 +192,6 @@
   display: grid;
   padding: 0;
   border: 0;
-  /* 위쪽 얇은 황동 선 한 줄 (오른쪽으로 사라짐): 대사 자리를 표시만 하고 상자는 만들지 않는다 */
-  border-top: 1px solid transparent;
-  border-image: linear-gradient(90deg, var(--ui-brass), transparent 85%) 1;
   background: none;
   color: var(--ui-cream);
   font: inherit;
@@ -219,77 +204,144 @@ button.dialogue-frame {
 
 .dialogue-face {
   position: relative;
-  display: block;
-  min-height: calc(3 * 1.75em + var(--space-5) + var(--space-4));
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-height: calc(3 * 1.8em);
   max-height: 46vh;
   overflow-y: auto;
-  padding: var(--space-5) var(--space-7) var(--space-4) var(--space-5);
+  padding: var(--space-4) var(--space-7) var(--space-4) var(--space-6);
+}
+
+/* 이름이 있으면 [이름 칸 | 대사] 두 칸. 이름 칸 오른쪽 세로선 하나 */
+.dialogue-face:has(.who) {
+  grid-template-columns: 9.5em minmax(0, 1fr);
+  column-gap: var(--space-5);
+}
+
+.who {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  padding-top: 0.15em;
+  border-right: 1px solid var(--ui-brass);
+  animation: who-in 0.2s ease-out;
+}
+
+.who-name {
+  color: var(--ui-cream);
+  font-size: 1.1em;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  word-break: keep-all;
+}
+
+/* 소속(검사·변호인 등): 역할 색 작은 글자 */
+.who-role {
+  color: var(--role);
+  font-size: 0.68em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+@keyframes who-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+}
+
+.dialogue-body {
+  display: block;
+  min-width: 0;
 }
 
 .dialogue-text {
   display: block;
-  max-width: 46em;
-  line-height: 1.75;
+  max-width: 40em;
+  line-height: 1.8;
+  font-weight: 500;
   word-break: keep-all;
   overflow-wrap: anywhere;
   text-shadow: 0 1px 2px rgb(0 0 0 / 0.8);
 }
 
-/* 다 나왔으면 오른쪽 아래 작은 황동 삼각형이 살짝 오르내린다 */
+/*
+ * 기기·녹음 목소리 (B 자막): 가운데 정렬, 이름은 위에 작게(역할 색), 대사는 굵게 + 진한 글자 그림자.
+ * 어둠은 옅게 — 자막은 장면 위에 바로 얹힌다
+ */
+.dialogue[data-voice] .dialogue-face {
+  display: block;
+  padding-inline: var(--space-7);
+  text-align: center;
+}
+
+.dialogue[data-voice] .who {
+  display: block;
+  margin-bottom: var(--space-2);
+  padding: 0;
+  border: 0;
+  animation: none;
+}
+
+.dialogue[data-voice] .who-name {
+  color: var(--role);
+  font-size: 0.75em;
+  letter-spacing: 0.06em;
+}
+
+.dialogue[data-voice] .dialogue-text {
+  max-width: 34em;
+  margin-inline: auto;
+  font-size: 1.1em;
+  font-weight: 600;
+  line-height: 1.6;
+  text-shadow:
+    0 2px 4px rgb(0 0 0 / 0.9),
+    0 0 18px rgb(0 0 0 / 0.6);
+}
+
+.dialogue[data-voice]::before {
+  background: linear-gradient(to bottom, transparent, rgb(0 0 0 / 0.55) 55%, rgb(0 0 0 / 0.7));
+}
+
+/* 다 나왔으면 오른쪽 아래 작은 빨간 네모가 깜빡인다 */
 .dialogue-next {
   position: absolute;
   right: var(--space-5);
   bottom: var(--space-4);
-  width: 12px;
-  height: 8px;
-  fill: var(--ui-brass-hi);
+  width: 9px;
+  height: 9px;
+  fill: var(--ui-copper);
   opacity: 0;
 }
 
 .dialogue-next.is-on {
   opacity: 1;
-  animation: next-bob 1.1s ease-in-out infinite;
+  animation: next-blink 1.2s steps(1) infinite;
 }
 
-@keyframes next-bob {
+@keyframes next-blink {
   50% {
-    transform: translateY(3px);
+    opacity: 0.25;
   }
 }
 
-/* 질문 단계: 질문 제목은 구리색 붓 자국 꼬리표, 그 아래 메모 */
+/* 질문 단계: 질문 제목(가운데, 굵게)과 메모 */
 .prompt-title {
-  justify-self: start;
   margin: 0;
-  padding: 0.25em 1.6em 0.25em 0.7em;
-  background: linear-gradient(
-    90deg,
-    var(--ui-copper),
-    color-mix(in srgb, var(--ui-copper) 80%, #5a2a17)
-  );
-  /* 오른쪽 끝을 붓이 끊긴 것처럼 거칠게 */
-  clip-path: polygon(
-    0 0,
-    calc(100% - 14px) 0,
-    calc(100% - 6px) 22%,
-    100% 38%,
-    calc(100% - 9px) 55%,
-    calc(100% - 3px) 78%,
-    calc(100% - 12px) 100%,
-    0 100%
-  );
-  color: #fff4e6;
-  font-size: 1em;
+  color: var(--ui-cream);
+  font-size: 1.2em;
   font-weight: 800;
-  line-height: 1.5;
+  line-height: 1.45;
   word-break: keep-all;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.8);
   outline: none;
 }
 
 .prompt-memo {
-  margin: var(--space-3) 0 0;
+  margin: var(--space-2) 0 0;
   line-height: 1.7;
-  color: color-mix(in srgb, var(--ui-cream) 72%, transparent);
+  color: var(--ui-muted);
   word-break: keep-all;
 }
 
@@ -346,24 +398,23 @@ button.dialogue-frame {
 }
 
 /*
- * 선택지 판: 짙은 적갈색 + 황동 두 줄, 왼쪽 위·오른쪽 아래 모서리를 깎는다 (림버스 선택지).
- * 고르거나 올려 두면 판이 밝아지고 글자가 황동색
+ * 선택지 (B 자막): 반투명 어두운 줄 + 얇은 선, 가운데 글자. 고르거나 올려 두면 밝은 종이색으로 뒤집는다
  */
 .choice {
-  --fill: color-mix(in srgb, var(--ui-umber) 94%, transparent);
   display: grid;
   padding: 0;
-  border: 0;
-  background: var(--fill);
-  box-shadow:
-    inset 0 0 0 1px var(--ui-brass),
-    inset 0 0 0 4px var(--fill),
-    inset 0 0 0 5px var(--ui-line-in);
-  clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
-  color: var(--ui-cream);
+  border: 1px solid rgb(255 255 255 / 0.16);
+  border-radius: 4px;
+  background: rgb(10 10 12 / 0.62);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: #fff;
   font: inherit;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
 }
 
 /* block 그대로 (flex·grid 면 강조 글자와 앞뒤 글자가 따로 칸이 되어 줄이 끊긴다) */
@@ -377,52 +428,44 @@ button.dialogue-frame {
 }
 
 .choice:hover {
-  --fill: var(--ui-umber-hi);
+  background: rgb(30 28 26 / 0.8);
 }
 
 .choice[aria-pressed='true'] {
-  --fill: var(--ui-umber-hi);
-  box-shadow:
-    inset 0 0 0 1px var(--ui-brass-hi),
-    inset 0 0 0 4px var(--fill),
-    inset 0 0 0 5px var(--ui-brass);
+  border-color: var(--ui-cream);
+  background: var(--ui-cream);
+  color: #141210;
 }
 
-.choice[aria-pressed='true'] .choice-face {
-  color: var(--ui-brass-hi);
-  font-weight: 700;
-}
-
-/* 확정: 구리색 판 하나 (림버스의 붉은 확인 버튼) */
+/* 확정: 인주 빨강 */
 .choice.is-confirm {
-  --fill: var(--ui-copper);
-  justify-self: end;
+  justify-self: center;
   min-width: 11em;
+  border-color: var(--ui-copper);
+  background: var(--ui-copper);
+  color: #fff;
 }
 
 .choice.is-confirm:hover {
-  --fill: color-mix(in srgb, var(--ui-copper) 85%, white);
+  background: color-mix(in srgb, var(--ui-copper) 85%, white);
 }
 
 .choice.is-confirm .choice-face {
-  color: #fff4e6;
   font-weight: 800;
-  text-align: center;
 }
 
 .choice:disabled {
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: not-allowed;
 }
 
-/* 슬라이더: 어두운 판, 가는 황동 선 트랙 + 네모 손잡이 */
+/* 슬라이더: 선택지와 같은 반투명 줄, 가는 선 트랙 + 네모 손잡이 */
 .slider {
   padding: var(--space-3) var(--space-4);
-  background: color-mix(in srgb, var(--ui-umber) 94%, transparent);
-  box-shadow:
-    inset 0 0 0 1px var(--ui-brass),
-    inset 0 0 0 4px var(--ui-umber),
-    inset 0 0 0 5px var(--ui-line-in);
+  border: 1px solid rgb(255 255 255 / 0.16);
+  border-radius: 4px;
+  background: rgb(10 10 12 / 0.62);
+  text-align: left;
 }
 
 .slider .slider-label {
@@ -524,11 +567,23 @@ button.dialogue-frame {
   .play-stage[data-mode='prompt'] .portrait {
     display: none;
   }
-  .nameplate {
-    margin-left: 0;
+  /* 이름 칸을 대사 위 한 줄로 */
+  .dialogue-face,
+  .dialogue-face:has(.who) {
+    grid-template-columns: minmax(0, 1fr);
+    padding: var(--space-3) var(--space-5) var(--space-4) 0;
   }
-  .dialogue-face {
-    padding: var(--space-4) var(--space-5) var(--space-4) 0;
+  .who {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+    padding: 0 0 var(--space-2);
+    border-right: 0;
+    border-bottom: 1px solid var(--ui-brass);
+  }
+  .dialogue[data-voice] .dialogue-face {
+    padding-inline: 0;
   }
 }
 
@@ -543,8 +598,8 @@ button.dialogue-frame {
     padding-bottom: max(12px, env(safe-area-inset-bottom));
   }
   .dialogue-face {
-    min-height: calc(2 * 1.75em + 2 * var(--space-3));
-    padding: var(--space-3) var(--space-7) var(--space-3) var(--space-5);
+    min-height: calc(2 * 1.8em);
+    padding: var(--space-2) var(--space-7) var(--space-2) var(--space-5);
   }
   .choice-face {
     padding-top: var(--space-2);
@@ -554,8 +609,9 @@ button.dialogue-frame {
 
 @media (prefers-reduced-motion: reduce) {
   .portrait,
-  .nameplate,
-  .dialogue-next.is-on {
+  .who,
+  .dialogue-next.is-on,
+  .play-stage[data-mode='prompt']::before {
     animation: none;
   }
   .tw-char {

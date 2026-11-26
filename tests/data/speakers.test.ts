@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { SCENES } from '@/data/scenes';
-import { isKnownSpeaker, roleOf, sideOf, splitSpeaker } from '@/data/speakers';
+import { isKnownSpeaker, isVoice, roleOf, sideOf, splitSpeaker } from '@/data/speakers';
 
 const speakers = new Set(
   Object.values(SCENES).flatMap((scene) =>
@@ -33,5 +33,13 @@ describe('발언자 분류', () => {
       const { tag, name } = splitSpeaker(s);
       expect(tag ? `${tag} ${name}` : name).toBe(s);
     }
+  });
+
+  it('기기·녹음에서 나오는 목소리만 자막형, 법정에 선 사람은 조서형', () => {
+    expect(isVoice('녹음 속 오지안')).toBe(true);
+    expect(isVoice('상대 음성')).toBe(true);
+    expect(isVoice('화면 / 발신자 불명')).toBe(true);
+    expect(isVoice('변호인 문하경')).toBe(false);
+    expect(isVoice('오지안')).toBe(false);
   });
 });

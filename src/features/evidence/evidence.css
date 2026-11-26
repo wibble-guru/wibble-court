@@ -15,7 +15,7 @@
 
 .evidence-bar {
   --hud-btn: 52px; /* .notebook-button */
-  --hud-title: clamp(200px, 24vw, 340px); /* .hud-bar */
+  --hud-title: clamp(180px, 22vw, 300px); /* .hud-bar */
   --slot: 52px;
   --icon: 44px;
   position: absolute;
@@ -165,27 +165,10 @@
   padding: 0 var(--space-2);
 }
 
-/* 제목: 선택지 질문과 같은 구리색 붓 자국 꼬리표 */
 .evidence-modal-title {
   margin: 0;
-  padding: 0.2em 1.6em 0.2em 0.7em;
-  background: linear-gradient(
-    90deg,
-    var(--ui-copper),
-    color-mix(in srgb, var(--ui-copper) 80%, #5a2a17)
-  );
-  clip-path: polygon(
-    0 0,
-    calc(100% - 14px) 0,
-    calc(100% - 6px) 22%,
-    100% 38%,
-    calc(100% - 9px) 55%,
-    calc(100% - 3px) 78%,
-    calc(100% - 12px) 100%,
-    0 100%
-  );
-  color: #fff4e6;
-  font-size: 16px;
+  color: var(--ui-cream);
+  font-size: 17px;
   font-weight: 800;
 }
 
@@ -652,21 +635,20 @@
   justify-items: end;
 }
 
-/* 말풍선: 모서리 하나만 깎은 네모 (받은 것은 왼쪽 위, 보낸 것은 오른쪽 위) */
+/* 말풍선: 받은 것은 어두운 반투명, 보낸 것은 밝은 종이색 */
 .messenger-text {
   padding: 0.5em 0.85em;
-  background: var(--sheet);
-  clip-path: polygon(8px 0, 100% 0, 100% 100%, 0 100%, 0 8px);
-  color: var(--sheet-ink);
+  border-radius: 4px;
+  background: rgb(255 255 255 / 0.1);
+  color: var(--ui-cream);
   font-weight: 600;
   line-height: 1.5;
   word-break: keep-all;
 }
 
 .messenger-row.is-out .messenger-text {
-  background: var(--ui-copper);
-  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
-  color: #fff4e6;
+  background: var(--ui-cream);
+  color: #141210;
 }
 
 .messenger-time {

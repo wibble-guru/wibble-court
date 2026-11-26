@@ -219,7 +219,6 @@
     inset 0 0 0 1px var(--ui-brass),
     inset 0 0 0 4px var(--fill),
     inset 0 0 0 5px var(--ui-line-in);
-  clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
   color: var(--ui-brass-hi);
   font: inherit;
   font-weight: 800;
