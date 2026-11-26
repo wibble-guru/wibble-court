@@ -12,6 +12,17 @@
   inset: 0;
 }
 
+/* 위쪽 메뉴 뒤 옅은 어둠: 밝은 배경 위에서도 메뉴가 한 줄로 묶여 보이게 (#90) */
+.play-screen::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  height: calc(110px + env(safe-area-inset-top));
+  background: linear-gradient(rgb(14 13 12 / 0.6), transparent);
+  pointer-events: none;
+}
+
 /* 세로 화면은 위 막대 아래 줄에 증거 상자가 와서 더 내린다 */
 @media (max-width: 760px) {
   .play-screen {

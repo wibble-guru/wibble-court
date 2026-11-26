@@ -55,9 +55,13 @@ export function Notebook({ story, open, onOpenChange, title }: Props) {
 
   return (
     <>
-      {/* 왼쪽 위: 기록장 버튼(펼친 책) + 장면 제목 명판 (계획서 83) */}
+      {/* 위쪽 메뉴: 기록장 버튼(펼친 책) + 장면 제목 (#90) */}
       <div className="hud">
-        {title && <p className="hud-bar">{title}</p>}
+        {title && (
+          <p className="hud-bar">
+            <span className="hud-title">{title}</span>
+          </p>
+        )}
         <button
           ref={buttonRef}
           type="button"
