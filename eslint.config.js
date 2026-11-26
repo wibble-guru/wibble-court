@@ -38,6 +38,27 @@ export default defineConfig([
               allowTypeImports: true,
               message: '진실 공개 데이터는 import() 로만 불러오세요 (별도 청크, 대본 11.1).',
             },
+            {
+              group: ['@/../tests/*', '**/tests/**'],
+              message: '게임 코드는 테스트 코드(tests/)를 가져오지 않습니다.',
+            },
+          ],
+        },
+      ],
+    },
+  },
+  {
+    // 위 규칙에서 빠지는 진실 공개 폴더에도 테스트 코드 가져오기는 막는다
+    files: ['src/data/truth/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          patterns: [
+            {
+              group: ['@/../tests/*', '**/tests/**'],
+              message: '게임 코드는 테스트 코드(tests/)를 가져오지 않습니다.',
+            },
           ],
         },
       ],
