@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { Backdrop } from '@/components/Backdrop';
 import { SceneBackground } from '@/components/SceneBackground';
-import { KIT_VARS } from '@/data/assets';
 import { INSERTS, messageView } from '@/data/evidence';
 import { sceneTitle } from '@/data/scene-title';
 import { JUDGE_AT_PROMPT } from '@/data/characters';
@@ -153,7 +152,7 @@ export function PlayScreen({ start, onEnd }: Props) {
   const onSubmit = (input: AnswerInput) => setPlay((p) => submit(p, input).play);
 
   return (
-    <main className="play-screen" style={KIT_VARS}>
+    <main className="play-screen">
       {backdrop && <Backdrop bg={backdrop.bg} effect={backdrop.effect} />}
       {/* 생각 기록 질문 동안 재판장 기록장(L-08)이 법정 위로 페이드. 이어지는 생각 기록 사이에는 깜빡이지 않는다 */}
       <div className={cx('scene-layer notebook-layer', thought && 'is-on')} aria-hidden="true">

@@ -13,12 +13,8 @@ export function EvidenceInsert({ insert }: { insert: Insert }) {
         // 증거 아이콘과 같은 픽셀 기기: 머리(아이콘·녹음 표시·파일 이름) → 화면(파형) → 버튼
         <div className="rec" data-device={insert.device}>
           <span className="rec-head">
-            <img
-              className="rec-icon pixelated"
-              src={iconSrc(insert.device)}
-              alt=""
-              draggable={false}
-            />
+            {/* 증거 화면 전체가 pointer-events: none 이라 끌기 막음(draggable)은 필요 없다 */}
+            <img className="rec-icon pixelated" src={iconSrc(insert.device)} alt="" />
             <span className="rec-dot" />
             {insert.label && <span className="rec-label">{insert.label}</span>}
           </span>
