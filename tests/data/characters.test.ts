@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { SCENES } from '@/data/scenes';
-import { portraitOf } from './characters';
+import { portraitOf } from '@/data/characters';
 
 const speakers = new Set(
   Object.values(SCENES).flatMap((scene) =>

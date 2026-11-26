@@ -9,7 +9,7 @@ import {
   DETAILS_COPY,
   RESULT_COPY,
   resultContent,
-} from './result-copy';
+} from '@/data/result-copy';
 
 const SPEC = resolve(process.cwd(), '.claude/docs/specs/script-v4.md');
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { EvidenceId, SceneId, TrialSceneId } from '@/engine/types';
-import { EVIDENCE, gainedAt, INSERTS } from './evidence';
-import { SCENES } from './scenes';
+import { EVIDENCE, gainedAt, INSERTS } from '@/data/evidence';
+import { SCENES } from '@/data/scenes';
 
 const scenes = Object.values(SCENES).filter((s) => s !== undefined);
 

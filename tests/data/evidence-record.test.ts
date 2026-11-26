@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import type { EvidenceId } from '@/engine/types';
-import { EVIDENCE } from './evidence';
-import { RECORDS, recordLines } from './evidence-record';
-import { SCENES } from './scenes';
+import { EVIDENCE } from '@/data/evidence';
+import { RECORDS, recordLines } from '@/data/evidence-record';
+import { SCENES } from '@/data/scenes';
 
 describe('증거 기록', () => {
   it('모든 증거에 기록이 있고, 참조한 줄이 모두 대본에 있다', () => {

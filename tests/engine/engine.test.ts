@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { matches } from './conditions';
+import { matches } from '@/engine/conditions';
 import {
   answer,
   canEnter,
@@ -10,10 +10,10 @@ import {
   missingFields,
   nextSceneId,
   type AnswerInput,
-} from './engine';
-import { ENDING_IDS, resolveEnding } from './endings';
-import { normalizeKey } from './normalize';
-import type { ABC, Option, Scene, SceneId, SceneMap, StoryState } from './types';
+} from '@/engine/engine';
+import { ENDING_IDS, resolveEnding } from '@/engine/endings';
+import { normalizeKey } from '@/engine/normalize';
+import type { ABC, Option, Scene, SceneId, SceneMap, StoryState } from '@/engine/types';
 
 /*
  * 대본 구조를 흉내 낸 가짜 장면 (문장은 테스트용). 실제 대본 데이터는 2단계에서 들어온다.

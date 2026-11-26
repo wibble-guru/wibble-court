@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { NOTEBOOK } from '@/data/notebook';
 import type { AnswerInput } from '@/engine/engine';
 import { advance, startPlay, submit, type Play } from '@/features/play/runner';
-import { buildNotebook, resolveLine } from './notebook';
-import type { ABC, StoryState } from './types';
+import { buildNotebook, resolveLine } from '@/engine/notebook';
+import type { ABC, StoryState } from '@/engine/types';
 
 const QS = [
   'q1_audio',

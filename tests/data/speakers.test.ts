@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { SCENES } from './scenes';
-import { isKnownSpeaker, roleOf, sideOf } from './speakers';
+import { SCENES } from '@/data/scenes';
+import { isKnownSpeaker, roleOf, sideOf } from '@/data/speakers';
 
 const speakers = new Set(
   Object.values(SCENES).flatMap((scene) =>

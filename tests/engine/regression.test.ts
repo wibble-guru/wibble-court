@@ -8,8 +8,8 @@ import { SCENES } from '@/data/scenes';
 import type { AnswerInput } from '@/engine/engine';
 import { advance, startPlay, submit, visibleLines, type Play } from '@/features/play/runner';
 import { truthUnlocked } from '@/features/truth/TruthFlow';
-import { analyze, resultId } from './score';
-import type { ABC, Prompt, SceneId, StoryState } from './types';
+import { analyze, resultId } from '@/engine/score';
+import type { ABC, Prompt, SceneId, StoryState } from '@/engine/types';
 
 const QS = ['q1_audio', 'q2_memory', 'q3_call', 'q4_witness', 'q5_sms', 'q6_motive', 'q7_priority', 'q8_inference', 'q9_last_question'] as const; // prettier-ignore
 

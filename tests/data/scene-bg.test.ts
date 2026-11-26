@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import type { SceneId } from '@/engine/types';
 import { visibleLines, startPlay } from '@/features/play/runner';
-import { PRELOAD_BGS } from './assets';
-import { MAIN_BACKGROUNDS, backdropAt, upcomingBackgrounds } from './scene-bg';
-import { SCENES } from './scenes';
+import { PRELOAD_BGS } from '@/data/assets';
+import { MAIN_BACKGROUNDS, backdropAt, upcomingBackgrounds } from '@/data/scene-bg';
+import { SCENES } from '@/data/scenes';
 
 const story = startPlay().story;
 const ids = Object.keys(SCENES) as SceneId[];
