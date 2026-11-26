@@ -13,8 +13,7 @@ type Props = {
 };
 
 /**
- * 메신저 창 (계획서 78). 배치는 붕괴: 스타레일 메시지 창(흐린 장면 위 창 하나), 모양은 이 게임의 픽셀 증거 아이콘
- * (I-08·I-10 휴대폰)과 같은 색·계단 모서리. 말풍선 대사 동안은 배경을 흐리게 깔고(messenger-veil) 무대를 차지하고,
+ * 메신저 창 (계획서 78·83). 배치는 붕괴: 스타레일 메시지 창(흐린 장면 위 창 하나), 모양은 다른 모달과 같은 황동 패널. 말풍선 대사 동안은 배경을 흐리게 깔고(messenger-veil) 무대를 차지하고,
  * 누르면 다음 대사. 다른 사람이 문자를 인용하는 대사 동안은 대화창 위에 작게 선다.
  * 문구는 모두 대본 그대로 (data/evidence). 이름·시각은 대본 발언자 표기에 있는 것만.
  */
@@ -47,9 +46,9 @@ export function Messenger({ insert, shown, onPress, pressLabel, buttonRef }: Pro
     <button ref={buttonRef} type="button" className="messenger is-full" onClick={onPress}>
       {body}
       {pressLabel && <span className="sr-only">{pressLabel}</span>}
-      {/* 대화창의 "다음" 갈매기와 같은 모양: 눌러서 넘긴다는 표시 */}
-      <svg className="messenger-next" viewBox="0 0 24 14" aria-hidden="true">
-        <polyline points="2,2 12,12 22,2" />
+      {/* 대화창의 "다음" 삼각형과 같은 모양: 눌러서 넘긴다는 표시 */}
+      <svg className="messenger-next" viewBox="0 0 12 8" aria-hidden="true">
+        <polygon points="0,0 12,0 6,8" />
       </svg>
     </button>
   ) : (

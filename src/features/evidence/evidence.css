@@ -141,12 +141,16 @@
   grid-template-rows: auto minmax(0, 1fr);
   width: min(100%, 600px);
   max-height: 100%;
-  /* 키트 패널 테두리 무늬(24px) 안쪽에 내용이 오도록 */
+  /* 황동 패널 (계획서 83): 적갈색 판 + 황동 두 줄 */
   padding: 20px 22px;
-  border: 0 solid transparent;
-  border-image: var(--kit-panel) 34 fill / 24px;
-  color: var(--paper);
-  box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.6);
+  border: 0;
+  background: var(--ui-umber);
+  box-shadow:
+    inset 0 0 0 1px var(--ui-brass),
+    inset 0 0 0 5px var(--ui-umber),
+    inset 0 0 0 6px var(--ui-line-in),
+    0 18px 40px -16px rgb(0 0 0 / 0.7);
+  color: var(--ui-cream);
   outline: none;
 }
 
@@ -159,20 +163,37 @@
   padding: 0 var(--space-2);
 }
 
+/* 제목: 선택지 질문과 같은 구리색 붓 자국 꼬리표 */
 .evidence-modal-title {
   margin: 0;
-  color: var(--gold-bright);
+  padding: 0.2em 1.6em 0.2em 0.7em;
+  background: linear-gradient(
+    90deg,
+    var(--ui-copper),
+    color-mix(in srgb, var(--ui-copper) 80%, #5a2a17)
+  );
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    calc(100% - 6px) 22%,
+    100% 38%,
+    calc(100% - 9px) 55%,
+    calc(100% - 3px) 78%,
+    calc(100% - 12px) 100%,
+    0 100%
+  );
+  color: #fff4e6;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 800;
 }
 
 .evidence-modal-button {
   min-height: 36px;
   padding: 0 var(--space-3);
-  border: 1.5px solid color-mix(in srgb, var(--gold) 70%, transparent);
-  border-radius: 2px;
-  background: transparent;
-  color: var(--gold-bright);
+  border: 0;
+  background: var(--ui-ink);
+  box-shadow: inset 0 0 0 1px var(--ui-brass);
+  color: var(--ui-brass-hi);
   font: inherit;
   font-size: 14px;
   font-weight: 700;
@@ -181,7 +202,7 @@
 
 .evidence-modal-button:focus-visible,
 .evidence-grid-item:focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--ui-brass);
   outline-offset: 2px;
 }
 
@@ -199,10 +220,12 @@
   place-items: center;
   width: 52px;
   height: 52px;
-  border: 0 solid transparent;
-  border-image: var(--kit-slot) 16 / 7px;
-  background: #16151d;
-  background-clip: padding-box;
+  border: 0;
+  background: var(--ui-ink);
+  box-shadow:
+    inset 0 0 0 1px var(--ui-brass),
+    inset 0 0 0 3px var(--ui-ink),
+    inset 0 0 0 4px var(--ui-line-in);
 }
 
 .evidence-heading-icon img {
@@ -212,14 +235,14 @@
 
 .evidence-kind {
   margin: 0;
-  color: var(--gold);
+  color: var(--ui-brass);
   font-size: 13px;
   font-weight: 700;
 }
 
 .evidence-detail-name {
   margin: 2px 0 0;
-  color: var(--paper);
+  color: var(--ui-cream);
   font-size: 22px;
   font-weight: 800;
   line-height: 1.25;
@@ -228,7 +251,7 @@
 
 .evidence-modal-head:has(.evidence-heading) {
   padding-bottom: var(--space-3);
-  border-bottom: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--ui-brass) 35%, transparent);
 }
 
 .evidence-detail {
@@ -242,7 +265,7 @@
 
 .evidence-detail-scene {
   margin: 0;
-  color: color-mix(in srgb, var(--paper) 70%, transparent);
+  color: color-mix(in srgb, var(--ui-cream) 70%, transparent);
   font-size: 14px;
 }
 
@@ -255,7 +278,7 @@
   padding: var(--space-4) var(--space-5);
   overflow-y: auto;
   /* 녹취·진술 기록지: 기록장과 같은 종이 (계획서 78) */
-  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ui-brass) 45%, transparent);
   border-radius: 3px;
   background: var(--sheet);
   background-attachment: local;
@@ -295,7 +318,7 @@
 }
 
 .evidence-record:focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--ui-brass);
   outline-offset: 2px;
 }
 
@@ -308,7 +331,7 @@
 
 .evidence-note {
   margin: 0;
-  color: color-mix(in srgb, var(--paper) 60%, transparent);
+  color: color-mix(in srgb, var(--ui-cream) 60%, transparent);
   font-size: 13px;
 }
 
@@ -333,7 +356,7 @@
   padding: var(--space-1);
   border: 0;
   background: transparent;
-  color: var(--paper);
+  color: var(--ui-cream);
   font: inherit;
   font-size: 13px;
   line-height: 1.35;
@@ -385,22 +408,24 @@
 }
 
 /*
- * 녹음 재생 (계획서 82): 증거 아이콘(I-01 녹음기, I-03 통화 휴대폰)과 같은 픽셀 기기.
- * 몸체는 메신저 창과 같은 계단 모서리 9조각(--px-window), 화면은 남색 칸에 파란 파형, 아래는 기기 버튼.
- * 움직임은 transform·opacity 를 steps() 로 칸 단위.
+ * 녹음 재생 (계획서 82·83): 황동 패널 기기. 머리(증거 아이콘·녹음 표시·파일 이름) → 화면(파형) → 버튼.
+ * 자백 녹음은 녹음기(버튼 셋), 통화 녹음은 휴대폰(좁고 세로, 통화 버튼 하나).
  */
 .rec {
   display: grid;
   gap: 10px;
   width: min(340px, 84vw);
-  padding: 2px 4px;
-  border: 12px solid transparent;
-  border-image: var(--px-window) 6 fill / 12px;
-  color: #f4ecff;
-  filter: drop-shadow(4px 4px 0 rgb(0 0 0 / 0.55));
+  padding: 14px 16px;
+  border: 0;
+  background: var(--ui-umber);
+  box-shadow:
+    inset 0 0 0 1px var(--ui-brass),
+    inset 0 0 0 5px var(--ui-umber),
+    inset 0 0 0 6px var(--ui-line-in),
+    0 18px 40px -16px rgb(0 0 0 / 0.7);
+  color: var(--ui-cream);
 }
 
-/* 휴대폰은 조금 좁고 세로로: 화면이 위, 버튼 하나 */
 .rec[data-device='I-03_call-phone'] {
   width: min(210px, 60vw);
 }
@@ -414,22 +439,22 @@
   align-items: center;
   gap: 8px;
   padding-bottom: 8px;
-  border-bottom: 2px solid #946c7f;
+  border-bottom: 1px solid color-mix(in srgb, var(--ui-brass) 60%, transparent);
 }
 
-/* 기기 위쪽 스피커 구멍 (아이콘의 점 격자) */
+/* 기기 위쪽 스피커 구멍 */
 .rec-head::after {
   content: '';
   flex: none;
   width: 30px;
   height: 10px;
   margin-left: auto;
-  background: radial-gradient(#0d0a14 45%, transparent 50%) 0 0 / 6px 5px;
+  background: radial-gradient(var(--ui-ink) 45%, transparent 50%) 0 0 / 6px 5px;
 }
 
 .rec-icon {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   flex: none;
 }
 
@@ -437,8 +462,8 @@
   flex: none;
   width: 8px;
   height: 8px;
-  background: #e0453b;
-  box-shadow: 0 0 0 2px #1d0f11;
+  border-radius: 50%;
+  background: #d8433a;
   animation: rec-blink 1s steps(1) infinite;
 }
 
@@ -451,33 +476,30 @@
 .rec-label {
   min-width: 0;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 800;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* 기기 화면: 어두운 칸 + 파형 (아이콘 화면의 파란 파형) */
+/* 기기 화면: 검은 유리 + 황동 파형 */
 .rec-screen {
   display: flex;
   align-items: center;
   gap: 3px;
   height: 52px;
   padding: 8px 10px;
-  background: #121327;
-  box-shadow:
-    inset 0 0 0 2px #1d0f11,
-    inset 0 0 0 4px #3a3b5c;
+  background: var(--ui-ink);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-brass) 45%, transparent);
 }
 
 .rec-screen i {
   flex: 1;
   height: var(--h);
-  background: #5aa8ff;
-  box-shadow: inset 0 -2px 0 #2f6fd0;
+  background: var(--ui-brass-hi);
   transform-origin: center;
-  animation: rec-wave 0.6s steps(3) infinite alternate;
+  animation: rec-wave 0.6s ease-in-out infinite alternate;
 }
 
 .rec-screen i:nth-child(odd) {
@@ -494,41 +516,31 @@
   }
 }
 
-/* 기기 버튼: 정지(회색) · 녹음(빨강) · 재생(초록) 픽셀 단추. 휴대폰은 통화 화면이라 빨간 버튼 하나 */
+/* 기기 버튼: 정지 · 녹음(빨강) · 재생. 휴대폰은 통화 화면이라 빨간 버튼 하나 */
 .rec-keys {
   justify-self: center;
   width: 22px;
-  height: 14px;
+  height: 12px;
   margin-inline: 34px;
-  background: #d8433a;
+  background: #b8433a;
   box-shadow:
-    0 0 0 2px #1d0f11,
-    -34px 0 0 0 #4b3a44,
-    -34px 0 0 2px #1d0f11,
-    34px 0 0 0 #4fb36a,
-    34px 0 0 2px #1d0f11;
+    0 0 0 1px var(--ui-brass),
+    -34px 0 0 0 var(--ui-ink),
+    -34px 0 0 1px var(--ui-brass),
+    34px 0 0 0 var(--ui-ink),
+    34px 0 0 1px var(--ui-brass);
 }
 
 .rec[data-device='I-03_call-phone'] .rec-keys {
   width: 44px;
-  box-shadow: 0 0 0 2px #1d0f11;
+  box-shadow: 0 0 0 1px var(--ui-brass);
 }
 
 /*
- * 메신저 창 (계획서 78, Messenger.tsx).
- * 배치: 붕괴: 스타레일 메시지 창처럼 흐린 장면 위 창 하나. 모양: 이 게임의 픽셀 증거 아이콘(I-08·I-10 휴대폰)과 같은 색·계단 모서리.
- * 픽셀 테두리는 2단 계단 모서리 9조각 SVG(border-image, 1칸 = 2px)라 어느 크기에서도 칸이 뭉개지지 않는다.
- * 그림자는 번지지 않는 픽셀 그림자(drop-shadow 0 블러), 움직임은 steps() 로 칸 단위.
+ * 메신저 창 (계획서 78·83, Messenger.tsx). 배치: 흐린 장면 위 창 하나 (스타레일 메시지 창).
+ * 모양: 다른 모달과 같은 황동 패널. 받은 말풍선은 크림 종이, 보낸 말풍선은 구리색.
  */
-.messenger,
-.rec {
-  --px-window: url('data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2716%27%20height%3D%2716%27%20viewBox%3D%270%200%2016%2016%27%20shape-rendering%3D%27crispEdges%27%3E%3Cpath%20fill%3D%27%231d0f11%27%20d%3D%27M2%200h12v1h-12zM1%201h14v1h-14zM0%202h16v1h-16zM0%203h16v1h-16zM0%204h16v1h-16zM0%205h16v1h-16zM0%206h16v1h-16zM0%207h16v1h-16zM0%208h16v1h-16zM0%209h16v1h-16zM0%2010h16v1h-16zM0%2011h16v1h-16zM0%2012h16v1h-16zM0%2013h16v1h-16zM1%2014h14v1h-14zM2%2015h12v1h-12z%27%2F%3E%3Cpath%20fill%3D%27%23946c7f%27%20d%3D%27M3%201h10v1h-10zM2%202h12v1h-12zM1%203h14v1h-14zM1%204h14v1h-14zM1%205h14v1h-14zM1%206h14v1h-14zM1%207h14v1h-14zM1%208h14v1h-14zM1%209h14v1h-14zM1%2010h14v1h-14zM1%2011h14v1h-14zM1%2012h14v1h-14zM2%2013h12v1h-12zM3%2014h10v1h-10z%27%2F%3E%3Cpath%20fill%3D%27%231d0f11%27%20d%3D%27M4%202h8v1h-8zM3%203h10v1h-10zM2%204h12v1h-12zM2%205h12v1h-12zM2%206h12v1h-12zM2%207h12v1h-12zM2%208h12v1h-12zM2%209h12v1h-12zM2%2010h12v1h-12zM2%2011h12v1h-12zM3%2012h10v1h-10zM4%2013h8v1h-8z%27%2F%3E%3Cpath%20fill%3D%27%2326273c%27%20d%3D%27M5%203h6v1h-6zM4%204h8v1h-8zM3%205h10v1h-10zM3%206h10v1h-10zM3%207h10v1h-10zM3%208h10v1h-10zM3%209h10v1h-10zM3%2010h10v1h-10zM4%2011h8v1h-8zM5%2012h6v1h-6z%27%2F%3E%3C%2Fsvg%3E');
-  --px-in: url('data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2710%27%20height%3D%2710%27%20viewBox%3D%270%200%2010%2010%27%20shape-rendering%3D%27crispEdges%27%3E%3Cpath%20fill%3D%27%231d0f11%27%20d%3D%27M2%200h6v1h-6zM1%201h8v1h-8zM0%202h10v1h-10zM0%203h10v1h-10zM0%204h10v1h-10zM0%205h10v1h-10zM0%206h10v1h-10zM0%207h10v1h-10zM1%208h8v1h-8zM2%209h6v1h-6z%27%2F%3E%3Cpath%20fill%3D%27%23d9d9eb%27%20d%3D%27M3%201h4v1h-4zM2%202h6v1h-6zM1%203h8v1h-8zM1%204h8v1h-8zM1%205h8v1h-8zM1%206h8v1h-8zM2%207h6v1h-6zM3%208h4v1h-4z%27%2F%3E%3C%2Fsvg%3E');
-  --px-out: url('data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%2710%27%20height%3D%2710%27%20viewBox%3D%270%200%2010%2010%27%20shape-rendering%3D%27crispEdges%27%3E%3Cpath%20fill%3D%27%231d0f11%27%20d%3D%27M2%200h6v1h-6zM1%201h8v1h-8zM0%202h10v1h-10zM0%203h10v1h-10zM0%204h10v1h-10zM0%205h10v1h-10zM0%206h10v1h-10zM0%207h10v1h-10zM1%208h8v1h-8zM2%209h6v1h-6z%27%2F%3E%3Cpath%20fill%3D%27%234a68d2%27%20d%3D%27M3%201h4v1h-4zM2%202h6v1h-6zM1%203h8v1h-8zM1%204h8v1h-8zM1%205h8v1h-8zM1%206h8v1h-8zM2%207h6v1h-6zM3%208h4v1h-4z%27%2F%3E%3C%2Fsvg%3E');
-}
-
 .messenger {
-  --ink: #1d0f11;
   grid-column: 1 / -1;
   grid-row: 1;
   justify-self: center;
@@ -540,16 +552,19 @@
   max-height: 100%;
   min-height: 0;
   margin: 0;
-  padding: 0;
-  border: 12px solid transparent;
-  border-image: var(--px-window) 6 fill / 12px;
-  background: none;
-  filter: drop-shadow(4px 4px 0 rgb(0 0 0 / 0.55));
+  padding: 12px 14px;
+  border: 0;
+  background: var(--ui-umber);
+  box-shadow:
+    inset 0 0 0 1px var(--ui-brass),
+    inset 0 0 0 5px var(--ui-umber),
+    inset 0 0 0 6px var(--ui-line-in),
+    0 18px 40px -16px rgb(0 0 0 / 0.7);
   font: inherit;
   font-size: clamp(14px, 2.3vmin, 18px);
-  color: #eceaf6;
+  color: var(--ui-cream);
   text-align: left;
-  animation: messenger-in 0.24s steps(4, end);
+  animation: messenger-in 0.24s ease-out;
 }
 
 /* 말풍선 대사 동안: 무대 가운데에 크게 */
@@ -561,7 +576,7 @@
 }
 
 .messenger.is-full:focus-visible {
-  outline: 2px solid var(--gold-bright);
+  outline: 2px solid var(--ui-brass-hi);
   outline-offset: 6px;
 }
 
@@ -576,7 +591,7 @@
 .messenger-veil {
   position: absolute;
   inset: 0;
-  background: rgb(10 9 20 / 0.55);
+  background: rgb(12 9 7 / 0.55);
   -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   animation: veil-in 0.24s ease-out;
@@ -593,16 +608,16 @@
   flex: none;
   align-items: center;
   gap: 0.6em;
-  padding: 0.4em 0.6em 0.7em;
-  border-bottom: 2px solid #946c7f; /* 테두리 띠와 같은 자줏빛 한 칸 */
+  padding: 0.3em 0.4em 0.7em;
+  border-bottom: 1px solid color-mix(in srgb, var(--ui-brass) 60%, transparent);
   font-weight: 800;
-  letter-spacing: -0.01em;
+  letter-spacing: 0.01em;
 }
 
 .messenger-icon {
   flex: none;
-  width: 2.4em;
-  height: 2.4em;
+  width: 2em;
+  height: 2em;
 }
 
 .messenger-name {
@@ -618,7 +633,7 @@
   flex-direction: column;
   gap: 0.9em;
   min-height: 0;
-  padding: 0.9em 0.6em 1.2em;
+  padding: 0.9em 0.4em 1.2em;
   overflow-y: auto;
 }
 
@@ -627,7 +642,7 @@
   gap: 0.3em;
   max-width: 80%;
   align-self: flex-start;
-  animation: bubble-in 0.2s steps(3, end);
+  animation: bubble-in 0.2s ease-out;
 }
 
 .messenger-row.is-out {
@@ -635,25 +650,27 @@
   justify-items: end;
 }
 
+/* 말풍선: 모서리 하나만 깎은 네모 (받은 것은 왼쪽 위, 보낸 것은 오른쪽 위) */
 .messenger-text {
-  padding: 0.3em 0.55em;
-  border: 8px solid transparent;
-  border-image: var(--px-in) 4 fill / 8px;
-  color: #1d1b2c;
+  padding: 0.5em 0.85em;
+  background: var(--sheet);
+  clip-path: polygon(8px 0, 100% 0, 100% 100%, 0 100%, 0 8px);
+  color: var(--sheet-ink);
   font-weight: 600;
   line-height: 1.5;
   word-break: keep-all;
 }
 
 .messenger-row.is-out .messenger-text {
-  border-image-source: var(--px-out);
-  color: #ffffff;
+  background: var(--ui-copper);
+  clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  color: #fff4e6;
 }
 
 .messenger-time {
   font-size: 0.75em;
   font-weight: 700;
-  color: #9d9cb8;
+  color: color-mix(in srgb, var(--ui-cream) 60%, transparent);
   font-variant-numeric: tabular-nums;
 }
 
@@ -664,30 +681,21 @@
   }
 }
 
-/* 누르면 다음: 창 아래 가장자리에 걸친 칸 모양 갈매기 */
+/* 누르면 다음: 창 아래 오른쪽 작은 황동 삼각형 (대화창과 같은 표시) */
 .messenger-next {
   position: absolute;
-  bottom: -18px;
-  left: 50%;
-  box-sizing: content-box;
-  width: 22px;
-  height: 12px;
-  padding: 3px 5px;
-  border: 6px solid transparent;
-  border-image: var(--px-window) 6 fill / 12px;
-  border-image-outset: 6px;
-  fill: none;
-  stroke: var(--gold-bright);
-  stroke-width: 3.5;
-  stroke-linecap: square;
-  stroke-linejoin: miter;
-  transform: translateX(-50%);
-  animation: messenger-next 1s steps(2, end) infinite;
+  right: 18px;
+  bottom: 14px;
+  width: 12px;
+  height: 8px;
+  fill: var(--ui-brass-hi);
+  stroke: none;
+  animation: messenger-next 1.1s ease-in-out infinite;
 }
 
 @keyframes messenger-next {
   50% {
-    transform: translate(-50%, 3px);
+    transform: translateY(3px);
   }
 }
 
@@ -696,7 +704,6 @@
   .messenger.is-full {
     width: 100%;
     min-height: min(50%, 420px);
-    margin-bottom: 22px;
   }
 }
 
@@ -727,7 +734,7 @@
 .timeline-arrow {
   width: 18px;
   height: 2px;
-  background: var(--night);
+  background: var(--sheet-ink);
 }
 
 /* 모바일 세로: 아이콘 작게, 증거 화면 조금 작게. 증거 모달은 아래에서 올라오는 시트 (기록장과 같게) */
@@ -743,14 +750,6 @@
     max-height: 88vh;
     padding: 18px 16px;
     animation: sheet-up 0.24s ease-out;
-  }
-  .evidence-slot {
-    width: 32px;
-    height: 32px;
-  }
-  .evidence-slot img {
-    width: 27px;
-    height: 27px;
   }
 }
 
