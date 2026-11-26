@@ -1,6 +1,6 @@
 /**
  * 포즈 번호 뜻 (계획서 71). 줄별 포즈 표를 사람이 확인할 때만 쓴다 — 게임 코드는 가져오지 않는다.
- * 그림: public/assets/chars/<id>.webp (0) · <id>-<n>.webp (1~6), 원본은 노션 캐릭터 시트
+ * 그림: public/assets/chars/<id>.webp (0) · <id>-<n>.webp (1~), 원본은 노션 캐릭터 시트 (검사 7 은 사용자가 따로 준 그림)
  */
 import type { CharacterId } from './characters';
 
@@ -16,12 +16,14 @@ export const POSE_NAMES: Record<CharacterId, string[]> = {
   ],
   prosecutor: [
     '기본',
-    '서류 내밀며 주장',
+    '서류 끼고 손 펴며 주장',
     '팔짱 끼고 냉정',
-    '가리키며 반박',
-    '허리에 손, 자신만만',
+    '검지 세워 짚어 질문',
+    '서류 들고 담담한 확신',
     '서류 끼고 못마땅',
-    '어깨 너머 노려봄',
+    '넥타이 만지며 곱씹기',
+    '서류철 펼쳐 읽기', // 7: P00 검사 두 줄 (#75)
+    '서류철 옆구리에 끼고 내려다보기', // 8: A10 첫 대사 (#75)
   ],
   defense: [
     '기본',
@@ -30,7 +32,7 @@ export const POSE_NAMES: Record<CharacterId, string[]> = {
     '손 펴고 설명',
     '가슴에 손, 호소',
     '팔짱 끼고 의심',
-    '머리 넘기며 미소',
+    '서류 두 손에 들고 침착',
   ],
   defendant: [
     '기본',
@@ -61,7 +63,7 @@ export const POSE_NAMES: Record<CharacterId, string[]> = {
   ],
   clerk: [
     '기본',
-    '손 들어 기립 안내',
+    '두 손으로 서류 들고 정면',
     '서류 건네기',
     '서류 확인',
     '서류 끼고 바른 자세',

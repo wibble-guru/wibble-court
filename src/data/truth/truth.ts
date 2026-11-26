@@ -161,7 +161,7 @@ export const TRUTH_SCENES: TruthScene[] = [
       },
       {
         speaker: '검사',
-        pose: 1,
+        pose: 3,
         text: '민태성은 그 방송의 편집 과정에 조작이 있었다는 사실을 바로잡으려 했습니다.',
       },
       {
@@ -246,7 +246,7 @@ export const TRUTH_SCENES: TruthScene[] = [
       },
       {
         speaker: '검사 차윤호',
-        pose: 5,
+        pose: 6,
         text: '당시 제출된 정황으로는 의심을 제기할 이유가 있었습니다. 다만 그 의심을 넘어서는 입증이 있었는지, 지금 다시 돌아봐야겠군요.',
       },
       {

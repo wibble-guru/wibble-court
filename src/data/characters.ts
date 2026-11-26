@@ -9,7 +9,7 @@ export type CharacterId =
 export type Portrait = {
   id: CharacterId;
   side: 'left' | 'right';
-  /** 포즈 번호 (0 기본, 1~6 포즈 그림 — 계획서 71). 없으면 기본 */
+  /** 포즈 번호 (0 기본, 1 이상 포즈 그림 — 계획서 71). 없으면 기본 */
   pose?: number;
 };
 
@@ -59,7 +59,7 @@ export function portraitOf(speaker: string | undefined): Portrait | null {
 export const JUDGE_AT_PROMPT: Portrait = { id: 'judge', side: 'left', pose: 3 }; // 턱 괴고 고민
 
 const BASE = import.meta.env.BASE_URL;
-/** 인물 그림 주소. pose 0 은 기본 그림, 1~6 은 포즈 그림 */
+/** 인물 그림 주소. pose 0 은 기본 그림, 1 이상은 포즈 그림 */
 export const portraitSrc = (id: CharacterId, pose = 0) =>
   `${BASE}assets/chars/${id}${pose ? `-${pose}` : ''}.webp`;
 export const CHARACTER_IDS = Object.keys(SIDE) as CharacterId[];
