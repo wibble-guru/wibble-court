@@ -90,7 +90,7 @@
   display: grid;
   place-items: center;
   padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
-  background: rgb(0 0 0 / 0.55);
+  background: var(--scrim);
   animation: notebook-in 0.2s ease-out;
 }
 
@@ -105,9 +105,9 @@
   grid-template-rows: auto minmax(0, 1fr);
   grid-template-columns: minmax(0, 1fr);
   --nb-ink: var(--paper);
-  --nb-ground: #1d1c26;
+  --nb-ground: var(--sheet); /* 선택한 탭이 아래 종이와 이어진다 */
   width: min(100%, 760px);
-  height: min(100%, 640px);
+  max-height: min(100%, 640px); /* 기록 양만큼만 커진다 */
   padding: var(--space-3);
   /* UI 키트 패널 (생각 기록 시트와 같은 조각) */
   border: 0 solid transparent;
@@ -140,7 +140,7 @@
   border-bottom: 0;
   border-radius: 3px 3px 0 0;
   background: transparent;
-  color: color-mix(in srgb, var(--nb-ink) 72%, var(--nb-ground));
+  color: color-mix(in srgb, var(--paper) 70%, transparent);
   font: inherit;
   font-size: 14px;
   font-weight: 700;
@@ -150,15 +150,15 @@
 
 .notebook-tabs [role='tab'][aria-selected='true'] {
   border-color: color-mix(in srgb, var(--gold) 70%, transparent);
-  background: var(--nb-ground);
-  color: var(--gold-bright);
+  background: var(--sheet);
+  color: var(--sheet-ink);
   margin-bottom: -1.5px; /* 선택한 탭이 아래 선을 덮어 종이와 이어지게 */
 }
 
 .notebook-count {
   margin-left: 2px;
   font-variant-numeric: tabular-nums;
-  color: color-mix(in srgb, var(--nb-ink) 65%, var(--nb-ground));
+  opacity: 0.7;
 }
 
 .notebook-close {
@@ -177,9 +177,15 @@
 }
 
 .notebook-list {
+  /* 공책 종이: 크림색 바탕에 먹색 글자. 기록이 없을 때는 낮은 빈 장 */
+  min-height: 160px;
   padding: var(--space-5) var(--space-6);
   overflow-y: auto;
   outline: none;
+  border-radius: 0 0 3px 3px;
+  background: var(--sheet);
+  color: var(--sheet-ink);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold) 45%, transparent);
 }
 
 .notebook-list ol {
@@ -194,7 +200,7 @@
   display: grid;
   gap: var(--space-2);
   padding-bottom: var(--space-4);
-  border-bottom: 1px solid color-mix(in srgb, var(--gold) 22%, transparent);
+  border-bottom: 1px dashed color-mix(in srgb, var(--sheet-ink) 22%, transparent);
 }
 
 .notebook-item p {
@@ -208,12 +214,12 @@
   display: block;
   font-size: 13px;
   font-weight: 700;
-  color: color-mix(in srgb, var(--nb-ink) 65%, var(--nb-ground));
+  color: #7a4b2c; /* 종이 위 적갈색 잉크: 발언자·질문 */
 }
 
 .notebook-source {
   font-size: 12px;
-  color: color-mix(in srgb, var(--nb-ink) 65%, var(--nb-ground));
+  color: var(--sheet-muted);
 }
 
 .notebook-button:focus-visible,
@@ -224,21 +230,52 @@
   outline-offset: 2px;
 }
 
+/* 휴대폰 세로: 아래에서 올라오는 시트. 탭 5개는 잘리지 않게 두 줄로 */
 @media (max-aspect-ratio: 4/5) {
   .notebook-backdrop {
-    padding: 0;
+    place-items: end stretch;
+    /* 대화창과 같은 자리·같은 폭: 화면 끝에 붙지 않고 대화창 위치에서 올라온다 */
+    padding: max(56px, env(safe-area-inset-top)) max(16px, 4.5vw)
+      max(28px, env(safe-area-inset-bottom));
   }
   .notebook {
     width: 100%;
-    height: 100%;
+    max-height: min(100%, 88vh);
+    padding: 14px; /* 키트 모서리 장식에 [닫기]·종이가 닿지 않게 */
+    animation: sheet-up 0.24s ease-out;
+  }
+  .notebook-head {
+    padding: var(--space-2) var(--space-2) 0;
+  }
+  /* 탭은 한 줄로 두고 옆으로 밀어 본다 (줄이 바뀌면 고른 탭이 종이와 떨어지고 [닫기]가 붕 뜬다) */
+  .notebook-tabs {
+    scrollbar-width: none;
+    /* 오른쪽 끝을 흐리게 해서 옆에 탭이 더 있음을 보인다 */
+    mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+  }
+  .notebook-tabs::-webkit-scrollbar {
+    display: none;
+  }
+  .notebook-tabs [role='tab'] {
+    min-height: 34px;
+    padding: var(--space-1) var(--space-2);
+    font-size: 13px;
   }
   .notebook-list {
     padding: var(--space-4);
   }
 }
 
+@keyframes sheet-up {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .notebook-backdrop {
+  .notebook-backdrop,
+  .notebook {
     animation: none;
   }
 }

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { SceneBackground } from '@/components/SceneBackground';
-import { PRELOAD_BGS, TITLE_BG, UI, UI_IMAGES } from '@/data/assets';
+import { KIT_VARS, PRELOAD_BGS, TITLE_BG, UI, UI_IMAGES } from '@/data/assets';
 import { TITLE_COPY } from '@/data/title';
 import { cx } from '@/lib/cx';
 import { prefersReducedMotion } from '@/lib/motion';
@@ -77,6 +77,7 @@ export function TitleScreen({ onStart, leaving }: Props) {
   return (
     <main
       className={cx('title-screen', entered && 'is-entered', skipped && 'is-skipped')}
+      style={KIT_VARS} /* 처음부터 확인 창의 키트 테두리 */
       onClick={activate}
     >
       <div className="scene-layer">
