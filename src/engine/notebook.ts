@@ -2,6 +2,7 @@
  * 기록장 계산 (대본 7.2). 진행 상태만 입력으로 받는 순수 함수 — 화면이 장면 텍스트를 따로 조립하지 않는다.
  * 그래서 고르지 않은 경로의 자료가 사실처럼 기록되는 오류(7.4)를 테스트로 막을 수 있다.
  */
+import { promptTitle, sceneName } from '@/data/prompt-title';
 import { NOTEBOOK, TAB_ORDER, type LineRef, type NotebookTab } from '@/data/notebook';
 import { SCENES } from '@/data/scenes';
 import { matches, readValue } from './conditions';
@@ -48,7 +49,7 @@ export function buildNotebook(state: StoryState): Notebook {
     if (lines.some((l) => !l)) continue; // 대응표가 데이터와 어긋남 — 테스트가 잡는다
     book[entry.tab].push({
       lines: lines.map((l) => ({ speaker: l!.speaker, text: l!.text })),
-      source: SCENES[entry.scene]!.title,
+      source: sceneName(entry.scene),
     });
   }
 
@@ -63,8 +64,8 @@ export function buildNotebook(state: StoryState): Notebook {
         const option = field.options.find((o) => (o.value ?? o.key) === value);
         if (option) {
           book.decisions.push({
-            lines: [{ speaker: prompt.title, text: option.label }],
-            source: scene!.title,
+            lines: [{ speaker: promptTitle(prompt), text: option.label }],
+            source: sceneName(id),
           });
         }
       }

@@ -1,3 +1,4 @@
+import { promptTitle } from '@/data/prompt-title';
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { Backdrop } from '@/components/Backdrop';
 import { SceneBackground } from '@/components/SceneBackground';
@@ -200,7 +201,7 @@ export function PlayScreen({ start, onEnd }: Props) {
           <>
             <DialogueBox key={`${promptKey}:box`} figure={JUDGE_AT_PROMPT}>
               <h2 id="prompt-title" ref={titleRef} tabIndex={-1} className="prompt-title">
-                <Emphasis text={prompt.title} />
+                <Emphasis text={promptTitle(prompt)} />
               </h2>
               {prompt.memo && (
                 <p className="prompt-memo">

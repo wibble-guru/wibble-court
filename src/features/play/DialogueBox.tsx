@@ -1,7 +1,7 @@
 import type { ComponentChildren, Ref } from 'preact';
 import { useState } from 'preact/hooks';
 import { flipped, type Portrait, portraitOf, portraitSrc } from '@/data/characters';
-import { isVoice, roleOf, sideOf, splitSpeaker } from '@/data/speakers';
+import { displaySpeaker, isVoice, roleOf, sideOf, splitSpeaker } from '@/data/speakers';
 
 type Props = {
   /** 대본 표기 그대로. 없으면(질문 단계) 이름표 없음 */
@@ -38,7 +38,9 @@ export function DialogueBox({
 }: Props) {
   const role = speaker ? roleOf(speaker) : 'narration';
   const side = sideOf(role);
-  const { tag, name } = speaker ? splitSpeaker(speaker) : { tag: undefined, name: '' };
+  // 이름표에 보일 이름 (제작용 괄호·"화면 /" 표시를 뺀 것). 역할·그림 판정은 대본 표기 그대로
+  const shownName = speaker ? displaySpeaker(speaker) : null;
+  const { tag, name } = shownName ? splitSpeaker(shownName) : { tag: undefined, name: '' };
   const speakerPortrait = portraitOf(speaker);
   const portrait = speakerPortrait ? { ...speakerPortrait, pose } : (figure ?? null);
   // 그림이 바뀐 차례: 사람이 바뀌면 0(옆에서 들어옴), 같은 사람의 포즈만 바뀌면 1, 2, … (겹쳐 바뀜)
@@ -52,10 +54,10 @@ export function DialogueBox({
   const voice = speaker ? isVoice(speaker) : false;
   const face = (
     <span className="dialogue-face">
-      {speaker && (
+      {shownName && (
         // key = 발언자: 사람이 바뀔 때만 이름이 들어오는 움직임
         <span key={speaker} className="who">
-          <span className="who-name">{voice ? speaker : name}</span>
+          <span className="who-name">{voice ? shownName : name}</span>
           {!voice && tag && <span className="who-role">{tag}</span>}
         </span>
       )}

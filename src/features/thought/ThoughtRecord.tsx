@@ -1,3 +1,4 @@
+import { promptTitle } from '@/data/prompt-title';
 import type { Ref } from 'preact';
 import type { AnswerInput } from '@/engine/engine';
 import type { Prompt } from '@/engine/types';
@@ -32,7 +33,7 @@ export function ThoughtRecord({ prompt, confirmLabel, onSubmit, titleRef }: Prop
   return (
     <section className="sheet" aria-labelledby="prompt-title">
       <h2 id="prompt-title" ref={titleRef} tabIndex={-1} className="sheet-title">
-        <Emphasis text={prompt.title} />
+        <Emphasis text={promptTitle(prompt)} />
       </h2>
       {prompt.memo && (
         <p className="sheet-memo">

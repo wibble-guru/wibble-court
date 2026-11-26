@@ -1,3 +1,4 @@
+import { promptTitle } from '@/data/prompt-title';
 import { useState } from 'preact/hooks';
 import type * as ResultCopyModule from '@/data/result-copy';
 import { SCENES } from '@/data/scenes';
@@ -20,14 +21,11 @@ function choiceOf(target: string, value: string | undefined) {
     for (const field of prompt.fields) {
       if (field.kind !== 'choice' || field.target !== target) continue;
       const option = field.options.find((o) => (o.value ?? o.key) === value);
-      return { title: prompt.title, label: option?.label ?? '' };
+      return { title: promptTitle(prompt), label: option?.label ?? '' };
     }
   }
   return null;
 }
-
-/** Q0 제목 "최초 생각 기록 — 공개되지 않는 내부 질문" 에서 "—" 앞부분만 */
-const shortTitle = (title: string) => title.split(' — ')[0];
 
 /**
  * "내 선택이 어떻게 반영됐나요?" (RESULT 추가 보기, 5.3 하단 접이식). 누를 때만 펼친다.
@@ -77,7 +75,7 @@ export function ResultDetails({ analysis, answers, judgment, copy }: Props) {
                 return (
                   choice && (
                     <li key={pick.key}>
-                      <span>{shortTitle(choice.title)}</span>
+                      <span>{choice.title}</span>
                       {/* 한 요소로 감싼다 — li 가 grid 라 글자 조각과 강조가 따로 칸이 되지 않게 */}
                       <p>
                         <Emphasis text={choice.label} />
@@ -92,13 +90,13 @@ export function ResultDetails({ analysis, answers, judgment, copy }: Props) {
           <dl className="result-facts">
             {q0 && judgment.confidence_start !== undefined && (
               <>
-                <dt>{shortTitle(q0.title)}</dt>
+                <dt>{promptTitle(q0)}</dt>
                 <dd>{judgment.confidence_start}</dd>
               </>
             )}
             {q10_2 && judgment.confidence_final !== undefined && (
               <>
-                <dt>{q10_2.title}</dt>
+                <dt>{promptTitle(q10_2)}</dt>
                 <dd>{judgment.confidence_final}</dd>
               </>
             )}

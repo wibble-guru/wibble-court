@@ -85,3 +85,18 @@ export function splitSpeaker(speaker: string): { tag?: string; name: string } {
  * "녹음 속 오지안", "상대 음성", "화면 / 발신자 불명" 등. 그 밖은 법정에 선 사람의 대사(조서형)
  */
 export const isVoice = (speaker: string) => /^(녹음 속 |상대 음성|화면)/.test(speaker);
+
+/**
+ * 이름표에 보일 이름 (#96). 대본 발언자 표기에는 제작용 표시가 섞여 있어 화면에서만 걸러 낸다 (대본 원문·역할 판정은 그대로).
+ *  - 괄호 지시: "재판장(플레이어)", "검사(마무리)", "오지안(작게)" → 괄호 앞까지
+ *  - 화면 글: "화면 / 발신자 불명" → "발신자 불명", "화면 / 오지안, 22:00" → "오지안" (시각은 메신저에 따로 보인다)
+ *  - 내레이션: 이름 없이 (null)
+ */
+export function displaySpeaker(speaker: string): string | null {
+  if (speaker === '내레이션') return null;
+  return speaker
+    .replace(/\(.*\)$/, '')
+    .replace(/^화면 \/ /, '')
+    .replace(/, \d{1,2}:\d{2}$/, '')
+    .trim();
+}
