@@ -14,10 +14,10 @@
  */
 
 .evidence-bar {
-  --hud-btn: 44px; /* .notebook-button */
+  --hud-btn: 52px; /* .notebook-button */
   --hud-title: clamp(200px, 24vw, 340px); /* .hud-bar */
-  --slot: 40px;
-  --icon: 32px;
+  --slot: 52px;
+  --icon: 44px;
   position: absolute;
   top: calc(max(12px, env(safe-area-inset-top)) + (var(--hud-btn) - var(--slot)) / 2);
   left: calc(16px + var(--hud-btn) + 8px + var(--hud-title) + 14px);
@@ -102,15 +102,17 @@
 /* 낮은 가로 화면: 버튼·칸을 줄인다 */
 @media (max-height: 480px) {
   .evidence-bar {
-    --hud-btn: 36px;
-    --slot: 34px;
-    --icon: 26px;
+    --hud-btn: 40px;
+    --slot: 40px;
+    --icon: 34px;
   }
 }
 
 /* 세로 화면: 장면 제목 명판이 폭을 다 쓰므로 그 아래 줄 */
 @media (max-width: 760px) {
   .evidence-bar {
+    --slot: 48px;
+    --icon: 40px;
     top: calc(max(12px, env(safe-area-inset-top)) + var(--hud-btn) + 8px);
     left: 16px;
     max-width: calc(100% - 32px);
@@ -218,8 +220,8 @@
   display: grid;
   flex: none;
   place-items: center;
-  width: 52px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
   border: 0;
   background: var(--ui-ink);
   box-shadow:
@@ -229,8 +231,8 @@
 }
 
 .evidence-heading-icon img {
-  width: 40px;
-  height: 40px;
+  width: 52px;
+  height: 52px;
 }
 
 .evidence-kind {
@@ -337,10 +339,10 @@
 
 /* 목록 */
 .evidence-grid {
-  --slot: 64px;
-  --icon: 52px;
+  --slot: 80px;
+  --icon: 68px;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
   gap: var(--space-3) var(--space-2);
   margin: 0;
   padding: var(--space-4) var(--space-2) var(--space-4);

@@ -1,6 +1,6 @@
 import type { ComponentChildren, Ref } from 'preact';
 import { useState } from 'preact/hooks';
-import { type Portrait, portraitOf, portraitSrc } from '@/data/characters';
+import { flipped, type Portrait, portraitOf, portraitSrc } from '@/data/characters';
 import { roleOf, sideOf, splitSpeaker } from '@/data/speakers';
 
 type Props = {
@@ -71,6 +71,7 @@ export function DialogueBox({
           key={imageKey}
           className={samePerson ? 'portrait is-swap' : 'portrait'}
           data-side={portrait.side}
+          data-flip={flipped(portrait) || undefined}
           src={portraitSrc(portrait.id, portrait.pose)}
           alt=""
           draggable={false}
