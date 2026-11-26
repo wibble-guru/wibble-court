@@ -1,57 +1,70 @@
 /*
- * 기록장 (Notebook). 생각 기록과 같은 종이(--paper)·먹(--night) — 재판장이 손에 든 기록.
+ * 기록장 (Notebook). 황동 패널 안에 크림 종이 기록 (계획서 78·83).
  * 탭은 종이 위쪽의 색인 탭. 움직임은 opacity 만.
  */
 
-/* 열기 버튼: 화면 오른쪽 위, 키트의 작은 사각 패널 */
-/* ───────── 왼쪽 위: 저울 엠블럼(기록장 버튼) + 장면 제목 막대 (UI 키트) ───────── */
+/* ───────── 왼쪽 위 (계획서 83): 기록장 버튼(황동 두 줄 네모) + 장면 제목 명판 ───────── */
 
 .hud {
+  --hud-btn: 44px;
   position: absolute;
-  top: max(10px, env(safe-area-inset-top));
+  top: max(12px, env(safe-area-inset-top));
   left: 16px;
   z-index: 2;
   display: flex;
   align-items: center;
+  gap: 8px;
   max-width: calc(100% - 32px);
 }
 
 .notebook-button {
   order: -1;
-  position: relative;
-  z-index: 1;
   flex: none;
-  width: 72px;
+  display: grid;
+  place-items: center;
+  width: var(--hud-btn);
+  height: var(--hud-btn);
   padding: 0;
   border: 0;
-  background: none;
+  background: var(--ui-umber);
+  box-shadow:
+    inset 0 0 0 1px var(--ui-brass),
+    inset 0 0 0 4px var(--ui-umber),
+    inset 0 0 0 5px var(--ui-line-in),
+    0 3px 0 rgb(0 0 0 / 0.45);
+  color: var(--ui-brass-hi);
   cursor: pointer;
 }
 
-.notebook-button img {
-  display: block;
-  width: 100%;
-  height: auto;
+.notebook-button svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
 }
 
-.notebook-button:hover img {
-  filter: brightness(1.2);
+.notebook-button:hover {
+  background: var(--ui-umber-hi);
 }
 
-/* 키트 막대(475x110): 왼쪽은 엠블럼 밑으로 들어가고, 오른쪽 마름모 끝은 그대로 */
+/* 장면 제목: 어두운 명판 + 황동 두 줄, 양 끝 못 */
 .hud-bar {
-  --k: 0.42;
   min-width: 0;
-  width: clamp(220px, 28vw, 380px);
-  margin: 0 0 0 -16px;
-  padding: 0 calc(72px * var(--k) + 8px) 0 calc(16px + 14px);
-  border: 0 solid transparent;
-  border-image: var(--kit-bar) 20 72 20 24 fill / calc(20px * var(--k)) calc(72px * var(--k))
-    calc(20px * var(--k)) calc(24px * var(--k));
-  line-height: calc(110px * var(--k));
-  color: var(--gold-bright);
-  font-size: 15px;
-  font-weight: 700;
+  width: clamp(200px, 24vw, 340px);
+  margin: 0;
+  padding: 0 1.6em;
+  background:
+    radial-gradient(circle at 0.7em 50%, var(--ui-brass-hi) 0 2px, transparent 2.5px),
+    radial-gradient(circle at calc(100% - 0.7em) 50%, var(--ui-brass-hi) 0 2px, transparent 2.5px),
+    color-mix(in srgb, var(--ui-ink) 86%, transparent);
+  box-shadow: inset 0 0 0 1px var(--ui-brass);
+  line-height: 36px;
+  color: var(--ui-cream);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.02em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -61,24 +74,19 @@
   .hud {
     right: 16px;
   }
-  .notebook-button {
-    width: 58px;
-  }
   .hud-bar {
-    --k: 0.36;
     flex: 1;
     width: auto;
     max-width: 340px;
-    font-size: 14px;
   }
 }
 
 @media (max-height: 480px) {
-  .notebook-button {
-    width: 50px;
+  .hud {
+    --hud-btn: 36px;
   }
   .hud-bar {
-    --k: 0.32;
+    line-height: 30px;
     font-size: 13px;
   }
 }
@@ -104,16 +112,20 @@
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   grid-template-columns: minmax(0, 1fr);
-  --nb-ink: var(--paper);
+  --nb-ink: var(--ui-cream);
   --nb-ground: var(--sheet); /* 선택한 탭이 아래 종이와 이어진다 */
   width: min(100%, 760px);
   max-height: min(100%, 640px); /* 기록 양만큼만 커진다 */
-  padding: var(--space-3);
-  /* UI 키트 패널 (생각 기록 시트와 같은 조각) */
-  border: 0 solid transparent;
-  border-image: var(--kit-panel) 34 fill / 24px;
+  padding: 14px;
+  /* 황동 패널 (계획서 83): 다른 모달과 같은 적갈색 판 + 황동 두 줄 */
+  border: 0;
+  background: var(--ui-umber);
+  box-shadow:
+    inset 0 0 0 1px var(--ui-brass),
+    inset 0 0 0 5px var(--ui-umber),
+    inset 0 0 0 6px var(--ui-line-in),
+    0 18px 40px -16px rgb(0 0 0 / 0.7);
   color: var(--nb-ink);
-  box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.6);
 }
 
 .notebook-head {
@@ -121,7 +133,7 @@
   align-items: end;
   gap: var(--space-2);
   padding: var(--space-3) var(--space-3) 0;
-  border-bottom: 1.5px solid color-mix(in srgb, var(--gold) 70%, transparent);
+  border-bottom: 1.5px solid color-mix(in srgb, var(--ui-brass) 70%, transparent);
 }
 
 .notebook-tabs {
@@ -140,7 +152,7 @@
   border-bottom: 0;
   border-radius: 3px 3px 0 0;
   background: transparent;
-  color: color-mix(in srgb, var(--paper) 70%, transparent);
+  color: color-mix(in srgb, var(--ui-cream) 70%, transparent);
   font: inherit;
   font-size: 14px;
   font-weight: 700;
@@ -149,7 +161,7 @@
 }
 
 .notebook-tabs [role='tab'][aria-selected='true'] {
-  border-color: color-mix(in srgb, var(--gold) 70%, transparent);
+  border-color: color-mix(in srgb, var(--ui-brass) 70%, transparent);
   background: var(--sheet);
   color: var(--sheet-ink);
   margin-bottom: -1.5px; /* 선택한 탭이 아래 선을 덮어 종이와 이어지게 */
@@ -166,10 +178,10 @@
   min-height: 36px;
   margin-bottom: var(--space-2);
   padding: 0 var(--space-3);
-  border: 1.5px solid color-mix(in srgb, var(--gold) 70%, transparent);
-  border-radius: 2px;
-  background: transparent;
-  color: var(--gold-bright);
+  border: 0;
+  background: var(--ui-ink);
+  box-shadow: inset 0 0 0 1px var(--ui-brass);
+  color: var(--ui-brass-hi);
   font: inherit;
   font-size: 14px;
   font-weight: 700;
@@ -185,7 +197,7 @@
   border-radius: 0 0 3px 3px;
   background: var(--sheet);
   color: var(--sheet-ink);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--gold) 45%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-brass) 45%, transparent);
 }
 
 .notebook-list ol {
@@ -226,7 +238,7 @@
 .notebook-tabs [role='tab']:focus-visible,
 .notebook-close:focus-visible,
 .notebook-list:focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--ui-brass);
   outline-offset: 2px;
 }
 
@@ -241,7 +253,7 @@
   .notebook {
     width: 100%;
     max-height: min(100%, 88vh);
-    padding: 14px; /* 키트 모서리 장식에 [닫기]·종이가 닿지 않게 */
+    padding: 12px;
     animation: sheet-up 0.24s ease-out;
   }
   .notebook-head {

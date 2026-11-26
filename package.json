@@ -17,7 +17,6 @@
     "check:script": "PRINT_ROUTES=1 vitest run tests/data/scenes/script-sync.test.ts --silent=false",
     "verify": "pnpm typecheck && pnpm lint && pnpm format:check && pnpm test",
     "images": "node scripts/convert-images.mjs",
-    "images:kit": "node scripts/cut-ui-kit.mjs",
     "images:chars": "node scripts/cut-characters.mjs"
   },
   "packageManager": "pnpm@11.24.0",

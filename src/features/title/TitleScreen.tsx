@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'preact/hooks';
 import { SceneBackground } from '@/components/SceneBackground';
-import { KIT_VARS, PRELOAD_BGS, TITLE_BG, UI, UI_IMAGES } from '@/data/assets';
+import { PRELOAD_BGS, TITLE_BG, UI_IMAGES } from '@/data/assets';
 import { TITLE_COPY } from '@/data/title';
 import { cx } from '@/lib/cx';
 import { prefersReducedMotion } from '@/lib/motion';
@@ -77,7 +77,6 @@ export function TitleScreen({ onStart, leaving }: Props) {
   return (
     <main
       className={cx('title-screen', entered && 'is-entered', skipped && 'is-skipped')}
-      style={KIT_VARS} /* 처음부터 확인 창의 키트 테두리 */
       onClick={activate}
     >
       <div className="scene-layer">
@@ -96,11 +95,7 @@ export function TitleScreen({ onStart, leaving }: Props) {
           </h1>
 
           <p className="title-plate" data-step style={{ '--step': 3 }}>
-            <img className="laurel" src={UI.laurelLeft} alt="" />
-            <span className="plate-frame">
-              <span className="plate-face">{TITLE_COPY.subtitle}</span>
-            </span>
-            <img className="laurel" src={UI.laurelRight} alt="" />
+            <span className="plate-face">{TITLE_COPY.subtitle}</span>
           </p>
           <p className="title-info" data-step style={{ '--step': 3 }}>
             {TITLE_COPY.info}

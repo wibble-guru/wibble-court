@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { Backdrop } from '@/components/Backdrop';
-import { KIT_VARS, type BgId } from '@/data/assets';
+import type { BgId } from '@/data/assets';
 import { portraitOf, portraitSrc } from '@/data/characters';
 import type * as TruthModule from '@/data/truth/truth';
 import type { StoryState } from '@/engine/types';
@@ -115,7 +115,7 @@ export function TruthFlow({
 
   const B = truth.TRUTH_BUTTONS;
   return (
-    <main className="play-screen truth-screen" style={KIT_VARS}>
+    <main className="play-screen truth-screen">
       {/* 진실 공개 전용 배경 이름은 이 청크의 데이터에만 있다 (본편 BgId 에서 뺐음) */}
       <Backdrop bg={scene.bg as BgId} effect={scene.effect} />
       {scene.insert && !atButtons && <EvidenceInsert key={scene.id} insert={scene.insert} />}

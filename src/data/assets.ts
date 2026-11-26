@@ -48,44 +48,6 @@ export const PRELOAD_BGS: BgId[] = [
 
 const BASE = import.meta.env.BASE_URL;
 
-/** UI 조각 (UI 키트에서 잘라 낸 월계수) */
-export const UI = {
-  laurelLeft: `${BASE}assets/ui/laurel-left.webp`,
-  laurelRight: `${BASE}assets/ui/laurel-right.webp`,
-};
-
-/** UI 키트 조각 (scripts/cut-ui-kit.mjs). CSS 는 border-image 로 늘려 쓴다 */
-const KIT_PARTS = [
-  'emblem',
-  'bar',
-  'tray',
-  'slot',
-  'dialog',
-  'plate',
-  'gem',
-  'choice',
-  'diamond',
-  'panel',
-  'radio',
-  'radio-on',
-  'thumb',
-  'justice',
-] as const;
-const kitSrc = (part: (typeof KIT_PARTS)[number]) => `${BASE}assets/ui/kit-${part}.webp`;
-export const KIT = { emblem: kitSrc('emblem'), gem: kitSrc('gem') };
-
-/**
- * 키트 조각을 CSS 변수(--kit-dialog 등)로. 타이틀·플레이·진실 공개 화면의 main 에 건다.
- * CSS 안에 경로를 쓰면 상대 경로 빌드(base './')에서 어긋나서 여기서 넣는다.
- * 변수 안의 상대 url 은 그 변수를 쓰는 스타일시트(assets/index-*.css) 기준으로 풀리므로
- * ("./assets/ui/…" → "/assets/assets/ui/…") 문서 주소 기준의 절대 주소로 바꿔 넣는다.
- */
-const absolute = (src: string) =>
-  typeof document === 'undefined' ? src : new URL(src, document.baseURI).href;
-export const KIT_VARS = Object.fromEntries(
-  KIT_PARTS.map((part) => [`--kit-${part}`, `url("${absolute(kitSrc(part))}")`]),
-);
-
 /** 배경 큰 버전의 실제 폭 (원본이 1672px 라 1920 으로 키우지 않음) */
 const LARGE_WIDTH = 1672;
 
@@ -149,10 +111,8 @@ const ICON_IDS: IconId[] = [
   'I-10_message-phone',
 ];
 
+/** 미리 받을 그림 (UI 는 CSS 로 그려서 그림이 없다 — 계획서 83) */
 export const UI_IMAGES = [
-  UI.laurelLeft,
-  UI.laurelRight,
-  ...KIT_PARTS.map(kitSrc),
   ...CHARACTER_IDS.map((id) => portraitSrc(id)), // 기본 그림만. 포즈는 장면마다 (line-poses)
   ...ICON_IDS.map(iconSrc),
 ];

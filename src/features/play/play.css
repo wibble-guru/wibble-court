@@ -1,6 +1,6 @@
 /*
- * 플레이 화면 (features/play). 대화창·이름표·선택지는 UI 키트 조각(scripts/cut-ui-kit.mjs)을
- * border-image 로 늘려 그린다. 조각 경로는 main 의 CSS 변수(--kit-*, data/assets KIT_VARS).
+ * 플레이 화면 (features/play). 황동 UI (계획서 83, 림버스풍): 대사는 상자 없이 화면 아래 어둠 위,
+ * 이름·선택지는 짙은 적갈색 판 + 얇은 황동 두 줄. 이미지 조각 없이 CSS 로 그린다.
  * 배경 그림 위라 테마와 상관없이 법정 토큰(tokens.css)만 쓴다. 움직임은 opacity·transform 만.
  */
 
@@ -70,7 +70,7 @@
  * 대화창 뒤 왼쪽/오른쪽 끝에 서고, 사람이 바뀌면 옆에서 들어오고 포즈만 바뀌면 짧게 겹쳐 바뀐다.
  */
 .portrait {
-  --h: min(66vh, 560px);
+  --h: min(74vh, 630px);
   --from: -28px;
   position: absolute;
   bottom: calc(100% - var(--h) * 1.11 * 0.22);
@@ -108,90 +108,102 @@
   }
 }
 
-/* 이름표: 월계수 + 키트 이름표 판. 대화창 윗변에 반쯤 걸친다. 위치는 역할(data-side) */
+/*
+ * 이름표: 소속 꼬리표(작은 판) 위, 이름 명판(적갈색 판 + 황동 두 줄 + 양 끝 못) 아래. 대사 바로 위 왼쪽.
+ * 꼬리표 글자는 역할 색. 사람이 바뀔 때만 옆에서 들어온다 (key = 발언자)
+ */
 .nameplate {
   z-index: 1;
-  display: inline-flex;
-  align-items: center;
+  display: grid;
+  justify-items: start;
   justify-self: start;
-  margin: 0 var(--space-6) -1.15em;
-  font-size: 0.9em;
-  animation: plate-in-left 0.2s ease-out;
+  gap: 3px;
+  margin: 0 0 var(--space-2) var(--space-5);
+  animation: plate-in 0.2s ease-out;
 }
 
-.dialogue[data-side='right'] .nameplate {
-  justify-self: end;
-  animation-name: plate-in-right;
-}
-
-.dialogue[data-side='center'] .nameplate {
-  justify-self: center;
-  animation-name: plate-in-up;
-}
-
-.nameplate .laurel {
-  position: relative;
-  z-index: 1;
-  height: 2.3em;
-  width: auto;
-}
-
-.nameplate .laurel:first-child {
-  margin-right: -0.55em;
-}
-
-.nameplate .laurel:last-child {
-  margin-left: -0.55em;
-}
-
-/* 키트 이름표 판(292x77): 양 끝 뾰족한 곳만 두고 가운데를 늘린다 */
-.plate {
-  min-width: 8em;
-  padding: 0 2em;
-  border: 0 solid transparent;
-  border-image: var(--kit-plate) 0 34 fill / 0 1.15em;
-  line-height: 2.3em;
-  text-align: center;
+.plate-tag {
+  padding: 0.15em 0.7em;
+  background: color-mix(in srgb, var(--ui-ink) 80%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-brass) 70%, transparent);
   color: var(--role);
+  font-size: 0.68em;
   font-weight: 700;
+  letter-spacing: 0.02em;
   white-space: nowrap;
 }
 
-@keyframes plate-in-left {
+.plate {
+  min-width: 6.5em;
+  padding: 0.3em 1.5em;
+  background:
+    radial-gradient(
+      circle at 0.65em 50%,
+      var(--ui-brass-hi) 0 2px,
+      var(--ui-ink) 2.5px 3.5px,
+      transparent 4px
+    ),
+    radial-gradient(
+      circle at calc(100% - 0.65em) 50%,
+      var(--ui-brass-hi) 0 2px,
+      var(--ui-ink) 2.5px 3.5px,
+      transparent 4px
+    ),
+    var(--ui-umber);
+  box-shadow:
+    inset 0 0 0 1px var(--ui-brass),
+    inset 0 0 0 4px var(--ui-umber),
+    inset 0 0 0 5px var(--ui-line-in),
+    0 3px 0 rgb(0 0 0 / 0.45);
+  color: var(--ui-cream);
+  font-size: 0.95em;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@keyframes plate-in {
   from {
     opacity: 0;
     transform: translateX(-8px);
   }
 }
 
-@keyframes plate-in-right {
-  from {
-    opacity: 0;
-    transform: translateX(8px);
-  }
-}
-
-@keyframes plate-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(4px);
-  }
-}
-
 /*
- * 대화창: 키트 대화창(1693x255) 9조각. 네 모서리 장식(80px)은 그대로, 가운데를 늘린다.
- * 정의의 여신 무늬는 테두리 조각에서 떼어(::after) 비율을 고정한다 — 세로 화면에서 대화창이 높아져도 늘어나지 않게.
- * --k = 화면에 그릴 배율
+ * 대사: 상자 없이 화면 아래 어둠 위에. 어둠은 화면 폭 전체(100vw)로 깔고, 인물 그림(z -1)보다 위라
+ * 인물 아랫부분이 어둠에 잠긴다. 글자는 왼쪽 정렬, 한 줄 길이는 46em 까지.
  */
+.dialogue::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: calc(-1 * max(28px, env(safe-area-inset-bottom)));
+  z-index: 0;
+  width: 100vw;
+  height: calc(100% + max(28px, env(safe-area-inset-bottom)) + 14vh);
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(12 9 7 / 0.78) 34%,
+    rgb(12 9 7 / 0.92) 62%,
+    rgb(12 9 7 / 0.96)
+  );
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
 .dialogue-frame {
-  --k: 0.6;
   position: relative;
+  z-index: 1;
   display: grid;
   padding: 0;
-  border: 0 solid transparent;
-  border-image: var(--kit-dialog) 20 80 20 80 fill / calc(20px * var(--k)) calc(80px * var(--k));
+  border: 0;
+  /* 위쪽 얇은 황동 선 한 줄 (오른쪽으로 사라짐): 대사 자리를 표시만 하고 상자는 만들지 않는다 */
+  border-top: 1px solid transparent;
+  border-image: linear-gradient(90deg, var(--ui-brass), transparent 85%) 1;
   background: none;
-  color: var(--paper);
+  color: var(--ui-cream);
   font: inherit;
   text-align: left;
 }
@@ -200,62 +212,32 @@ button.dialogue-frame {
   cursor: pointer;
 }
 
-.dialogue-frame::after {
-  content: '';
-  position: absolute;
-  right: calc(30px * var(--k));
-  bottom: calc(18px * var(--k));
-  width: clamp(110px, calc(362px * var(--k) * 1.05), 46%);
-  max-height: calc(100% - 36px * var(--k));
-  aspect-ratio: 362 / 218;
-  background: var(--kit-justice) right bottom / contain no-repeat;
-  pointer-events: none;
-}
-
 .dialogue-face {
   position: relative;
   display: block;
-  min-height: calc(3 * 1.7em + 2 * var(--space-6));
+  min-height: calc(3 * 1.75em + var(--space-5) + var(--space-4));
   max-height: 46vh;
   overflow-y: auto;
-  z-index: 1; /* 여신 무늬(::after) 위 */
-  /* 오른쪽은 여신 무늬 앞에서 줄을 바꾼다 */
-  padding: var(--space-7) max(calc(var(--space-7) + 12px), 14%) var(--space-6)
-    calc(var(--space-7) + 8px);
+  padding: var(--space-5) var(--space-7) var(--space-4) var(--space-5);
 }
 
 .dialogue-text {
   display: block;
-  line-height: 1.7;
+  max-width: 46em;
+  line-height: 1.75;
   word-break: keep-all;
   overflow-wrap: anywhere;
-  text-shadow: 0 1px 2px rgb(0 0 0 / 0.6);
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.8);
 }
 
-/* 아래 가운데 보석 (키트 조각, 대화창 아래 테두리에 걸친다) */
-.dialogue-gem {
-  position: absolute;
-  left: 50%;
-  bottom: -0.7em;
-  width: 1.5em;
-  aspect-ratio: 62 / 66;
-  background: var(--kit-gem) center / contain no-repeat;
-  transform: translateX(-50%);
-}
-
-/* 다 나왔으면 오른쪽 아래 갈매기가 살짝 오르내린다 */
+/* 다 나왔으면 오른쪽 아래 작은 황동 삼각형이 살짝 오르내린다 */
 .dialogue-next {
   position: absolute;
-  right: calc(var(--space-6) + 8px);
-  bottom: var(--space-5);
-  width: 22px;
-  height: 13px;
-  fill: none;
-  stroke: var(--gold-bright);
-  stroke-width: 3;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  filter: drop-shadow(0 1px 1px rgb(0 0 0 / 0.7));
+  right: var(--space-5);
+  bottom: var(--space-4);
+  width: 12px;
+  height: 8px;
+  fill: var(--ui-brass-hi);
   opacity: 0;
 }
 
@@ -270,21 +252,39 @@ button.dialogue-frame {
   }
 }
 
-/* 질문 단계: 대화창에 질문 제목과 메모 */
+/* 질문 단계: 질문 제목은 구리색 붓 자국 꼬리표, 그 아래 메모 */
 .prompt-title {
+  justify-self: start;
   margin: 0;
-  font-size: 1.05em;
-  font-weight: 700;
+  padding: 0.25em 1.6em 0.25em 0.7em;
+  background: linear-gradient(
+    90deg,
+    var(--ui-copper),
+    color-mix(in srgb, var(--ui-copper) 80%, #5a2a17)
+  );
+  /* 오른쪽 끝을 붓이 끊긴 것처럼 거칠게 */
+  clip-path: polygon(
+    0 0,
+    calc(100% - 14px) 0,
+    calc(100% - 6px) 22%,
+    100% 38%,
+    calc(100% - 9px) 55%,
+    calc(100% - 3px) 78%,
+    calc(100% - 12px) 100%,
+    0 100%
+  );
+  color: #fff4e6;
+  font-size: 1em;
+  font-weight: 800;
   line-height: 1.5;
-  color: var(--gold-bright);
   word-break: keep-all;
   outline: none;
 }
 
 .prompt-memo {
-  margin: var(--space-2) 0 0;
-  line-height: 1.65;
-  color: var(--mist);
+  margin: var(--space-3) 0 0;
+  line-height: 1.7;
+  color: color-mix(in srgb, var(--ui-cream) 72%, transparent);
   word-break: keep-all;
 }
 
@@ -336,20 +336,26 @@ button.dialogue-frame {
   margin-bottom: var(--space-1);
   padding: 0;
   font-weight: 700;
-  color: var(--paper);
-  text-shadow: 0 1px 2px var(--night);
+  color: var(--ui-cream);
+  text-shadow: 0 1px 2px var(--ui-ink);
 }
 
-/* 키트 선택지 판(746x96): 왼쪽 마름모·오른쪽 빗금 조각은 그대로, 가운데만 늘린다. --k = 배율 */
+/*
+ * 선택지 판: 짙은 적갈색 + 황동 두 줄, 왼쪽 위·오른쪽 아래 모서리를 깎는다 (림버스 선택지).
+ * 고르거나 올려 두면 판이 밝아지고 글자가 황동색
+ */
 .choice {
-  --k: 0.55;
+  --fill: color-mix(in srgb, var(--ui-umber) 94%, transparent);
   display: grid;
   padding: 0;
-  border: 0 solid transparent;
-  border-image: var(--kit-choice) 14 70 14 96 fill / calc(14px * var(--k)) calc(70px * var(--k))
-    calc(14px * var(--k)) calc(96px * var(--k));
-  background: none;
-  color: var(--paper);
+  border: 0;
+  background: var(--fill);
+  box-shadow:
+    inset 0 0 0 1px var(--ui-brass),
+    inset 0 0 0 4px var(--fill),
+    inset 0 0 0 5px var(--ui-line-in);
+  clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
+  color: var(--ui-cream);
   font: inherit;
   text-align: left;
   cursor: pointer;
@@ -359,56 +365,59 @@ button.dialogue-frame {
 .choice-face {
   position: relative;
   display: block;
-  padding: calc(var(--space-3) + 2px) calc(70px * var(--k) + var(--space-2))
-    calc(var(--space-3) + 2px) calc(96px * var(--k) + var(--space-2));
+  padding: calc(var(--space-3) + 3px) var(--space-5);
   line-height: 1.55;
+  font-weight: 600;
   word-break: keep-all;
 }
 
-/* 왼쪽 마름모 (키트 조각, 판 높이와 상관없이 세로 가운데) */
-.choice-face::before {
-  content: '';
-  position: absolute;
-  left: calc(72px * var(--k));
-  top: 50%;
-  width: calc(37px * var(--k));
-  aspect-ratio: 37 / 38;
-  background: var(--kit-diamond) center / contain no-repeat;
-  transform: translate(-50%, -50%);
+.choice:hover {
+  --fill: var(--ui-umber-hi);
 }
 
-/* 고르거나 올려 두면 판이 밝아지고 글자가 금색 */
-.choice:hover,
 .choice[aria-pressed='true'] {
-  filter: brightness(1.3);
+  --fill: var(--ui-umber-hi);
+  box-shadow:
+    inset 0 0 0 1px var(--ui-brass-hi),
+    inset 0 0 0 4px var(--fill),
+    inset 0 0 0 5px var(--ui-brass);
 }
 
 .choice[aria-pressed='true'] .choice-face {
-  color: var(--gold-bright);
+  color: var(--ui-brass-hi);
   font-weight: 700;
 }
 
+/* 확정: 구리색 판 하나 (림버스의 붉은 확인 버튼) */
 .choice.is-confirm {
+  --fill: var(--ui-copper);
   justify-self: end;
   min-width: 11em;
 }
 
+.choice.is-confirm:hover {
+  --fill: color-mix(in srgb, var(--ui-copper) 85%, white);
+}
+
 .choice.is-confirm .choice-face {
-  font-weight: 700;
-  color: var(--gold-bright);
+  color: #fff4e6;
+  font-weight: 800;
+  text-align: center;
 }
 
 .choice:disabled {
   opacity: 0.45;
-  filter: none;
   cursor: not-allowed;
 }
 
-/* 키트의 금색 슬라이더: 금 트랙 + 동그란 손잡이 */
+/* 슬라이더: 어두운 판, 가는 황동 선 트랙 + 네모 손잡이 */
 .slider {
   padding: var(--space-3) var(--space-4);
-  background: color-mix(in srgb, var(--night) 88%, transparent);
-  border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent);
+  background: color-mix(in srgb, var(--ui-umber) 94%, transparent);
+  box-shadow:
+    inset 0 0 0 1px var(--ui-brass),
+    inset 0 0 0 4px var(--ui-umber),
+    inset 0 0 0 5px var(--ui-line-in);
 }
 
 .slider .slider-label {
@@ -431,54 +440,55 @@ button.dialogue-frame {
 }
 
 .slider input::-webkit-slider-runnable-track {
-  height: 6px;
-  border-radius: 3px;
+  height: 4px;
   background:
-    linear-gradient(var(--gold), var(--gold)) 0 / calc(var(--v, 50) * 1%) 100% no-repeat,
-    var(--plate);
+    linear-gradient(var(--ui-brass-hi), var(--ui-brass-hi)) 0 / calc(var(--v, 50) * 1%) 100%
+      no-repeat,
+    color-mix(in srgb, var(--ui-brass) 30%, var(--ui-ink));
 }
 
 .slider input::-moz-range-track {
-  height: 6px;
-  border-radius: 3px;
-  background: var(--plate);
+  height: 4px;
+  background: color-mix(in srgb, var(--ui-brass) 30%, var(--ui-ink));
 }
 
 .slider input::-moz-range-progress {
-  height: 6px;
-  border-radius: 3px;
-  background: var(--gold);
+  height: 4px;
+  background: var(--ui-brass-hi);
 }
 
 .slider input::-webkit-slider-thumb {
-  width: 20px;
+  width: 12px;
   height: 20px;
-  margin-top: -7px;
-  border: 2px solid var(--night);
-  border-radius: 50%;
-  background: var(--gold-bright);
+  margin-top: -8px;
+  border: 0;
+  background: var(--ui-brass-hi);
+  box-shadow:
+    0 0 0 2px var(--ui-ink),
+    inset 0 -3px 0 var(--ui-brass);
   appearance: none;
 }
 
 .slider input::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border: 2px solid var(--night);
-  border-radius: 50%;
-  background: var(--gold-bright);
+  width: 12px;
+  height: 20px;
+  border: 0;
+  border-radius: 0;
+  background: var(--ui-brass-hi);
+  box-shadow: 0 0 0 2px var(--ui-ink);
 }
 
 .slider output {
   min-width: 3ch;
   text-align: right;
   font-variant-numeric: tabular-nums;
-  font-weight: 700;
-  color: var(--gold-bright);
+  font-weight: 800;
+  color: var(--ui-brass-hi);
 }
 
 .slider small {
   margin-top: var(--space-1);
-  color: var(--mist);
+  color: color-mix(in srgb, var(--ui-cream) 70%, transparent);
   line-height: 1.55;
   font-size: 0.92em;
 }
@@ -488,39 +498,32 @@ button.dialogue-frame {
 /* 대화창은 대사마다 코드로 포커스를 받아 휴대폰에서도 :focus-visible 이 켜진다. 네모 테두리 대신 밝기만 */
 .dialogue-frame:focus-visible {
   outline: none;
-  filter: brightness(1.12);
 }
 
 .choice:focus-visible {
-  outline: 2px solid var(--gold-bright);
+  outline: 2px solid var(--ui-brass-hi);
   outline-offset: 3px;
 }
 
 .slider input:focus-visible {
-  outline: 2px solid var(--gold-bright);
+  outline: 2px solid var(--ui-brass-hi);
   outline-offset: 2px;
 }
 
-/* 세로 화면: 키트 조각을 더 작게 (테두리가 두꺼워 보이지 않게). 기본 규칙보다 뒤에 둔다 */
+/* 세로 화면 */
 @media (max-aspect-ratio: 4/5) {
   .portrait {
-    --h: min(40vh, 340px);
+    --h: min(45vh, 380px);
   }
   /* 질문 단계의 재판장: 선택지 목록이 대화창 위를 가득 채워 그림이 비쳐 글이 안 읽히므로 뺀다 */
   .play-stage[data-mode='prompt'] .portrait {
     display: none;
   }
-  .dialogue-frame {
-    --k: 0.34;
-  }
-  .dialogue-frame::after {
-    width: 46%;
-  }
-  .choice {
-    --k: 0.42;
+  .nameplate {
+    margin-left: 0;
   }
   .dialogue-face {
-    padding: var(--space-6) var(--space-6) var(--space-5);
+    padding: var(--space-4) var(--space-5) var(--space-4) 0;
   }
 }
 
@@ -535,8 +538,8 @@ button.dialogue-frame {
     padding-bottom: max(12px, env(safe-area-inset-bottom));
   }
   .dialogue-face {
-    min-height: calc(2 * 1.7em + 2 * var(--space-4));
-    padding: var(--space-5) var(--space-7) var(--space-4) var(--space-6);
+    min-height: calc(2 * 1.75em + 2 * var(--space-3));
+    padding: var(--space-3) var(--space-7) var(--space-3) var(--space-5);
   }
   .choice-face {
     padding-top: var(--space-2);
