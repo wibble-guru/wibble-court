@@ -1,14 +1,14 @@
 /*
- * 생각 기록 화면 (ThoughtRecord): 재판장 기록장 그림 위에 놓인 종이 한 장 (계획서 78).
- * 황동 줄 두 겹을 두른 종이(--sheet), 먹색 글자. 확정 버튼은 구리색 판 (계획서 83).
+ * 생각 기록 화면 (ThoughtRecord): 재판장 기록장 그림 옆에 뜨는 어두운 반투명 판 (#87).
+ * 선택지(자막형)와 같은 톤: 어두운 면 + 얇은 선 하나, 종이색 글자, 강조는 인주 빨강 하나.
  * 넓은 가로 화면은 배경의 펼친 공책 오른쪽, 그 밖의 가로 화면은 공책 위, 세로 화면은 대화창처럼 아래.
  * 움직임은 opacity 만.
  */
 
 .sheet {
-  --ink: var(--sheet-ink);
-  --ground: var(--sheet);
-  --accent: #7a4b2c; /* 종이 위 적갈색 잉크: 제목·고른 줄·수치 */
+  --ink: var(--ui-cream);
+  --ground: var(--ui-ink);
+  --accent: var(--ui-copper); /* 고른 동그라미·확정 */
   /* 선택 줄의 좌우 여백. 줄 배경은 이만큼 바깥으로 나가고, 동그라미는 제목과 같은 왼쪽 선에 선다 */
   --row-x: 0.6em;
   grid-column: 1 / -1;
@@ -21,17 +21,13 @@
   width: min(100%, 560px);
   max-height: 100%;
   padding: var(--space-7) var(--space-7) var(--space-6);
-  /* 키트 패널(451x175): 모서리 장식 34px 은 그대로, 가운데를 늘린다 */
-  border-radius: 3px;
-  background: var(--sheet);
-  /* 종이 가장자리 금줄 두 겹 + 책상 위 그림자 */
-  box-shadow:
-    inset 0 0 0 1px color-mix(in srgb, var(--ui-brass) 70%, transparent),
-    inset 0 0 0 5px var(--sheet),
-    inset 0 0 0 6px color-mix(in srgb, var(--ui-brass) 45%, transparent),
-    0 22px 40px -14px rgb(0 0 0 / 0.65);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: 4px;
+  background: rgb(14 13 12 / 0.82);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 22px 40px -14px rgb(0 0 0 / 0.6);
   color: var(--ink);
-  rotate: -0.6deg; /* 책상 위에 놓인 종이 */
   letter-spacing: -0.01em;
   animation: sheet-in 0.3s ease-out;
 }
@@ -44,9 +40,9 @@
 
 .sheet-title {
   margin: 0;
-  color: var(--accent);
-  font-size: 1.1em;
-  font-weight: 700;
+  color: var(--ink);
+  font-size: 1.15em;
+  font-weight: 800;
   line-height: 1.5;
   word-break: keep-all;
   outline: none;
@@ -55,7 +51,7 @@
 .sheet-memo {
   margin: var(--space-2) 0 0;
   line-height: 1.7;
-  color: color-mix(in srgb, var(--ink) 72%, var(--ground));
+  color: var(--ui-muted);
   word-break: keep-all;
 }
 
@@ -110,7 +106,7 @@
   cursor: pointer;
 }
 
-/* 종이 위 펜 동그라미: 빈 원 → 고르면 가운데 잉크 점 (어두운 키트 라디오는 종이 위에서 검은 덩어리로 보여 쓰지 않는다) */
+/* 동그라미: 빈 원 → 고르면 가운데 빨간 점 */
 .mark::before {
   content: '';
   position: absolute;
@@ -119,13 +115,13 @@
   box-sizing: border-box;
   width: 1.05em;
   height: 1.05em;
-  border: 1.5px solid color-mix(in srgb, var(--accent) 65%, transparent);
+  border: 1.5px solid rgb(255 255 255 / 0.45);
   border-radius: 50%;
   transform: translateY(-50%);
 }
 
 .mark:hover {
-  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  background: rgb(255 255 255 / 0.06);
 }
 
 .mark[aria-pressed='true']::before {
@@ -134,8 +130,7 @@
 }
 
 .mark[aria-pressed='true'] {
-  background: color-mix(in srgb, var(--accent) 14%, transparent);
-  color: var(--accent); /* 굵기는 그대로 — 굵어지면 줄이 다시 감긴다 */
+  background: rgb(255 255 255 / 0.1); /* 굵기는 그대로 — 굵어지면 줄이 다시 감긴다 */
 }
 
 /* 판결: 두 칸을 같은 크기·같은 모양으로 나란히. 어느 쪽에도 색·위치 우위 없음 */
@@ -149,10 +144,17 @@
   margin: 0;
   min-height: 72px;
   padding: var(--space-4);
-  border: 1.5px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  border: 1px solid rgb(255 255 255 / 0.16);
   font-size: 1.25em;
   font-weight: 700;
   text-align: center;
+}
+
+/* 판결 칸을 고르면 선택지처럼 종이색으로 뒤집는다 */
+.sheet-field.is-verdict .mark[aria-pressed='true'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--ground);
 }
 
 .sheet-field.is-verdict .mark::before {
@@ -162,12 +164,12 @@
 .sheet-verdict-line {
   margin: 0;
   padding-left: var(--space-3);
-  border-left: 2px solid var(--accent);
+  border-left: 2px solid var(--ui-brass);
   line-height: 1.7;
   word-break: keep-all;
 }
 
-/* 슬라이더: 금 트랙 + 키트 손잡이 */
+/* 슬라이더: 가는 선 트랙 + 종이색 네모 손잡이 (플레이 화면 슬라이더와 같게) */
 .sheet-slider-row {
   display: flex;
   align-items: center;
@@ -184,50 +186,45 @@
 }
 
 .sheet-slider input::-webkit-slider-runnable-track {
-  height: 8px;
-  border-radius: 4px;
+  height: 4px;
   background:
-    linear-gradient(to bottom, var(--ui-brass-hi), var(--ui-brass)) 0 / calc(var(--v, 50) * 1%) 100%
-      no-repeat,
-    color-mix(in srgb, var(--sheet-ink) 18%, var(--sheet));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ui-brass) 50%, transparent);
+    linear-gradient(var(--ink), var(--ink)) 0 / calc(var(--v, 50) * 1%) 100% no-repeat,
+    rgb(255 255 255 / 0.2);
 }
 
 .sheet-slider input::-moz-range-track {
-  height: 8px;
-  border-radius: 4px;
-  background: color-mix(in srgb, var(--sheet-ink) 18%, var(--sheet));
+  height: 4px;
+  background: rgb(255 255 255 / 0.2);
 }
 
 .sheet-slider input::-moz-range-progress {
-  height: 8px;
-  border-radius: 4px;
-  background: var(--ui-brass);
+  height: 4px;
+  background: var(--ink);
 }
 
 .sheet-slider input::-webkit-slider-thumb {
-  width: 14px;
-  height: 24px;
+  width: 12px;
+  height: 20px;
   margin-top: -8px;
   border: 0;
   border-radius: 0;
-  background: var(--ui-umber);
-  box-shadow: inset 0 0 0 2px var(--ui-brass-hi);
+  background: var(--ink);
+  box-shadow: 0 0 0 2px var(--ground);
   appearance: none;
 }
 
 .sheet-slider input::-moz-range-thumb {
-  width: 14px;
-  height: 24px;
+  width: 12px;
+  height: 20px;
   border: 0;
   border-radius: 0;
-  background: var(--ui-umber);
-  box-shadow: inset 0 0 0 2px var(--ui-brass-hi);
+  background: var(--ink);
+  box-shadow: 0 0 0 2px var(--ground);
 }
 
 .sheet-slider output {
   min-width: 3ch;
-  color: var(--accent);
+  color: var(--ink);
   text-align: right;
   font-variant-numeric: tabular-nums;
   font-weight: 700;
@@ -236,7 +233,7 @@
 .sheet-slider small {
   margin-top: var(--space-1);
   line-height: 1.6;
-  color: color-mix(in srgb, var(--ink) 72%, var(--ground));
+  color: var(--ui-muted);
 }
 
 /* 확정: 플레이 화면 확정 버튼과 같은 인주 빨강 (#87) */
@@ -281,7 +278,6 @@
     margin-left: 0;
     margin-right: calc(-1 * max(16px, 4.5%) + 16px); /* 무대 옆 여백을 덜 써서 공책과 띄운다 */
     padding: var(--space-6) var(--space-5) var(--space-5);
-    rotate: 0.6deg;
     font-size: 0.95em;
   }
 }
@@ -293,7 +289,6 @@
     width: 100%;
     max-height: 72%;
     margin-left: 0;
-    rotate: none;
     padding: var(--space-5) var(--space-5) var(--space-4);
   }
 }
