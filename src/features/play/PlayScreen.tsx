@@ -14,7 +14,7 @@ import { Epilogue } from '@/features/epilogue/Epilogue';
 import { Notebook } from '@/features/notebook/Notebook';
 import { loadResultCopy } from '@/features/result/ResultScreen';
 import { isThoughtPrompt } from '@/features/thought/thought';
-import { ThoughtRecord } from '@/features/thought/ThoughtRecord';
+import type { ThoughtRecord as ThoughtRecordComponent } from '@/features/thought/ThoughtRecord';
 import { cx } from '@/lib/cx';
 import { preloadBackground, preloadImage } from '@/lib/preload';
 import { useStory } from '@/store/story';
@@ -61,6 +61,13 @@ export function PlayScreen({ start, onEnd }: Props) {
   const modalOpen = notebookOpen || evidenceView !== null;
   /** 증거 모달은 별도 청크 (본편 번들 50KB 한도, 계획서 71) — 첫 증거가 생기면 미리 받아 둔다 */
   const [EvidenceModal, setEvidenceModal] = useState<typeof EvidenceModalComponent | null>(null);
+  /** 생각 기록 시트도 별도 청크 (#98, 본편 번들 50KB 한도) — 플레이 화면에 들어오면 바로 받아 둔다 */
+  const [ThoughtRecord, setThoughtRecord] = useState<typeof ThoughtRecordComponent | null>(null);
+  useEffect(() => {
+    void import('@/features/thought/ThoughtRecord').then((m) =>
+      setThoughtRecord(() => m.ThoughtRecord),
+    );
+  }, []);
 
   // 진행할 때마다 저장. 끝(엔딩 뒤 RESULT, 에필로그 뒤)도 저장해 두고 App 이 다음 화면을 정한다
   useEffect(() => {
@@ -113,7 +120,7 @@ export function PlayScreen({ start, onEnd }: Props) {
   const prompt = currentPrompt(play);
   useEffect(() => {
     (lineKey ? panelRef.current : titleRef.current)?.focus({ preventScroll: true });
-  }, [lineKey, prompt, messengerFull]);
+  }, [lineKey, prompt, messengerFull, ThoughtRecord]);
 
   // 배경: 장면이 바뀌면 다음에 올 수 있는 장면들의 배경을 미리 받는다 (이미 받은 것은 캐시)
   const sceneId = cursor.at === 'end' ? null : cursor.sceneId;
@@ -187,7 +194,7 @@ export function PlayScreen({ start, onEnd }: Props) {
           </DialogueBox>
         )}
 
-        {promptKey && prompt && thought && (
+        {promptKey && prompt && thought && ThoughtRecord && (
           <ThoughtRecord
             key={promptKey}
             prompt={prompt}

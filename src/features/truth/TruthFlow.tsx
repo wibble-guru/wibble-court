@@ -2,28 +2,14 @@ import { useCallback, useEffect, useRef, useState } from 'preact/hooks';
 import { Backdrop } from '@/components/Backdrop';
 import type { BgId } from '@/data/assets';
 import { portraitOf, portraitSrc } from '@/data/characters';
-import type * as TruthModule from '@/data/truth/truth';
 import type { StoryState } from '@/engine/types';
+import type { Truth } from './load';
 import { messageView } from '@/data/evidence';
 import { Messenger } from '@/features/evidence/Messenger';
 import { DialogueBox } from '@/features/play/DialogueBox';
 import { Typewriter } from '@/features/play/Typewriter';
 import { preloadImage } from '@/lib/preload';
 import './truth.css';
-
-export type Truth = typeof TruthModule;
-
-/** 진실 공개 청크 — 결과·에필로그를 다 본 뒤에만 부른다 (import() 만 허용, ESLint) */
-let truthPromise: Promise<Truth> | null = null;
-export function loadTruth(): Promise<Truth> {
-  truthPromise ??= import('@/data/truth/truth');
-  return truthPromise;
-}
-
-/** 결과 이후 진실 공개를 열어도 되는가 (11.1 unlock_condition) */
-export function truthUnlocked(story: StoryState): boolean {
-  return story.flags.result_completed && story.flags.epilogue_completed;
-}
 
 type Props = {
   truth: Truth;

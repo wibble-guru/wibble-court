@@ -4,7 +4,7 @@ import { analyze, resultId } from '@/engine/score';
 import type { StoryState } from '@/engine/types';
 import { PlayScreen } from '@/features/play/PlayScreen';
 import { loadResultCopy, ResultScreen } from '@/features/result/ResultScreen';
-import { loadTruth, TruthFlow, truthUnlocked, type Truth } from '@/features/truth/TruthFlow';
+import { loadTruth, truthUnlocked, type Truth } from '@/features/truth/load';
 import { backdropOf, resumePlay, startPlay, type Play } from '@/features/play/runner';
 import type { StartMode } from '@/features/title/TitleActions';
 import { TitleScreen } from '@/features/title/TitleScreen';
@@ -159,7 +159,7 @@ export function App() {
         />
       )}
       {screen.kind === 'truth' && (
-        <TruthFlow
+        <screen.truth.TruthFlow
           truth={screen.truth}
           story={screen.story}
           skipGate={screen.skipGate}
