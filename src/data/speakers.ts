@@ -30,7 +30,10 @@ const ROLE_OF: Record<string, Role> = {
   '녹음 속 경찰관': 'police',
   '녹음 속 강도현': 'police',
   내레이션: 'narration',
+  나레이션: 'narration',
   '잔여 질문': 'narration',
+  '화면 문구': 'narration',
+  후일담: 'narration',
   // 누구 목소리·누가 보낸 문자인지가 쟁점이라 특정 인물 색을 주지 않는다
   '상대 음성': 'narration',
   '화면 / 발신자 불명': 'narration',
@@ -90,10 +93,12 @@ export const isVoice = (speaker: string) => /^(녹음 속 |상대 음성|화면)
  * 이름표에 보일 이름 (#96). 대본 발언자 표기에는 제작용 표시가 섞여 있어 화면에서만 걸러 낸다 (대본 원문·역할 판정은 그대로).
  *  - 괄호 지시: "재판장(플레이어)", "검사(마무리)", "오지안(작게)" → 괄호 앞까지
  *  - 화면 글: "화면 / 발신자 불명" → "발신자 불명", "화면 / 오지안, 22:00" → "오지안" (시각은 메신저에 따로 보인다)
- *  - 내레이션: 이름 없이 (null)
+ *  - 내레이션·장면 안내 ("나레이션", "화면 문구", "후일담", "잔여 질문" 등 #98): 이름 없이 (null)
  */
+const NO_NAME = new Set(['내레이션', '나레이션', '화면', '화면 문구', '후일담', '잔여 질문']);
+
 export function displaySpeaker(speaker: string): string | null {
-  if (speaker === '내레이션') return null;
+  if (NO_NAME.has(speaker)) return null;
   return speaker
     .replace(/\(.*\)$/, '')
     .replace(/^화면 \/ /, '')

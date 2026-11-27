@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { promptTitle, sceneName } from '@/data/prompt-title';
 import { SCENES } from '@/data/scenes';
+import { TRUTH_SCENES } from '@/data/truth/truth';
 import { displaySpeaker } from '@/data/speakers';
 import type { SceneId } from '@/engine/types';
 
@@ -25,12 +26,21 @@ describe('화면에 보이는 제목·이름 (#96)', () => {
     expect(displaySpeaker('화면 / 발신자 불명')).toBe('발신자 불명');
     expect(displaySpeaker('화면 / 오지안, 22:00')).toBe('오지안');
     expect(displaySpeaker('내레이션')).toBeNull();
+    // 진실 공개·결말의 장면 안내 표기 (#98)
+    for (const meta of ['나레이션', '화면', '화면 문구', '후일담', '잔여 질문']) {
+      expect(displaySpeaker(meta)).toBeNull();
+    }
     // EPILOGUE 는 대화창 대신 기록 카드라 발언자 표기("22:20" 등)가 카드 이름이다
     const shown = scenes
       .filter((s) => s.id !== 'EPILOGUE')
       .flatMap((s) =>
         s.lines.filter((l) => l.kind !== 'direction').map((l) => displaySpeaker(l.speaker) ?? ''),
       );
-    expect(shown.filter((n) => /[()]|화면 \/|\d:\d\d|플레이어/.test(n))).toEqual([]);
+    const truth = TRUTH_SCENES.flatMap((s) => s.lines.map((l) => displaySpeaker(l.speaker) ?? ''));
+    expect(
+      [...shown, ...truth].filter((n) =>
+        /[()]|화면|\d:\d\d|플레이어|나레이션|후일담|잔여 질문/.test(n),
+      ),
+    ).toEqual([]);
   });
 });
