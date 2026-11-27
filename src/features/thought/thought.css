@@ -133,6 +133,26 @@
   background: rgb(255 255 255 / 0.1); /* 굵기는 그대로 — 굵어지면 줄이 다시 감긴다 */
 }
 
+/* 짧은 보기만 있는 질문 (#98): 두 칸씩. 줄 배경이 옆 칸과 겹치지 않게 바깥 여백을 쓰지 않는다 */
+.sheet-field.is-short {
+  grid-template-columns: 1fr 1fr;
+  column-gap: var(--space-2);
+}
+
+.sheet-field.is-short legend {
+  grid-column: 1 / -1;
+}
+
+.sheet-field.is-short .mark {
+  width: 100%;
+  margin-inline: 0;
+}
+
+/* 고르지 않은 채 [기록하기]를 누른 질문: 이름을 인주 빨강으로 */
+.sheet-field.is-missing legend {
+  color: var(--accent);
+}
+
 /* 판결: 두 칸을 같은 크기·같은 모양으로 나란히. 어느 쪽에도 색·위치 우위 없음 */
 .sheet-field.is-verdict {
   grid-template-columns: 1fr 1fr;
@@ -251,13 +271,12 @@
   cursor: pointer;
 }
 
-.sheet-confirm:hover:not(:disabled) {
+.sheet-confirm:hover:not([aria-disabled='true']) {
   background: color-mix(in srgb, var(--ui-copper) 85%, white);
 }
 
-.sheet-confirm:disabled {
+.sheet-confirm[aria-disabled='true'] {
   opacity: 0.45;
-  cursor: not-allowed;
 }
 
 .mark:focus-visible,
