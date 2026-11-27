@@ -27,14 +27,19 @@
   max-width: calc(100% - 16px - var(--hud-btn) - var(--hud-title) - 44px - 16px);
 }
 
+/*
+ * 칸이 자리보다 많으면 넘치는 칸은 다음 줄로 넘겨 숨긴다 (#98). 반쯤 잘린 칸이 보이지 않게 — 전체는 ▾ 목록에서.
+ * 높이는 한 줄 + 초점 테두리 자리 (padding 4px, 바깥 margin 으로 되돌림)
+ */
 .evidence-slots {
   display: flex;
+  flex-wrap: wrap;
   gap: 6px;
   min-width: 0;
-  margin: 0;
-  padding: 0;
-  overflow-x: auto;
-  scrollbar-width: none;
+  height: calc(var(--slot) + 8px);
+  margin: -4px;
+  padding: 4px;
+  overflow: hidden;
   list-style: none;
 }
 

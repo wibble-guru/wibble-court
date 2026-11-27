@@ -7,7 +7,7 @@ import { AXIS_COPY, AXIS_LABEL, BLEND_COPY, RESULT_COPY } from '@/data/result-co
 import { SCENES } from '@/data/scenes';
 import type { AnswerInput } from '@/engine/engine';
 import { advance, startPlay, submit, visibleLines, type Play } from '@/features/play/runner';
-import { truthUnlocked } from '@/features/truth/TruthFlow';
+import { truthUnlocked } from '@/features/truth/load';
 import { analyze, resultId } from '@/engine/score';
 import type { ABC, Prompt, SceneId, StoryState } from '@/engine/types';
 

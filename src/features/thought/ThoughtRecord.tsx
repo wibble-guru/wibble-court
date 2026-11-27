@@ -1,11 +1,18 @@
 import { promptTitle } from '@/data/prompt-title';
 import type { Ref } from 'preact';
+import { useState } from 'preact/hooks';
 import type { AnswerInput } from '@/engine/engine';
-import type { Prompt } from '@/engine/types';
+import type { Field, Prompt } from '@/engine/types';
+import { cx } from '@/lib/cx';
 import { Emphasis } from '@/features/play/Typewriter';
 import { usePromptInput } from '@/features/play/usePromptInput';
 import { needsConfirm } from './thought';
 import './thought.css';
+
+/** 보기 글자가 모두 이만큼 이하로 짧으면 두 칸씩 놓아 시트가 덜 길어지게 한다 (#98) */
+const SHORT_LABEL = 6;
+const isShort = (field: Extract<Field, { kind: 'choice' }>) =>
+  field.options.every((o) => o.label.length <= SHORT_LABEL);
 
 type Props = {
   prompt: Prompt;
@@ -29,6 +36,18 @@ export function ThoughtRecord({ prompt, confirmLabel, onSubmit, titleRef }: Prop
         .flatMap((f) => (f.kind === 'choice' ? f.options : []))
         .find((o) => (o.value ?? o.key) === input.verdict)?.judgeLine
     : undefined;
+  // 아직 고르지 않은 질문 (#98): [기록하기]를 누르면 그 질문으로 내려 보여 주고 표시한다
+  const [missing, setMissing] = useState<string | null>(null);
+
+  function confirm() {
+    if (ready) return submit();
+    const field = prompt.fields.find((f) => input[f.target] === undefined);
+    if (!field) return;
+    setMissing(field.target);
+    const first = document.querySelector<HTMLElement>(`[data-field="${field.target}"] .mark`);
+    first?.scrollIntoView({ block: 'center' });
+    first?.focus({ preventScroll: true });
+  }
 
   return (
     <section className="sheet" aria-labelledby="prompt-title">
@@ -46,7 +65,13 @@ export function ThoughtRecord({ prompt, confirmLabel, onSubmit, titleRef }: Prop
           field.kind === 'choice' ? (
             <fieldset
               key={field.target}
-              className={verdict ? 'sheet-field is-verdict' : 'sheet-field'}
+              data-field={field.target}
+              className={cx(
+                'sheet-field',
+                verdict && 'is-verdict',
+                !verdict && isShort(field) && 'is-short',
+                missing === field.target && input[field.target] === undefined && 'is-missing',
+              )}
             >
               {field.label && <legend>{field.label}</legend>}
               {field.options.map((option) => {
@@ -96,7 +121,13 @@ export function ThoughtRecord({ prompt, confirmLabel, onSubmit, titleRef }: Prop
       </div>
 
       {!immediate && (
-        <button type="button" className="sheet-confirm" disabled={!ready} onClick={submit}>
+        // disabled 대신 aria-disabled: 눌렀을 때 빠진 질문을 알려 줄 수 있게
+        <button
+          type="button"
+          className="sheet-confirm"
+          aria-disabled={!ready || undefined}
+          onClick={confirm}
+        >
           {confirmLabel}
         </button>
       )}
