@@ -73,6 +73,9 @@ export function bgFocus(id: BgId): string {
  */
 const PORTRAIT: Partial<Record<BgId, string>> = {
   'T-00_title': '45% 50%', // 주인공(왼쪽)과 경찰관(오른쪽)이 둘 다 보이게
+  'L-01_court': '50% 50%', // 검사·재판장·법원 직원·변호인·오지안이 다 들어오게 책상을 가운데로 모은 그림
+  'L-08_judge-notebook': '50% 50%', // 흐린 뒷배경의 양쪽 책상 세 사람
+  'L-09_verdict': '50% 50%',
 };
 
 /** 세로 그림으로 바꾸는 화면 조건. title.css 의 세로 레이아웃과 같은 기준 */

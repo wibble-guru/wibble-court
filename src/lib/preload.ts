@@ -1,4 +1,4 @@
-import { BG_SIZES, bgSrcSet, type BgId } from '@/data/assets';
+import { BG_SIZES, PORTRAIT_MEDIA, bgPortrait, bgSrcSet, type BgId } from '@/data/assets';
 import { usePreload } from '@/store/preload';
 
 /** 같은 파일을 두 번 받지 않도록 요청을 기억한다 (키: src 또는 srcset) */
@@ -32,7 +32,10 @@ function load({ src, srcset, sizes }: Source): Promise<void> {
   return request;
 }
 
+/** 세로 화면이고 세로 전용 그림이 있으면 화면의 <picture> 처럼 그 그림을 받는다 */
 export function preloadBackground(id: BgId): Promise<void> {
+  const portrait = bgPortrait(id);
+  if (portrait && window.matchMedia(PORTRAIT_MEDIA).matches) return load({ src: portrait.src });
   return load({ srcset: bgSrcSet(id), sizes: BG_SIZES });
 }
 
